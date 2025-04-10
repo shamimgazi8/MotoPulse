@@ -1,0 +1,19 @@
+# Ignore server node_modules
+node_modules/
+
+# Ignore environment files specific to the backend
+.env.local
+.env.*.local
+
+# Ignore log files
+*.log
+
+# Ignore server build or dist files
+/build/
+/dist/
+
+# Ignore coverage reports from testing
+/coverage/
+
+# Ignore other temporary or log files
+npm-debug.log

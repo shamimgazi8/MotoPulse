@@ -1,0 +1,15 @@
+# Ignore Next.js build files
+.next/
+
+# Ignore npm package lock files if you're using yarn in the client
+yarn.lock
+
+# Ignore environment files specific to the frontend
+.env.local
+.env.*.local
+
+# Ignore test coverage reports
+/coverage/
+
+# Ignore other temporary or log files
+npm-debug.log
