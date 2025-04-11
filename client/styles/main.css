@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --background-color: #000000;
+  --text-color: #ffffff;
+  /* Other color variables */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: "Grey Qo", cursive;
+}
+
+.custom-gradient {
+  background: linear-gradient(180deg, rgba(241, 242, 243, 0.3882352941) 40.52%, rgba(255, 255, 255, 0) 105.61%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 25s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(10%);
+  }
+  100% {
+    transform: translateX(-60%);
+  }
+}
+.gradient-text {
+  background: linear-gradient(90deg, #1e3a8a, #10b981, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.slider {
+  margin: 0 20px;
+  overflow: "hidden";
+  padding: 2rem 0;
+}
+
+.slider img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.react-multi-carousel-list {
+  padding: 0rem 0 2rem 0;
+}
+
+.custom-dot-list-style button {
+  border: none;
+  background: rgb(255, 68, 68);
+}
+
+.react-multi-carousel-dot.react-multi-carousel-dot--active button {
+  background: rgb(255, 68, 68) !important;
+}
+
+.btn-primary {
+  padding: 5px 15px;
+  background-image: linear-gradient(to right, #000000, #000000, rgba(249, 249, 249, 0.1843137255), rgba(0, 0, 0, 0.7960784314));
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+  moz-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.btn-primary:hover {
+  border: 1px solid white;
+  transition: 0.5s all;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.88);
+  background-position: 150% 0;
+  moz-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+
+.btn-primary-outline {
+  border-image-slice: 1;
+  border-width: 1px;
+  border-image-source: linear-gradient(to right, #ffffff, #212121);
+  background: linear-gradient(to right, #ffffff, #212121);
+  transition: all 0.4s ease-in-out;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.btn-primary-outline:hover {
+  color: #fff;
+  background-image: linear-gradient(45deg, var(--m4u-clr-secondary), var(--m4u-clr-primary));
+  transition: all 0.4s ease-in-out;
+  border-image-source: linear-gradient(45deg, var(--m4u-clr-secondary), var(--m4u-clr-primary));
+  -webkit-background-clip: inherit;
+  -webkit-text-fill-color: inherit;
+  color: #fff;
+  background-position: 100% 0;
+  moz-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.btn-outline {
+  padding: 10px 15px;
+  border: 1px solid #eee;
+  transition: all 0.4s ease-in-out;
+}
+.btn-outline:hover {
+  border: 1px solid #eee;
+  color: #fff;
+  transition: all 0.4s ease-in-out;
+  background-image: linear-gradient(to right, rgb(201, 75, 75), white);
+  border-image-source: linear-gradient(to right, black, white);
+}
+
+.btn-cancel {
+  background-color: #fff;
+  border: 1px solid #eee;
+}
+.btn-cancel:hover {
+  background-color: #eee;
+}
+
+.btn-secondary {
+  padding: 5px 15px;
+  background-image: linear-gradient(to right, #8b5cf6, #10b981, #1e3a8a, #8b5cf6);
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+  moz-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.btn-secondary:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.88);
+  background-position: 150% 0;
+  moz-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}/*# sourceMappingURL=main.css.map */

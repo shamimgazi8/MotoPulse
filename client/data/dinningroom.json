@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "name": "Solid Wood Dining Table",
+    "slug": "solid-wood-dining-table-001",
+    "description": "A sturdy dining table made from solid oak with a natural finish.",
+    "price": 899,
+    "imageUrl": "https://example.com/images/solid-wood-dining-table.jpg",
+    "dimensions": {
+      "width": "72 inches",
+      "depth": "36 inches",
+      "height": "30 inches"
+    },
+    "material": "Oak wood",
+    "color": "Natural"
+  },
+  {
+    "id": 2,
+    "name": "Modern Dining Chairs",
+    "slug": "modern-dining-chairs-002",
+    "description": "A set of four sleek dining chairs with cushioned seats and metal legs.",
+    "price": 299,
+    "imageUrl": "https://example.com/images/modern-dining-chairs.jpg",
+    "dimensions": {
+      "width": "18 inches",
+      "depth": "20 inches",
+      "height": "35 inches"
+    },
+    "material": "Metal and fabric",
+    "color": "Black"
+  },
+  {
+    "id": 3,
+    "name": "Elegant Sideboard",
+    "slug": "elegant-sideboard-003",
+    "description": "A stylish sideboard with ample storage space and a sophisticated design.",
+    "price": 699,
+    "imageUrl": "https://example.com/images/elegant-sideboard.jpg",
+    "dimensions": {
+      "width": "60 inches",
+      "depth": "18 inches",
+      "height": "34 inches"
+    },
+    "material": "MDF and veneer",
+    "color": "Walnut"
+  },
+  {
+    "id": 4,
+    "name": "Glass Top Dining Table",
+    "slug": "glass-top-dining-table-004",
+    "description": "A contemporary dining table with a tempered glass top and metal legs.",
+    "price": 549,
+    "imageUrl": "https://example.com/images/glass-top-dining-table.jpg",
+    "dimensions": {
+      "width": "60 inches",
+      "depth": "36 inches",
+      "height": "30 inches"
+    },
+    "material": "Glass and metal",
+    "color": "Clear"
+  },
+  {
+    "id": 5,
+    "name": "Rustic Dining Bench",
+    "slug": "rustic-dining-bench-005",
+    "description": "A charming dining bench with a rustic finish, perfect for casual dining.",
+    "price": 249,
+    "imageUrl": "https://example.com/images/rustic-dining-bench.jpg",
+    "dimensions": {
+      "width": "48 inches",
+      "depth": "14 inches",
+      "height": "18 inches"
+    },
+    "material": "Reclaimed wood",
+    "color": "Brown"
+  },
+  {
+    "id": 6,
+    "name": "Upholstered Dining Chairs",
+    "slug": "upholstered-dining-chairs-006",
+    "description": "A set of two upholstered dining chairs with high backs and comfortable seats.",
+    "price": 399,
+    "imageUrl": "https://example.com/images/upholstered-dining-chairs.jpg",
+    "dimensions": {
+      "width": "20 inches",
+      "depth": "22 inches",
+      "height": "38 inches"
+    },
+    "material": "Fabric and wood",
+    "color": "Gray"
+  },
+  {
+    "id": 7,
+    "name": "Contemporary Buffet",
+    "slug": "contemporary-buffet-007",
+    "description": "A sleek buffet with modern lines and plenty of storage space.",
+    "price": 799,
+    "imageUrl": "https://example.com/images/contemporary-buffet.jpg",
+    "dimensions": {
+      "width": "72 inches",
+      "depth": "20 inches",
+      "height": "36 inches"
+    },
+    "material": "Laminate and metal",
+    "color": "White"
+  },
+  {
+    "id": 8,
+    "name": "Classic China Cabinet",
+    "slug": "classic-china-cabinet-008",
+    "description": "A traditional china cabinet with glass doors and intricate woodwork.",
+    "price": 1099,
+    "imageUrl": "https://example.com/images/classic-china-cabinet.jpg",
+    "dimensions": {
+      "width": "48 inches",
+      "depth": "18 inches",
+      "height": "78 inches"
+    },
+    "material": "Cherry wood",
+    "color": "Cherry"
+  },
+  {
+    "id": 9,
+    "name": "Round Dining Table",
+    "slug": "round-dining-table-009",
+    "description": "A beautiful round dining table with a pedestal base and an elegant design.",
+    "price": 649,
+    "imageUrl": "https://example.com/images/round-dining-table.jpg",
+    "dimensions": {
+      "width": "48 inches",
+      "depth": "48 inches",
+      "height": "30 inches"
+    },
+    "material": "Mahogany wood",
+    "color": "Espresso"
+  },
+  {
+    "id": 10,
+    "name": "Vintage Dining Set",
+    "slug": "vintage-dining-set-010",
+    "description": "A charming vintage dining set with a table and four matching chairs.",
+    "price": 999,
+    "imageUrl": "https://example.com/images/vintage-dining-set.jpg",
+    "dimensions": {
+      "width": "60 inches",
+      "depth": "36 inches",
+      "height": "30 inches"
+    },
+    "material": "Wood and fabric",
+    "color": "Antique White"
+  }
+]

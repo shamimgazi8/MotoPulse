@@ -1,0 +1,122 @@
+[
+  {
+    "title": "Specs",
+    "link": "specs"
+  },
+  {
+    "title": "Bike Reviews",
+    "link": "/bike-reviews"
+  },
+  {
+    "title": "Types",
+    "link": "/populer-products",
+    "children": [
+      {
+        "title": "Adventure Touring",
+        "link": "/types/adventure-touring"
+      },
+      {
+        "title": "Cruiser",
+        "link": "/types/cruiser"
+      },
+      {
+        "title": "Electric",
+        "link": "/types/electric"
+      },
+      {
+        "title": "Off-Road",
+        "link": "/types/off-road"
+      },
+      {
+        "title": "On-Off-Road",
+        "link": "/types/on-off-road"
+      },
+      {
+        "title": "Other",
+        "link": "/types/other"
+      },
+      {
+        "title": "Scooter",
+        "link": "/types/scooter"
+      },
+      {
+        "title": "Sport-Touring",
+        "link": "/types/sport-touring"
+      },
+      {
+        "title": "Sportbikes",
+        "link": "/types/sportbikes"
+      },
+      {
+        "title": "Standard",
+        "link": "/types/standard"
+      },
+      {
+        "title": "Touring",
+        "link": "/types/touring"
+      },
+      {
+        "title": "Touring Scooter",
+        "link": "/types/touring-scooter"
+      },
+      {
+        "title": "Track",
+        "link": "/types/track"
+      },
+      {
+        "title": "Youth",
+        "link": "/types/youth"
+      }
+    ]
+  },
+  {
+    "title": "Brands",
+    "link": "/brands",
+    "children": [
+      {
+        "title": "Aprilia",
+        "link": "/brands/aprilia"
+      },
+      {
+        "title": "BMW",
+        "link": "/brands/bmw"
+      },
+      {
+        "title": "CFMoto",
+        "link": "/brands/cfmoto"
+      },
+      {
+        "title": "Ducati",
+        "link": "/brands/ducati"
+      },
+      {
+        "title": "Harley-Davidson",
+        "link": "/brands/harley-davidson"
+      },
+      {
+        "title": "Honda",
+        "link": "/brands/honda"
+      },
+      {
+        "title": "Kawasaki",
+        "link": "/brands/kawasaki"
+      },
+      {
+        "title": "KTM",
+        "link": "/brands/ktm"
+      },
+      {
+        "title": "Royal Enfield",
+        "link": "/brands/royal-enfield"
+      },
+      {
+        "title": "Suzuki",
+        "link": "/brands/suzuki"
+      },
+      {
+        "title": "Yamaha",
+        "link": "/brands/yamaha"
+      }
+    ]
+  }
+]

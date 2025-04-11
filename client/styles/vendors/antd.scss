@@ -1,0 +1,63 @@
+:where(.css-dev-only-do-not-override-d2lrxs).ant-tabs .ant-tabs-tab-btn {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-tabs
+  .ant-tabs-tab.ant-tabs-tab-active
+  .ant-tabs-tab-btn {
+  background-image: linear-gradient(to right, #8b5cf6, #10b981);
+  color: white;
+  padding: 5px 15px;
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-pagination
+  .ant-pagination-item-active
+  a {
+  color: black;
+
+  .ant-pagination-next {
+    color: red;
+  }
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-slider .ant-slider-rail {
+  background-color: rgb(110, 110, 110);
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-select-outlined:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  border: none;
+}
+
+:where(.css-dev-only-do-not-override-d2lrxs).ant-slider-horizontal
+  .ant-slider-track-draggable {
+  background-image: linear-gradient(to right, #8b5cf6, #10b981);
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-slider
+  .ant-slider-handle::after {
+  background-color: white;
+  box-shadow: 0 0 0 2px #160169;
+}
+
+:where(.css-dev-only-do-not-override-d2lrxs).ant-slider:hover .ant-slider-rail {
+  background-color: #2d2d2d;
+}
+@mixin blur($blur-radius: 5px) {
+  backdrop-filter: blur($blur-radius);
+  -webkit-backdrop-filter: blur($blur-radius); // For older WebKit browsers
+}
+
+:where(.css-dev-only-do-not-override-d2lrxs).ant-drawer .ant-drawer-content {
+  background-color: rgba(255, 255, 255, 0.233); // Semi-transparent white
+  @include blur(10px); // Adjust blur radius as needed
+  color: white;
+  transition: 0.3s all;
+}
+.anticon svg {
+  color: white;
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button {
+  background-color: black;
+}
