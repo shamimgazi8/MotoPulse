@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import BlogCard from "../@common/universelCard.tsx";
-import Link from "next/link.js";
+
+import ScrollToTopButton from "../home/@components/ScrollTopTobutton";
 
 const PAGE_SIZE = 5;
 
@@ -69,6 +70,7 @@ const BikeReviews = () => {
 
   return (
     <div className="grid gap-6 grid-cols-1 p-4 w-full max-w-2xl mx-auto">
+      <ScrollToTopButton />
       {items.map((item) => (
         <BlogCard
           key={item.id}

@@ -1,11 +1,12 @@
-import Marquee from '../@common/marquee';
-import Hero from './@components/Hero';
+import Marquee from "../@common/marquee";
+import Hero from "./@components/Hero";
 // import HeroGallery from './@components/heroGallery';
-import LatestShots from './@components/latestShots';
-import LatestBikes from './@components/latest-motorcycle';
-import PopulerBike from './@components/populerBikes';
-import CreationPurpose from './@components/purpose';
-import Uniqueness from './@components/uniqueness/Uniqueness';
+import LatestShots from "./@components/latestShots";
+import LatestBikes from "./@components/latest-motorcycle";
+import PopulerBike from "./@components/populerBikes";
+import CreationPurpose from "./@components/purpose";
+import Uniqueness from "./@components/uniqueness/Uniqueness";
+import ScrollToTopButton from "./@components/ScrollTopTobutton";
 
 const HomePage = () => {
   return (
@@ -18,6 +19,7 @@ const HomePage = () => {
       <PopulerBike />
       <Uniqueness />
       <LatestShots />
+      <ScrollToTopButton />
     </div>
   );
 };
