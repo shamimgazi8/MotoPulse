@@ -6,7 +6,7 @@ interface ReviewAttributes {
   userId: number;
   modelId: number;
   rating: number;
-  comment: string;
+  review: string;
 }
 
 interface ReviewCreationAttributes extends Optional<ReviewAttributes, "id"> {}
@@ -19,7 +19,7 @@ class Review
   public userId!: number;
   public modelId!: number;
   public rating!: number;
-  public comment!: string;
+  public review!: string;
 }
 
 Review.init(
@@ -28,7 +28,7 @@ Review.init(
     userId: { type: DataTypes.INTEGER, allowNull: false },
     modelId: { type: DataTypes.INTEGER, allowNull: false },
     rating: { type: DataTypes.INTEGER },
-    comment: { type: DataTypes.TEXT },
+    review: { type: DataTypes.TEXT },
   },
   { sequelize, modelName: "Review" }
 );

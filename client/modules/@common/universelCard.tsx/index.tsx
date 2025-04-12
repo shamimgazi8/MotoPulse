@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { GoDotFill } from "react-icons/go";
 import { useState } from "react";
+import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { excerpt } from "@/utils/utils";
 import { IoSend } from "react-icons/io5";
+import { FaRegHeart } from "react-icons/fa";
 
 interface BlogCardProps {
   data?: any;
@@ -23,11 +25,11 @@ interface BlogCardProps {
 const BlogCard = ({ data, link, classes }: BlogCardProps) => {
   const [likes, setLikes] = useState<number>(data?.likes || 0);
   const [liked, setLiked] = useState<boolean>(false);
-  const [comments, setComments] = useState<number>(data?.comments || 0);
-  const [isCommenting, setIsCommenting] = useState<boolean>(false);
-  const [commentText, setCommentText] = useState<string>("");
-  const [submittedComments, setSubmittedComments] = useState<
-    { name: string; avatar: string; comment: string }[]
+  const [reviews, setreviews] = useState<number>(data?.reviews || 0);
+  const [isreviewing, setIsreviewing] = useState<boolean>(false);
+  const [reviewText, setreviewText] = useState<string>("");
+  const [submittedreviews, setSubmittedreviews] = useState<
+    { name: string; avatar: string; review: string }[]
   >([]);
 
   const handleLike = (e: React.MouseEvent) => {
@@ -36,23 +38,23 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
     setLikes((prev) => (liked ? prev - 1 : prev + 1));
   };
 
-  const handleCommentClick = (e: React.MouseEvent) => {
+  const handlereviewClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsCommenting(true);
+    setIsreviewing(true);
   };
 
-  const handleCommentSubmit = () => {
-    if (!commentText.trim()) return;
+  const handlereviewSubmit = () => {
+    if (!reviewText.trim()) return;
 
-    const newComment = {
+    const newreview = {
       name: data?.name || "Anonymous",
       avatar: "https://www.w3schools.com/howto/img_avatar.png",
-      comment: commentText.trim(),
+      review: reviewText.trim(),
     };
 
-    // Log comment and post info
-    console.log("Comment submitted:", {
-      comment: newComment,
+    // Log review and post info
+    console.log("review submitted:", {
+      review: newreview,
       post: {
         title: data?.name,
         user: data?.name,
@@ -60,10 +62,10 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       },
     });
 
-    setSubmittedComments((prev) => [...prev, newComment]);
-    setCommentText("");
-    setComments((prev) => prev + 1);
-    setIsCommenting(false);
+    setSubmittedreviews((prev) => [...prev, newreview]);
+    setreviewText("");
+    setreviews((prev) => prev + 1);
+    setIsreviewing(false);
   };
 
   return (
@@ -128,47 +130,34 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
         </div>
       </Link>
 
-      {/* Like & Comment Buttons */}
+      {/* Like & review Buttons */}
       <div className="flex items-center mt-3 text-sm text-gray-500">
         <button
           onClick={handleLike}
-          className={`flex items-center hover:text-primary ${liked ? "text-blue-500" : ""}`}
+          className={`flex items-center hover:text-primary text-xl transition-all ${liked ? "text-blue-500" : ""}`}
         >
-          <svg
-            className="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 20.25l-8.623-4.837a5.35 5.35 0 0 1-3.205-4.794v-6.89a5.35 5.35 0 0 1 3.205-4.794L12 3.75l8.623 4.837a5.35 5.35 0 0 1 3.205 4.794v6.89a5.35 5.35 0 0 1-3.205 4.794L12 20.25z"
-            />
-          </svg>
-          Like {likes}
+          {liked ? <FcLike /> : <FcLikePlaceholder />}
+
+          <span className="ml-2 text-sm">{likes}</span>
         </button>
-        <button
-          onClick={handleCommentClick}
-          className="ml-4 hover:text-primary"
-        >
-          Comment {comments}
+
+        <button onClick={handlereviewClick} className="ml-4 hover:text-primary">
+          review {reviews}
         </button>
       </div>
 
-      {isCommenting && (
+      {isreviewing && (
         <div className="mt-4 relative">
           <div className="relative">
             <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Write a comment..."
+              value={reviewText}
+              onChange={(e) => setreviewText(e.target.value)}
+              placeholder="Write a review..."
               className="w-full p-3 pr-12 border border-gray-300 rounded-md dark:border-white/30 dark:bg-neutral-800 text-sm text-gray-700 dark:text-gray-200 resize-none outline-none"
               rows={3}
             />
             <button
-              onClick={handleCommentSubmit}
+              onClick={handlereviewSubmit}
               className="absolute top-[34%] right-3 text-blue-600 hover:text-blue-800 transition-all"
             >
               <IoSend className="w-5 h-5" />
@@ -177,27 +166,27 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
         </div>
       )}
 
-      {/* Display Comments */}
-      {submittedComments.length > 0 && (
+      {/* Display reviews */}
+      {submittedreviews.length > 0 && (
         <div className="mt-4">
           <ul>
-            {submittedComments.map((comment, index) => (
+            {submittedreviews.map((review, index) => (
               <li
                 key={index}
                 className="flex items-start mb-2 text-sm text-gray-600 dark:text-gray-300"
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
                   <Image
-                    src={comment.avatar}
-                    alt={`${comment.name}'s Avatar`}
+                    src={review.avatar}
+                    alt={`${review.name}'s Avatar`}
                     width={32}
                     height={32}
                     className="object-cover w-full h-full"
                   />
                 </div>
                 <div>
-                  <span className="font-semibold">{comment.name}</span>:{" "}
-                  {comment.comment}
+                  <span className="font-semibold">{review.name}</span>:{" "}
+                  {review.review}
                 </div>
               </li>
             ))}
