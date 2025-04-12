@@ -1,5 +1,11 @@
-const BikeReviews = () => {
-  return <>this is BikeReviews page</>;
+import BikeReviews from "@/modules/BikeReviews";
+
+const Bikereview = () => {
+  return (
+    <>
+      <BikeReviews />
+    </>
+  );
 };
 
-export default BikeReviews;
+export default Bikereview;

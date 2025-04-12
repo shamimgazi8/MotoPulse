@@ -6,11 +6,13 @@
     "start": "npm start --prefix server"
   },
   "devDependencies": {
+    "@types/react-infinite-scroll-component": "^4.2.5",
     "concurrently": "^8.2.2"
   },
   "dependencies": {
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
+    "react-infinite-scroll-component": "^6.1.0",
     "sequelize": "^6.37.7",
     "sharp": "^0.34.1"
   }

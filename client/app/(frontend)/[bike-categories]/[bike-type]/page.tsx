@@ -1,9 +1,9 @@
-import ProductList from '@/modules/productList';
+import BikeTypeList from "@/modules/BikeTypeList";
 
 const productList = () => {
   return (
     <div>
-      <ProductList />
+      <BikeTypeList />
     </div>
   );
 };

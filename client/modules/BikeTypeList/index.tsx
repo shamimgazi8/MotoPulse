@@ -1,15 +1,15 @@
 "use client";
 import { useParams } from "next/navigation";
-import { capitalizeFirstLetter } from "./../../utils/utils";
+import { capitalizeFirstLetter } from "../../utils/utils";
 import BlogCard from "../@common/universelCard.tsx";
-import data from "./../../data/bedroom.json";
+import data from "../../data/bedroom.json";
 import PaginatedList from "../@common/pagination";
 import Bredcrumb from "../@common/Bredcrumb";
 import { Select, Slider } from "antd";
 import Filters from "../@common/Filters";
 import CategoryHero from "../@common/CategoryHero/CatergoryHero";
 
-const ProductList = () => {
+const BikeTypeList = () => {
   const { BikeTypesSlug } = useParams();
   const { SpecificTypeSlug } = useParams();
   const decodedSlug = capitalizeFirstLetter(BikeTypesSlug);
@@ -78,4 +78,4 @@ const ProductList = () => {
     </section>
   );
 };
-export default ProductList;
+export default BikeTypeList;

@@ -1,24 +1,24 @@
-'use client';
-import { useParams } from 'next/navigation';
-import { capitalizeFirstLetter } from './../../utils/utils';
-import BlogCard from '../@common/universelCard.tsx';
-import data from './../../data/bedroom.json';
-import PaginatedList from '../@common/pagination';
-import Breadcrumb from '../@common/Bredcrumb/index';
-import Filters from '../@common/Filters';
-import CategoryHero from '../@common/CategoryHero/CatergoryHero';
+"use client";
+import { useParams } from "next/navigation";
+import { capitalizeFirstLetter } from "../../utils/utils";
+import BlogCard from "../@common/universelCard.tsx";
+import data from "../../data/bedroom.json";
+import PaginatedList from "../@common/pagination";
+import Breadcrumb from "../@common/Bredcrumb/index";
+import Filters from "../@common/Filters";
+import CategoryHero from "../@common/CategoryHero/CatergoryHero";
 
-const Categories = () => {
+const BikeCategories = () => {
   const { categorySlug } = useParams();
 
   const breadcrumbs = [
     {
-      title: 'Home',
-      link: '/',
+      title: "Home",
+      link: "/",
     },
     {
       title: categorySlug,
-      link: '',
+      link: "",
     },
   ];
   const dataArray = data?.data || [];
@@ -41,11 +41,11 @@ const Categories = () => {
                   data={item}
                   classes={{
                     root: `border-[1px] border-white/50 items-center gap-[17px] shadow-lg rounded`,
-                    imageWrapper: '!mb-0 lg:!h-[190px] h-[210px] self-start',
-                    imageStyle: '!mb-0 !h-full object-cover self-start',
-                    name: 'lg:!text-lg font-semibold text-[22px] !mb-3 self-start pl-5 !line-clamp-1',
-                    desc: 'hidden',
-                    date: 'hidden',
+                    imageWrapper: "!mb-0 lg:!h-[190px] h-[210px] self-start",
+                    imageStyle: "!mb-0 !h-full object-cover self-start",
+                    name: "lg:!text-lg font-semibold text-[22px] !mb-3 self-start pl-5 !line-clamp-1",
+                    desc: "hidden",
+                    date: "hidden",
                   }}
                 />
               );
@@ -61,4 +61,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default BikeCategories;
