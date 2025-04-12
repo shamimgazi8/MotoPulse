@@ -1,6 +1,6 @@
-import Cerasoul from '@/modules/@common/carasoul';
-import FullPageCarousel from '@/modules/@common/fullpageCarasoul';
-import data from '../../../../data/dinningroom.json';
+import Cerasoul from "@/modules/@common/carasoul";
+import FullPageCarousel from "@/modules/@common/fullpageCarasoul";
+import data from "../../../../data/dinningroom.json";
 const Hero = () => {
   return (
     <div className=" z-50 ">
@@ -8,7 +8,7 @@ const Hero = () => {
         <div className=" lg:w-[110px] ">
           <h3 className="text-white p-2">New Arrival</h3>
         </div>
-        <h1 className="lg:text-[50px] font-semibold leading-[42px] my-5">
+        <h1 className="lg:text-[50px] font-semibold leading-[52px] my-5 text-white dark:text-black">
           <span className="gradient-text">Discover</span> New Bikes
         </h1>
         <p className=" mb-3 line-clamp-2 lg:line-clamp-6 text-[14px]">

@@ -1,37 +1,37 @@
-'use client';
-import { useParams } from 'next/navigation';
-import { capitalizeFirstLetter } from './../../utils/utils';
-import BlogCard from '../@common/universelCard.tsx';
-import data from './../../data/bedroom.json';
-import PaginatedList from '../@common/pagination';
-import Bredcrumb from '../@common/Bredcrumb';
-import { Select, Slider } from 'antd';
-import Filters from '../@common/Filters';
-import CategoryHero from '../@common/CategoryHero/CatergoryHero';
+"use client";
+import { useParams } from "next/navigation";
+import { capitalizeFirstLetter } from "./../../utils/utils";
+import BlogCard from "../@common/universelCard.tsx";
+import data from "./../../data/bedroom.json";
+import PaginatedList from "../@common/pagination";
+import Bredcrumb from "../@common/Bredcrumb";
+import { Select, Slider } from "antd";
+import Filters from "../@common/Filters";
+import CategoryHero from "../@common/CategoryHero/CatergoryHero";
 
 const ProductList = () => {
-  const { categorySlug } = useParams();
-  const { productList } = useParams();
-  const decodedSlug = capitalizeFirstLetter(categorySlug);
-  const decodedSlug1 = capitalizeFirstLetter(productList);
+  const { BikeTypesSlug } = useParams();
+  const { SpecificTypeSlug } = useParams();
+  const decodedSlug = capitalizeFirstLetter(BikeTypesSlug);
+  const decodedSlug1 = capitalizeFirstLetter(SpecificTypeSlug);
   const bredcums = [
     {
-      title: 'Home',
-      link: '/',
+      title: "Home",
+      link: "/",
     },
     {
       title: decodedSlug,
-      link: `/${categorySlug}`,
+      link: `/${BikeTypesSlug}`,
     },
     {
       title: decodedSlug1,
-      link: '',
+      link: "",
     },
   ];
   const dataArray: any = data?.data;
   return (
     <section>
-      <CategoryHero data={data} slug={productList} />
+      <CategoryHero data={data} slug={SpecificTypeSlug} />
 
       <div className=" container mx-auto ">
         <div className=" my-5">
@@ -54,14 +54,14 @@ const ProductList = () => {
                       data={item}
                       classes={{
                         root: ` border-[1px] border-white/50 items-center  gap-[17px] shadow-lg rounded ${
-                          i < 9 ? '' : ''
+                          i < 9 ? "" : ""
                         } self-start`,
                         imageWrapper:
-                          '!mb-0 lg:!h-[190px] h-[210px] self-start',
-                        imageStyle: '!mb-0 !h-full object-cover self-start',
-                        name: 'lg:!text-lg font-semibold text-[22px] !mb-3 self-start pl-5 line-clamp-1 ',
-                        desc: ' hidden',
-                        date: 'hidden ',
+                          "!mb-0 lg:!h-[190px] h-[210px] self-start",
+                        imageStyle: "!mb-0 !h-full object-cover self-start",
+                        name: "lg:!text-lg font-semibold text-[22px] !mb-3 self-start pl-5 line-clamp-1 ",
+                        desc: " hidden",
+                        date: "hidden ",
                       }}
                     />
                   </>

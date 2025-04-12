@@ -153,20 +153,6 @@ const Footer = () => {
             <SiMastercard />
             <BsCashStack />
           </div>
-          <Image
-            height={20}
-            width={120}
-            alt="bkash"
-            src={
-              "https://i0.wp.com/milvikbd.com/wp-content/uploads/2024/05/Bkash-1.png?w=1080"
-            }
-          />
-          <Image
-            height={20}
-            width={120}
-            alt="bkash"
-            src={"https://sslcommerz.com/wp-content/uploads/2021/11/logo.png"}
-          />
         </div>
       </div>
     </footer>

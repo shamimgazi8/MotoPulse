@@ -19,13 +19,13 @@ body {
   padding: 0;
   background-color: var(--background-color);
   color: var(--text-color);
-  font-family: 'Grey Qo', cursive;
+  font-family: "Grey Qo", cursive;
 }
 
 .custom-gradient {
   background: linear-gradient(
     180deg,
-    #f1f2f363 40.52%,
+    #9092942a 40.52%,
     rgba(255, 255, 255, 0) 105.61%
   );
   -webkit-background-clip: text;
@@ -53,7 +53,7 @@ body {
 
 .slider {
   margin: 0 20px;
-  overflow: 'hidden';
+  overflow: "hidden";
   padding: 2rem 0;
 }
 
