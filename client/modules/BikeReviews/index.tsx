@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import BlogCard from "../@common/universelCard.tsx";
+import Link from "next/link.js";
 
-const PAGE_SIZE = 10; // Set the page size to 10
+const PAGE_SIZE = 5;
 
 const generateData = () => {
   const bikes = [];
@@ -29,7 +30,7 @@ const generateData = () => {
   return bikes;
 };
 
-const data = generateData(); // Generate 100 bike models
+const data = generateData();
 
 const BikeReviews = () => {
   const [page, setPage] = useState(1);
@@ -38,7 +39,6 @@ const BikeReviews = () => {
   const loaderRef = useRef(null);
 
   useEffect(() => {
-    // Load more items based on the page number
     setItems(data.slice(0, page * PAGE_SIZE));
     setHasMore(page * PAGE_SIZE < data.length);
   }, [page]);
@@ -48,7 +48,7 @@ const BikeReviews = () => {
       (entries) => {
         const target = entries[0];
         if (target.isIntersecting && hasMore) {
-          setPage((prev) => prev + 1); // Increment the page number to load more data
+          setPage((prev) => prev + 1);
         }
       },
       {
@@ -68,7 +68,7 @@ const BikeReviews = () => {
   }, [hasMore]);
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 p-4 w-[70%] m-auto">
+    <div className="grid gap-6 grid-cols-1 p-4 w-full max-w-2xl mx-auto">
       {items.map((item) => (
         <BlogCard
           key={item.id}
@@ -77,9 +77,10 @@ const BikeReviews = () => {
             highlight: item.type,
             excerpt: item.description,
           }}
+          link={`/bike-reviews/${item.id}`}
           classes={{
             root: "border border-gray-200 dark:border-white/10 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 bg-white dark:bg-neutral-900",
-            imageWrapper: "rounded-md overflow-hidden h-[180px]",
+            imageWrapper: "rounded-md overflow-hidden h-[300px]",
             imageStyle: "object-cover w-full h-full rounded-md",
             name: "text-lg font-semibold leading-snug mb-2",
             desc: "text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-3",
@@ -89,6 +90,7 @@ const BikeReviews = () => {
           }}
         />
       ))}
+
       {!hasMore && items.length === data.length ? (
         <div className="col-span-full flex justify-center py-4 text-sm text-gray-500">
           No more data found.
