@@ -3,12 +3,14 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 
 import Cookies from "js-cookie";
+import { Alert } from "antd";
 type LoginFormData = {
   email: string;
   password: string;
 };
 
 const LoginPage: React.FC = () => {
+  const [success, setSuccess] = useState<boolean>(false);
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -52,8 +54,9 @@ const LoginPage: React.FC = () => {
       console.log("Login successful:", result);
 
       Cookies.set("token", result.token, { expires: 7 });
+      Cookies.set("userId", result.user?.id, { expires: 7 }); // Store user ID
+      setSuccess(true);
 
-      alert("Login successful!");
       window.location.href = "/users/dashboard";
     } catch (err: any) {
       console.error("Login error:", err);
@@ -121,7 +124,9 @@ const LoginPage: React.FC = () => {
             </button>
           </div>
         </div>
-
+        {success && (
+          <Alert message="Login Successfully" type="success" showIcon />
+        )}
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"

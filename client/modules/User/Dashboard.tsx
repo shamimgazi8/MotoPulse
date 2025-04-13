@@ -1,38 +1,89 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie"; // Assuming token is stored in cookies
+import { cookies } from "next/headers";
 
 type UserProfile = {
+  id: number;
   name: string;
   email: string;
   address: string;
-  profileImage: string;
-};
-
-const initialUser: UserProfile = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  address: "123 Main Street, Springfield",
-  profileImage:
-    "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg",
+  profile_url: string;
 };
 
 const DashboardProfile = () => {
-  const [user, setUser] = useState<UserProfile>(initialUser);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    email: user.email,
-    address: user.address,
+    email: "",
+    address: "",
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(true); // Loading state
+
+  useEffect(() => {
+    const token = Cookies.get("token"); // Retrieve token from cookies
+    const id = Cookies.get("userId");
+
+    if (!token) {
+      // If token is missing, redirect to login page
+      window.location.href = "/users/login";
+      return;
+    }
+    // If token exists, proceed to fetch user data
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/users/profile/${id}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          setUser({
+            id: data.id,
+            name: `${data.firstname} ${data.lastname}`,
+            email: data.email,
+            address: data.address || "No address provided",
+            profile_url:
+              data.profile_url ||
+              "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg",
+          });
+
+          setFormData((prev) => ({
+            ...prev,
+            email: data.email,
+            address: data.address || "",
+          }));
+        } else {
+          // Handle error from backend (e.g., invalid token)
+          console.error("Failed to load user:", data.message);
+          Cookies.remove("token"); // Remove invalid token
+          window.location.href = "/users/login"; // Redirect to login
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        Cookies.remove("token"); // Remove invalid token
+        window.location.href = "/users/login"; // Redirect to login
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSave = () => {
-    // Basic client-side validation
+    // Password validation
     if (
       formData.newPassword ||
       formData.confirmPassword ||
@@ -52,16 +103,18 @@ const DashboardProfile = () => {
         return;
       }
 
-      // You would send oldPassword and newPassword to backend here
       console.log("Updating password...");
+      // You would send oldPassword and newPassword to backend here
     }
 
-    // Update email and address
-    setUser({
-      ...user,
-      email: formData.email,
-      address: formData.address,
-    });
+    // Update email and address locally
+    if (user) {
+      setUser({
+        ...user,
+        email: formData.email,
+        address: formData.address,
+      });
+    }
 
     setIsEditing(false);
     setFormData((prev) => ({
@@ -72,19 +125,29 @@ const DashboardProfile = () => {
     }));
   };
 
+  if (loading) {
+    return <div className="text-center mt-20">Loading...</div>;
+  }
+
+  if (!user) {
+    return (
+      <div className="text-center mt-20">User not found. Redirecting...</div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-start justify-center pt-[100px]">
-      <div className="  bg-white rounded-2xl shadow-lg p-6 w-[70%]">
-        <h1 className=" mb-10 gradient-text text-3xl font-semibold">
+      <div className="bg-white rounded-2xl shadow-lg p-6 w-[70%]">
+        <h1 className="mb-10 gradient-text text-3xl font-semibold">
           Dashboard
         </h1>
         <div className="flex items-start gap-4">
           <img
-            src={user.profileImage}
+            src={user.profile_url}
             alt={`${user.name} profile`}
             className="w-16 h-16 rounded-full object-cover border-2 border-gray-300"
           />
-          <div className=" flex flex-col gap-3 ">
+          <div className="flex flex-col gap-3">
             <h2 className="text-2xl font-semibold text-gray-800">
               {user.name}
             </h2>
