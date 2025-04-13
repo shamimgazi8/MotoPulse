@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
-import { PiEyesFill, PiSmileyXEyesBold } from "react-icons/pi";
+
+import Cookies from "js-cookie";
 type LoginFormData = {
   email: string;
   password: string;
@@ -20,29 +21,42 @@ const LoginPage: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
     try {
-      // You can replace this with real API logic
       if (!formData.email || !formData.password) {
         throw new Error("Please enter both email and password.");
       }
 
-      console.log("Form submitted:", formData);
+      console.log("Sending login request...");
 
-      // Example: Make a POST request to your login endpoint
-      // const response = await fetch('/api/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
+      const response = await fetch("http://localhost:4000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // const result = await response.json();
-      // if (!response.ok) throw new Error(result.message);
+      console.log("Response status:", response.status);
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.log("Server responded with error:", result);
+        throw new Error(result.message || "Login failed.");
+      }
+
+      console.log("Login successful:", result);
+
+      Cookies.set("token", result.token, { expires: 7 });
+
+      alert("Login successful!");
+      window.location.href = "/users/dashboard";
     } catch (err: any) {
+      console.error("Login error:", err);
       setError(err.message || "Something went wrong.");
     }
   };

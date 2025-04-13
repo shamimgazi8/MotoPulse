@@ -20,7 +20,6 @@ const ProfileAvater = () => {
 
   useEffect(() => {
     const token = Cookies.get("token");
-
     if (token) {
       try {
         const decoded: JWTPayload = jwtDecode(token);
