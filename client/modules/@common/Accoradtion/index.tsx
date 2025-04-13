@@ -1,6 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
+type AccordionProps = {
+  auto?: boolean; // Optional prop, default false
+};
+
 const images = [
   { src: "/cover/1.jpg", title: "Yamaha", desc: "First Position" },
   { src: "/cover/2.jpg", title: "Harley Davidson", desc: "Second Position" },
@@ -9,17 +13,18 @@ const images = [
   { src: "/cover/6.jpg", title: "KTM", desc: "Fifth Position" },
 ];
 
-function Accordion() {
+function Accordion({ auto = false }: AccordionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Automatically change photo every 4 seconds
   useEffect(() => {
+    if (!auto) return;
+
     const interval = setInterval(() => {
       setActiveIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 8000); // Change duration here (ms)
+    }, 5000); // Change duration here (ms)
 
     return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  }, [auto]);
 
   const handleClick = (index: number) => {
     setActiveIndex(index === activeIndex ? 0 : index);
