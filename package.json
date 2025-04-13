@@ -6,10 +6,12 @@
     "start": "npm start --prefix server"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/react-infinite-scroll-component": "^4.2.5",
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "pg": "^8.14.1",

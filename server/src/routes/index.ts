@@ -10,16 +10,20 @@ import sequelize from "../config/db";
 
 const router = Router();
 
-router.use("/", async (req, res) => {
-  try {
-    await sequelize.authenticate();
-    res.send("Welcome to MotoPulse Database!");
-  } catch (err) {
-    console.error("Unable to connect to the database:", err);
-    res.status(500).send("Database connection failed.");
-  }
-});
+// router.use("/", async (req, res) => {
+//   try {
+//     await sequelize.authenticate();
+//     res.send("Welcome to MotoPulse Database!");
+//   } catch (err) {
+//     console.error("Unable to connect to the database:", err);
+//     res.status(500).send("Database connection failed.");
+//   }
+// });
 router.use("/users", userRoutes);
+import authRoutes from "./auth";
+
+router.use("/login", authRoutes);
+
 router.use("/brands", brandRoutes);
 router.use("/manufacturers", manufacturerRoutes);
 router.use("/models", modelRoutes);
