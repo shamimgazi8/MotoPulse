@@ -1,16 +1,11 @@
 import { Router } from "express";
-import Manufacturer from "../models/Manufacturer";
-
+import {
+  getAllBikeTypes,
+  createBikeType,
+} from "../controllers/bikeType.controller";
 const router = Router();
 
-router.get("/", async (_req, res) => {
-  const manufacturers = await Manufacturer.findAll();
-  res.json(manufacturers);
-});
-
-router.post("/", async (req, res) => {
-  const manufacturer = await Manufacturer.create(req.body);
-  res.status(201).json(manufacturer);
-});
+router.get("/", getAllBikeTypes);
+router.post("/", createBikeType);
 
 export default router;

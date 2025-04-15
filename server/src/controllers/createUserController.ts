@@ -3,7 +3,7 @@ import User from "../models/User";
 
 const CreateUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password, profile_url } = req.body;
 
     if (!firstname || !lastname || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -19,6 +19,7 @@ const CreateUser = async (req: Request, res: Response): Promise<any> => {
       lastname,
       email,
       password,
+      profile_url: profile_url || null, // optional field
     });
 
     res.status(201).json({

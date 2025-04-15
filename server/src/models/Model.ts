@@ -1,16 +1,13 @@
 import { DataTypes, Model as SequelizeModel, Optional } from "sequelize";
 import sequelize from "../config/db";
-import Brand from "./Brand";
-import Manufacturer from "./Manufacturer";
-import BikeType from "./BikeType";
+import Brand from "./Brand"; // Importing Brand for association
 
 interface ModelAttributes {
   id: number;
-  name: string;
-  year: number;
-  brandId: number;
-  manufacturerId: number;
-  bikeTypeId: number;
+  brand_id: number;
+  manufacturer: string;
+  modelName: string;
+  year: number; // <-- Added year
 }
 
 interface ModelCreationAttributes extends Optional<ModelAttributes, "id"> {}
@@ -20,25 +17,50 @@ class Model
   implements ModelAttributes
 {
   public id!: number;
-  public name!: string;
-  public year!: number;
-  public brandId!: number;
-  public manufacturerId!: number;
-  public bikeTypeId!: number;
+  public brand_id!: number;
+  public manufacturer!: string;
+  public modelName!: string;
+  public year!: number; // <-- Added year
 }
 
 Model.init(
   {
-    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    name: { type: DataTypes.STRING, allowNull: false },
-    year: { type: DataTypes.INTEGER },
-    brandId: { type: DataTypes.INTEGER, allowNull: false },
-    manufacturerId: { type: DataTypes.INTEGER, allowNull: false },
-    bikeTypeId: { type: DataTypes.INTEGER, allowNull: false },
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    brand_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "brands", // matches table name of Brand
+        key: "id",
+      },
+      onDelete: "CASCADE",
+    },
+    manufacturer: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    modelName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    year: {
+      type: DataTypes.INTEGER,
+      allowNull: false, // you can set to true if you want it optional
+    },
   },
-  { sequelize, modelName: "Model" }
+  {
+    sequelize,
+    modelName: "Model",
+    tableName: "models",
+    timestamps: true,
+  }
 );
 
-// Set up associations in index.ts
+// Association
+Model.belongsTo(Brand, { foreignKey: "brand_id", as: "brand" });
 
 export default Model;

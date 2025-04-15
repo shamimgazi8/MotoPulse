@@ -1,16 +1,8 @@
 import { Router } from "express";
-import Brand from "../models/Brand";
-
+import { getAllBrands, createBrand } from "../controllers/brand.controller";
 const router = Router();
 
-router.get("/", async (_req, res) => {
-  const brands = await Brand.findAll();
-  res.json(brands);
-});
-
-router.post("/", async (req, res) => {
-  const brand = await Brand.create(req.body);
-  res.status(201).json(brand);
-});
+router.get("/", getAllBrands);
+router.post("/", createBrand as any);
 
 export default router;

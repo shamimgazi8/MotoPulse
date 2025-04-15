@@ -1,28 +1,41 @@
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model as SequelizeModel, Optional } from "sequelize";
 import sequelize from "../config/db";
 
 interface BikeTypeAttributes {
   id: number;
-  type: string;
+  name: string;
 }
 
 interface BikeTypeCreationAttributes
   extends Optional<BikeTypeAttributes, "id"> {}
 
 class BikeType
-  extends Model<BikeTypeAttributes, BikeTypeCreationAttributes>
+  extends SequelizeModel<BikeTypeAttributes, BikeTypeCreationAttributes>
   implements BikeTypeAttributes
 {
   public id!: number;
-  public type!: string;
+  public name!: string;
 }
 
 BikeType.init(
   {
-    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    type: { type: DataTypes.STRING, allowNull: false },
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
   },
-  { sequelize, modelName: "BikeType" }
+  {
+    sequelize,
+    modelName: "BikeType",
+    tableName: "bikeTypes",
+    timestamps: false,
+  }
 );
 
 export default BikeType;
