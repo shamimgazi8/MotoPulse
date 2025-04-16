@@ -4,7 +4,7 @@ import BikeType from "../models/BikeType";
 export const getAllBikeTypes = async (_req: Request, res: Response) => {
   try {
     const types = await BikeType.findAll();
-    res.json(types);
+    res.json({ count: types?.length, result: types });
   } catch (error) {
     res.status(500).json({ message: "Error fetching bike types", error });
   }

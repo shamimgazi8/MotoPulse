@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/", routes);
 
 db.sequelize.sync().then(() => {
-  console.log("Database synced🚀");
+  console.log("Database Connected🚀");
 });
 
 export default app;

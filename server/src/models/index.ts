@@ -13,8 +13,8 @@ Review.belongsTo(User, { foreignKey: "user_id" });
 BikeList.hasMany(Review, { foreignKey: "bike_id" });
 Review.belongsTo(BikeList, { foreignKey: "bike_id" });
 
-Brand.hasMany(Model, { foreignKey: "brandId" });
-Model.belongsTo(Brand, { foreignKey: "brandId" });
+Brand.hasMany(Model, { foreignKey: "brand_id" });
+Model.belongsTo(Brand, { foreignKey: "brand_id" });
 
 Review.belongsTo(BikeList, { foreignKey: "bike_id", as: "bike" });
 BikeList.hasMany(Review, { foreignKey: "bike_id", as: "reviews" });

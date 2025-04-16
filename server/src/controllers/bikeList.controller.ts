@@ -11,7 +11,7 @@ export const getAllBikes = async (_req: Request, res: Response) => {
       include: ["brand", "model", "type"],
     });
 
-    res.json(bikes);
+    res.json({ count: bikes.length, result: bikes });
   } catch (error) {
     res.status(500).json({ message: "Error fetching bikes", error });
   }
@@ -41,7 +41,7 @@ export const createBike = async (req: Request, res: Response) => {
       weight,
     });
 
-    res.status(201).json(bike);
+    res.status(201).json({ bike });
   } catch (error) {
     res.status(500).json({ message: "Error creating bike", error });
   }
