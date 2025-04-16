@@ -33,7 +33,7 @@ export const createBike = async (req: Request, res: Response) => {
     const bike = await BikeList.create({
       brand_id,
       model_id,
-      bike_type_id, // ensure this matches the model field name
+      bike_type_id,
       imgUrl,
       engineCC,
       horsePower,
