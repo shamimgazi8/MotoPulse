@@ -61,3 +61,16 @@
   .ant-input-search-button {
   background-color: black;
 }
+:where(.css-dev-only-do-not-override-d2lrxs).ant-modal .ant-modal-content {
+  background-color: rgba(255, 255, 255, 0.178); /* semi-transparent white */
+  backdrop-filter: blur(10px); /* blur effect */
+  -webkit-backdrop-filter: blur(10px); /* for Safari */
+  color: white;
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-modal .ant-modal-header {
+  color: white;
+  background-color: rgba(255, 0, 0, 0);
+}
+:where(.css-dev-only-do-not-override-d2lrxs).ant-modal .ant-modal-title {
+  color: white;
+}

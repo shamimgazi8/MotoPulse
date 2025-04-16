@@ -16,7 +16,11 @@ body {
 }
 
 .custom-gradient {
-  background: linear-gradient(180deg, rgba(241, 242, 243, 0.3882352941) 40.52%, rgba(255, 255, 255, 0) 105.61%);
+  background: linear-gradient(
+    180deg,
+    rgba(241, 242, 243, 0.3882352941) 40.52%,
+    rgba(255, 255, 255, 0) 105.61%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -68,7 +72,13 @@ body {
 
 .btn-primary {
   padding: 5px 15px;
-  background-image: linear-gradient(to right, #000000, #000000, rgba(249, 249, 249, 0.1843137255), rgba(0, 0, 0, 0.7960784314));
+  background-image: linear-gradient(
+    to right,
+    #000000,
+    #000000,
+    rgba(249, 249, 249, 0.1843137255),
+    rgba(0, 0, 0, 0.7960784314)
+  );
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
@@ -100,9 +110,17 @@ body {
 }
 .btn-primary-outline:hover {
   color: #fff;
-  background-image: linear-gradient(45deg, var(--m4u-clr-secondary), var(--m4u-clr-primary));
+  background-image: linear-gradient(
+    45deg,
+    var(--m4u-clr-secondary),
+    var(--m4u-clr-primary)
+  );
   transition: all 0.4s ease-in-out;
-  border-image-source: linear-gradient(45deg, var(--m4u-clr-secondary), var(--m4u-clr-primary));
+  border-image-source: linear-gradient(
+    45deg,
+    var(--m4u-clr-secondary),
+    var(--m4u-clr-primary)
+  );
   -webkit-background-clip: inherit;
   -webkit-text-fill-color: inherit;
   color: #fff;
@@ -134,7 +152,13 @@ body {
 
 .btn-secondary {
   padding: 5px 15px;
-  background-image: linear-gradient(to right, #8b5cf6, #10b981, #1e3a8a, #8b5cf6);
+  background-image: linear-gradient(
+    to right,
+    #8b5cf6,
+    #10b981,
+    #1e3a8a,
+    #8b5cf6
+  );
   font-weight: 600;
   color: #ffffff;
   cursor: pointer;
@@ -151,4 +175,18 @@ body {
   background-position: 150% 0;
   moz-transition: all 0.6s ease-in-out;
   transition: all 0.6s ease-in-out;
-}/*# sourceMappingURL=main.css.map */
+} /*# sourceMappingURL=main.css.map */ /* SearchModal.css */
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide {
+  animation: fadeSlideUp 0.3s ease-out;
+}

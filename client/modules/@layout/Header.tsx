@@ -11,6 +11,7 @@ import SearchAnt from "../@common/search/antdSearch";
 import ProfileAvater from "../@common/ProfileAvater";
 import NavBar from "./Navbar";
 import { usePathname } from "next/navigation"; // ✅ import pathname hook
+import { FaPlus } from "react-icons/fa";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -62,13 +63,19 @@ const Header = () => {
               </Link>
             </div>
             <NavBar />
-            <div className="flex items-center justify-end gap-2 lg:gap-4 rounded">
+            <div className="flex items-center justify-end gap-2 lg:gap-4 rounded w-full">
               <div className="flex items-center gap-3 justify-center">
-                <div className="hidden lg:flex">
-                  <SearchAnt />
-                </div>
+                <div className="hidden lg:flex"></div>
+
                 <ProfileAvater />
                 <ThemeToggleButton />
+                <Link href={"/add-review"}>
+                  <button className=" h-[32px] btn-primary font-normal text-white rounded hover:bg-red-700 focus:outline-none focus:ring-1 focus:ring-green-500 flex justify-center items-center gap-2 transition-all text-[12px]">
+                    <FaPlus /> ADD REVIEW
+                  </button>
+                </Link>
+
+                <SearchAnt />
               </div>
             </div>
           </div>

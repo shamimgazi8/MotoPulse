@@ -47,6 +47,7 @@ const ProfileAvater = () => {
     setUser(null);
     setOpen(false);
     console.log("User logged out");
+    window.location.href = "/users/login";
   };
 
   const handleLogin = () => {
@@ -97,7 +98,7 @@ const ProfileAvater = () => {
       >
         <a className="cursor-pointer" onClick={(e) => e.preventDefault()}>
           <Space className="flex justify-center items-center">
-            <CgProfile className="text-[25px]" />
+            <CgProfile className="text-[28px]" />
           </Space>
         </a>
       </Popover>
