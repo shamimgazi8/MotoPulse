@@ -6,6 +6,7 @@ import modelRoutes from "./model"; // Import model routes
 import bikeTypeRoutes from "./biketypes"; // Import bike type routes
 import bikeListRoutes from "./bikeList"; // Import bike list routes
 import reviewRoutes from "./review";
+import reviewLike from "./reviewLike";
 const router = Router();
 
 // Existing routes
@@ -17,6 +18,10 @@ router.use("/brands", brandRoutes); // Route for brand
 router.use("/models", modelRoutes); // Route for model
 router.use("/bikeTypes", bikeTypeRoutes); // Route for bike types
 router.use("/bikeLists", bikeListRoutes); // Route for bike lists
-router.use("/reviews", reviewRoutes); // <-- regi
+router.use("/reviews", reviewRoutes); //
+router.use("/like", reviewLike); //
+// router.use("/like", (req, res) => {
+//   res.json("hello worl");
+// }); //
 
 export default router;
