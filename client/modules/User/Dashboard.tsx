@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie"; // Assuming token is stored in cookies
-import { cookies } from "next/headers";
 
 type UserProfile = {
   id: number;
@@ -126,7 +125,11 @@ const DashboardProfile = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   if (!user) {
