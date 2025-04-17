@@ -1,19 +1,12 @@
 "use client";
-
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { Select, Upload, Button, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import Cookies from "js-cookie";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
-
+import { jwtDecode } from "jwt-decode";
 const { Option } = Select;
-
-const mockBrands = [
-  { id: 1, name: "Yamaha" },
-  { id: 2, name: "Honda" },
-  { id: 3, name: "Kawasaki" },
-];
 
 const mockModels = [
   { id: 1, name: "R15", brandId: 1 },
@@ -28,7 +21,7 @@ const mockTypes = [
 ];
 
 const BikeReviewForm = () => {
-  const [brandOptions, setBrandOptions] = useState(mockBrands);
+  const [brandOptions, setBrandOptions] = useState<any[]>([]);
   const [modelOptions, setModelOptions] = useState(mockModels);
   const [typeOptions, setTypeOptions] = useState(mockTypes);
 
@@ -74,12 +67,12 @@ const BikeReviewForm = () => {
     }, 3000);
   };
 
-  const handleAddBrand = () => {
+  const handleAddBrand = async () => {
     const trimmedName = newBrandName.trim();
     if (trimmedName === "") return;
 
     const isDuplicate = brandOptions.some(
-      (brand) => brand.name.toLowerCase() === trimmedName.toLowerCase()
+      (brand) => brand.brandName?.toLowerCase() === trimmedName.toLowerCase()
     );
 
     if (isDuplicate) {
@@ -87,15 +80,50 @@ const BikeReviewForm = () => {
       return;
     }
 
-    const newId = brandOptions.length + 1;
-    const newBrand = { id: newId, name: trimmedName };
-    setBrandOptions([...brandOptions, newBrand]);
-    setBrandId(newId);
-    setNewBrandName("");
-    setIsAddingBrand(false);
-    showToast("Brand added successfully!", "success");
-  };
+    const token = Cookies.get("token"); // Retrieve the token from cookies
+    if (!token) {
+      showToast("You must be logged in to add a brand.", "error");
+      return;
+    }
 
+    // Decode the token to extract user_id
+    const decodedToken: any = jwtDecode(token);
+
+    const userId = decodedToken?.id;
+
+    if (!userId) {
+      showToast("User ID is missing in token.", "error");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:4000/brands", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Send the token in Authorization header
+        },
+        body: JSON.stringify({
+          brandName: trimmedName,
+          user_id: userId, // Send the user_id in the request body
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add brand");
+      }
+
+      const newBrand = await response.json();
+      setBrandOptions([...brandOptions, newBrand]);
+      setBrandId(newBrand.id);
+      setNewBrandName("");
+      setIsAddingBrand(false);
+      showToast("Brand added successfully!", "success");
+    } catch (error) {
+      console.error("Error adding brand:", error);
+      showToast("Error adding brand", "error");
+    }
+  };
   const handleAddModel = () => {
     const trimmedName = newModelName.trim();
     if (trimmedName === "" || !brandId) return;
@@ -172,6 +200,23 @@ const BikeReviewForm = () => {
 
   const filteredModels = modelOptions.filter((m) => m.brandId === brandId);
 
+  // Fetch brands from API on mount
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/brands");
+        const data = await response.json();
+        console.log(data, "data from brand");
+        setBrandOptions(data);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+        showToast("Failed to load brands", "error");
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-8 dark:text-white relative">
       <form
@@ -233,7 +278,7 @@ const BikeReviewForm = () => {
             >
               {brandOptions.map((brand) => (
                 <Option key={brand.id} value={brand.id}>
-                  {brand.name}
+                  {brand.brandName}
                 </Option>
               ))}
             </Select>

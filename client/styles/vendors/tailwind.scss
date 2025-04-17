@@ -120,3 +120,34 @@ body {
 .form-container {
   transition: all 0.5s ease-in-out; /* Adjust transition duration and easing as needed */
 }
+/* fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* bounce-slow animation */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Usage of animations */
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.bounce-slow {
+  animation: bounce 2.5s infinite;
+}

@@ -1,5 +1,5 @@
-import Footer from '@/modules/@layout/Footer';
-import Header from '@/modules/@layout/Header';
+import Footer from "@/modules/@layout/Footer";
+import Header from "@/modules/@layout/Header";
 
 export default function FrontendLayout({
   children,
