@@ -16,7 +16,7 @@ export const getAllModels = async (_req: Request, res: Response) => {
     res.json({ count: models?.length, result: models });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch models" });
+    res.status(500).json({ error: "Server Error🚫" });
   }
 };
 

@@ -30,6 +30,23 @@ export const createBike = async (req: Request, res: Response) => {
   } = req.body;
 
   try {
+    // Check if bike already exists
+    const existingBike = await BikeList.findOne({
+      where: {
+        brand_id,
+        model_id,
+        bike_type_id,
+      },
+    });
+
+    // If it exists, return it instead of creating a new one
+    if (existingBike) {
+      return res
+        .status(200)
+        .json({ bike: existingBike, message: "Bike already exists" });
+    }
+
+    // Otherwise, create a new one
     const bike = await BikeList.create({
       brand_id,
       model_id,

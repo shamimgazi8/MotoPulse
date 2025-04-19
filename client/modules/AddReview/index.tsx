@@ -149,7 +149,7 @@ const BikeReviewForm = () => {
     showToast("Model added successfully!", "success");
   };
 
-  const handleAddType = () => {
+  const handleAddType = async () => {
     const trimmedName = newTypeName.trim();
     if (trimmedName === "") return;
 
@@ -161,14 +161,42 @@ const BikeReviewForm = () => {
       showToast(`"${trimmedName}" already exists in the list.`, "error");
       return;
     }
+    const token = Cookies.get("token"); // Retrieve the token from cookies
+    if (!token) {
+      showToast("You must be logged in to add a brand.", "error");
+      return;
+    }
 
-    const newId = typeOptions.length + 1;
-    const newType = { id: newId, name: trimmedName };
-    setTypeOptions([...typeOptions, newType]);
-    setTypeId(newId);
-    setNewTypeName("");
-    setIsAddingType(false);
-    showToast("Type added successfully!", "success");
+    // Decode the token to extract user_id
+    const decodedToken: any = jwtDecode(token);
+
+    const userId = decodedToken?.id;
+    try {
+      const response = await fetch("http://localhost:4000/bikeTypes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Send the token in Authorization header
+        },
+        body: JSON.stringify({
+          name: trimmedName,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add bikeTypes");
+      }
+      const newId = typeOptions.length + 1;
+      const newType = { id: newId, name: trimmedName };
+      setTypeOptions([...typeOptions, newType]);
+      setTypeId(newId);
+      setNewTypeName("");
+      setIsAddingType(false);
+      showToast("Type added successfully!", "success");
+    } catch (error) {
+      console.error("Error adding brand:", error);
+      showToast("Error adding brand", "error");
+    }
   };
 
   const handleUploadChange = (info: any) => {
