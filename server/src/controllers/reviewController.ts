@@ -81,10 +81,9 @@ export const getAllReviews = async (req: Request, res: Response) => {
     });
   }
 };
-
 export const createReview = async (req: Request, res: Response) => {
   try {
-    const { bike_id, user_id, review, like_count } = req.body;
+    const { bike_id, user_id, review, like_count, coverPhoto } = req.body;
 
     // Check if the bike exists
     const bike = await BikeList.findByPk(bike_id);
@@ -98,11 +97,13 @@ export const createReview = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Create a new review with the coverPhoto field
     const newReview = await Review.create({
       bike_id,
       user_id,
       review,
       like_count: like_count ?? 0, // default to 0 if not provided
+      coverPhoto, // Include the coverPhoto in the review creation
     });
 
     res.status(201).json(newReview);

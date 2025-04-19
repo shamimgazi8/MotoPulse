@@ -9,6 +9,7 @@ interface ReviewAttributes {
   user_id: number;
   like_count: number;
   review: string;
+  coverPhoto?: string; // Optional field for the cover photo
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -24,6 +25,7 @@ class Review
   public user_id!: number;
   public like_count!: number;
   public review!: string;
+  public coverPhoto?: string; // Add coverPhoto property
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -51,6 +53,10 @@ Review.init(
     review: {
       type: DataTypes.TEXT,
       allowNull: false,
+    },
+    coverPhoto: {
+      type: DataTypes.STRING, // New field for cover photo URL
+      allowNull: true, // This can be nullable if not every review has a cover photo
     },
   },
   {
