@@ -2,9 +2,18 @@ import { Request, Response } from "express";
 import BikeList from "../models/BikeList";
 
 // Get all bikes from the database
-export const getAllBikes = async (_req: Request, res: Response) => {
+export const getAllBikes = async (req: Request, res: Response) => {
   try {
+    const { brandId, modelId, typeId } = req.query;
+
+    // Construct dynamic filter object
+    const whereClause: any = {};
+    if (brandId) whereClause.brand_id = brandId;
+    if (modelId) whereClause.model_id = modelId;
+    if (typeId) whereClause.bike_type_id = typeId;
+
     const bikes = await BikeList.findAll({
+      where: whereClause,
       attributes: {
         exclude: ["brand_id", "model_id", "bike_type_id"],
       },
