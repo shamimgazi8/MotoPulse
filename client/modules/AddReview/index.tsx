@@ -9,18 +9,6 @@ import { getUserIdFromToken } from "@/utils/utils";
 
 const { Option } = Select;
 
-// const mockModels = [
-//   { id: 1, name: "R15", brand_id: 1 },
-//   { id: 2, name: "CBR500R", brand_id: 2 },
-//   { id: 3, name: "Ninja 400", brand_id: 3 },
-// ];
-
-// const mockTypes = [
-//   { id: 1, name: "Sport" },
-//   { id: 2, name: "Cruiser" },
-//   { id: 3, name: "Touring" },
-// ];
-
 const BikeReviewForm = () => {
   const [getAllbike, setAllBike] = useState<any[]>([]);
   const [brandOptions, setBrandOptions] = useState<any[]>([]);
@@ -270,7 +258,7 @@ const BikeReviewForm = () => {
     const userId = getUserIdFromToken();
 
     const formData = {
-      bike_id: 3,
+      bike_id: bike_id,
       user_id: userId,
       review,
       like_count: 0,
