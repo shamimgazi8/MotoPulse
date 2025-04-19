@@ -40,7 +40,10 @@ const SearchAnt: React.FC = () => {
 
   return (
     <>
-      <button className="btn-primary rounded" onClick={showModal}>
+      <button
+        className="px-3 py-1.5 bg-black text-white hover:text-black hover:border-black  hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black rounded-lg dark:hover:bg-black dark:hover:text-white dark:hover:border-white"
+        onClick={showModal}
+      >
         <IoSearchOutline className="text-xl" />
       </button>
 

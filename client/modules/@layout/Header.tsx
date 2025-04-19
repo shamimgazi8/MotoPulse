@@ -11,7 +11,7 @@ import SearchAnt from "../@common/search/antdSearch";
 import ProfileAvater from "../@common/ProfileAvater";
 import NavBar from "./Navbar";
 import { usePathname } from "next/navigation"; // ✅ import pathname hook
-import { FaPlus } from "react-icons/fa";
+import { FaPen, FaPlus } from "react-icons/fa";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -70,8 +70,8 @@ const Header = () => {
                 <ProfileAvater />
                 <ThemeToggleButton />
                 <Link href={"/add-review"}>
-                  <button className=" h-[32px] btn-primary font-normal text-white rounded hover:bg-red-700 focus:outline-none focus:ring-1 focus:ring-green-500 flex justify-center items-center gap-2 transition-all text-[12px]">
-                    <FaPlus /> ADD REVIEW
+                  <button className="  px-3 py-1.5 bg-black text-white hover:text-black hover:border-black   hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black rounded-lg dark:hover:bg-black dark:hover:text-white dark:hover:border-white">
+                    <FaPen /> Write a Review
                   </button>
                 </Link>
 

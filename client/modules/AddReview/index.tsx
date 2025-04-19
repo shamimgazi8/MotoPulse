@@ -1,11 +1,26 @@
 "use client";
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import {
+  useState,
+  useEffect,
+  ChangeEvent,
+  FormEvent,
+  use,
+  useRef,
+} from "react";
 import { Select, Upload, Button, message } from "antd";
 import Cookies from "js-cookie";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { getUserIdFromToken } from "@/utils/utils";
+import CoverImageUpload, {
+  CoverImageUploadRef,
+} from "./components/UploadCover";
+import LoadingSpinner from "../@common/loading";
+import LoadingDots from "../@common/loading";
+import DualRingLoader from "../@common/loading";
+import DoneCheckmark from "../@common/DoneCheck";
+import ScrollToTopButton from "../home/@components/ScrollTopTobutton";
 
 const { Option } = Select;
 
@@ -24,10 +39,12 @@ const BikeReviewForm = () => {
   const [horsePower, setHorsePower] = useState("");
   const [weight, setWeight] = useState("");
   const [review, setReview] = useState("");
+  const [coverPhoto, setCoverPhoto] = useState<string | null>(null);
+  const uploadRef = useRef<CoverImageUploadRef>(null);
 
   const [isAddingBrand, setIsAddingBrand] = useState(false);
   const [newBrandName, setNewBrandName] = useState("");
-
+  const [restForm, setFormrest] = useState(false);
   const [isAddingModel, setIsAddingModel] = useState(false);
   const [newModelName, setNewModelName] = useState("");
   const [postSuccess, setPostSuccess] = useState(false);
@@ -48,14 +65,14 @@ const BikeReviewForm = () => {
     // Wait for next render before triggering animation
     setTimeout(() => {
       setShowToastAnimation(true);
-    }, 10); // tiny delay to ensure transition works
+    }, 20); // tiny delay to ensure transition works
 
     setTimeout(() => {
       setShowToastAnimation(false); // Start hide animation
       setTimeout(() => {
         setCustomToast(null); // Remove toast from DOM after animation
-      }, 500);
-    }, 3000);
+      }, 1000);
+    }, 6000);
   };
 
   const handleAddBrand = async () => {
@@ -201,17 +218,6 @@ const BikeReviewForm = () => {
     }
   };
 
-  const handleUploadChange = (info: any) => {
-    if (info.file.status === "done" || info.file.status === "uploading") {
-      const file = info.file.originFileObj;
-      if (file) {
-        setImage(file);
-      }
-    }
-  };
-  const handleReviewSubmit = async () => {
-    console.log("this is submitted");
-  };
   const handelAddNewBike = async () => {
     if (modelId && brand_id && typeId) {
       const newBike = {
@@ -240,14 +246,21 @@ const BikeReviewForm = () => {
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || "Failed to add bike");
+          showToast("Please fill the all Field to Add Bike", "error");
         }
 
         const responseData = await res.json();
-        setBike_id(responseData?.id);
+
         setPostSuccess(true);
-        console.log("Bike added successfully:", responseData);
+        console.log(
+          "Bike added successfully:",
+          responseData?.bike?.id,
+          responseData
+        );
+        setBike_id(responseData?.bike?.id);
       } catch (error: any) {
         console.error("Error adding bike:", error.message);
+        showToast("Please FillUp the all Field to Add Bike", "error");
       } finally {
         setIsPosting(false);
       }
@@ -261,6 +274,7 @@ const BikeReviewForm = () => {
       bike_id: bike_id,
       user_id: userId,
       review,
+      coverPhoto: coverPhoto,
       like_count: 0,
     };
 
@@ -283,6 +297,7 @@ const BikeReviewForm = () => {
       showToast("Review Submitted successfully", "success");
 
       // Reset form fields after successful submission
+      setFormrest(true);
       setbrand_id(null); // Reset brand_id
       setModelId(null); // Reset modelId
       setTypeId(null); // Reset typeId
@@ -291,7 +306,8 @@ const BikeReviewForm = () => {
       setHorsePower(""); // Reset horsePower
       setWeight(""); // Reset weight
       setReview(""); // Reset review text
-      setImage(null); // Reset image if necessary
+      setCoverPhoto(null); // Reset image if necessary
+      uploadRef.current?.reset();
     } catch (error: any) {
       console.error("Error submitting review:", error.message);
       showToast("Error submitting review", "error");
@@ -317,10 +333,6 @@ const BikeReviewForm = () => {
         const brandsData = await brandsRes.json();
         const modelsData = await modelsRes.json();
         const typesData = await typeRes.json();
-
-        console.log(brandsData, "data from brand");
-        console.log(modelsData?.result, "model data");
-        console.log(typesData?.result, "typesData data");
 
         setBrandOptions(brandsData);
         setModelOptions(modelsData?.result);
@@ -369,8 +381,9 @@ const BikeReviewForm = () => {
       setWeight(getAllbike[0].weight || "");
       setTorque(getAllbike[0].torque || "");
       setHorsePower(getAllbike[0].horsePower || "");
+      console.log(getAllbike[0]?.id, "getAllbike[0]?.id");
+      setBike_id(getAllbike[0]?.id);
     } else {
-      console.log("Clearing all fields");
       setEngineCapacity("");
       setWeight("");
       setTorque("");
@@ -553,30 +566,22 @@ const BikeReviewForm = () => {
               ))}
             </Select>
           </div>
-
-          {/* Cover Image */}
           <div>
             <label className="block mb-1 text-sm font-medium">
-              Cover Image
+              Weight (kg)
             </label>
-            <Upload
-              beforeUpload={() => false}
-              onChange={handleUploadChange}
-              maxCount={1}
-              showUploadList={{ showPreviewIcon: false }}
-            >
-              <Button icon={<FaCloudUploadAlt />}>Click to Upload</Button>
-            </Upload>
-            {image && (
-              <p className="mt-2 text-sm text-gray-500">
-                Selected: {image.name}
-              </p>
-            )}
+            <input
+              type="text"
+              className="w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              required
+            />
           </div>
         </div>
 
         {/* Specs */}
-        <div className="grid grid-cols-2 gap-4 border-b-[2px] border-gray-300 pb-5">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block mb-1 text-sm font-medium">
               Engine Capacity (cc)
@@ -613,31 +618,38 @@ const BikeReviewForm = () => {
               required
             />
           </div>
-          <div>
-            <label className="block mb-1 text-sm font-medium">
-              Weight (kg)
-            </label>
-            <input
-              type="text"
-              className="w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              required
-            />
-          </div>
-          {getAllbike?.length == 0 && (
+
+          {getAllbike?.length == 0 && brand_id && modelId && typeId && (
             <button
               type="button"
               onClick={handelAddNewBike}
-              className=" btn-primary"
+              className={`px-2 py-1 border-[2px] rounded focus:outline-none flex justify-center items-center gap-2 transition-all h-[40px] mt-6
+                ${
+                  postSuccess
+                    ? "bg-white text-black border-black hover:bg-black hover:text-white"
+                    : "bg-black text-white border-black hover:bg-white hover:text-black"
+                }
+              `}
             >
-              {isPosting
-                ? "Loading..."
-                : postSuccess
-                  ? "Done."
-                  : "Add this bike to write review"}
+              {isPosting ? (
+                <LoadingDots center color="bg-white" size={20} />
+              ) : postSuccess ? (
+                <DoneCheckmark />
+              ) : (
+                "ADD BIKE"
+              )}
             </button>
           )}
+        </div>
+        {/* Cover Image */}
+        <div className=" w-full flex justify-center items-center  border-b-[2px] border-gray-300 pb-5">
+          <CoverImageUpload
+            onUploadSuccess={(url) => {
+              setCoverPhoto(url);
+              console.log("Uploaded image URL:", url);
+              // save it in form state or send with form submission
+            }}
+          />
         </div>
 
         {/* Review */}
@@ -653,8 +665,10 @@ const BikeReviewForm = () => {
         </div>
 
         {/* Submit */}
-        <div className="text-right">
-          <button className="btn-primary">Submit Review</button>
+        <div className="text-right flex justify-end items-end">
+          <button className="mt-4 px-4 py-2 bg-black text-white hover:text-black hover:border-black border-[2px]  hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all rounded-lg">
+            Submit Review
+          </button>
         </div>
       </form>
 
@@ -669,6 +683,7 @@ const BikeReviewForm = () => {
           {customToast.message}
         </div>
       )}
+      <ScrollToTopButton />
     </div>
   );
 };

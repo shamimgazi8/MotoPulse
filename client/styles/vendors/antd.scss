@@ -74,3 +74,26 @@
 :where(.css-dev-only-do-not-override-d2lrxs).ant-modal .ant-modal-title {
   color: white;
 }
+:where(.css-dev-only-do-not-override-1261szd).ant-select-single {
+  height: 45px;
+}
+:where(.css-dev-only-do-not-override-1261szd).ant-btn-variant-outlined,
+:where(.css-dev-only-do-not-override-1261szd).ant-btn-variant-dashed {
+  height: 42px;
+  width: 495px;
+}
+:where(.css-dev-only-do-not-override-1261szd).ant-upload-wrapper
+  .ant-upload-list
+  .ant-upload-list-item
+  .ant-upload-list-item-name {
+  align-items: center;
+}
+:where(.css-dev-only-do-not-override-1261szd).ant-btn-variant-outlined:not(
+    :disabled
+  ):not(.ant-btn-disabled):hover,
+:where(.css-dev-only-do-not-override-1261szd).ant-btn-variant-dashed:not(
+    :disabled
+  ):not(.ant-btn-disabled):hover {
+  color: #22c55e9f;
+  border-color: #22c55ec1;
+}
