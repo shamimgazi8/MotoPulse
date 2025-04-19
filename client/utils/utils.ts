@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 // Remove HTML tags from a string
 export const remove_tags = (_html: any) => {
   const html = String(_html || "");
@@ -24,3 +26,15 @@ export function capitalizeFirstLetter(input: any) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export const getUserIdFromToken = () => {
+  const token = Cookies.get("token");
+  if (!token) return null;
+
+  try {
+    const decoded: any = jwtDecode(token);
+    return decoded?.id || null;
+  } catch {
+    return null;
+  }
+};

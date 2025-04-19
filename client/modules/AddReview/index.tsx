@@ -5,23 +5,24 @@ import Cookies from "js-cookie";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
-import { jwtDecode } from "jwt-decode";
+import { getUserIdFromToken } from "@/utils/utils";
 
 const { Option } = Select;
 
-const mockModels = [
-  { id: 1, name: "R15", brand_id: 1 },
-  { id: 2, name: "CBR500R", brand_id: 2 },
-  { id: 3, name: "Ninja 400", brand_id: 3 },
-];
+// const mockModels = [
+//   { id: 1, name: "R15", brand_id: 1 },
+//   { id: 2, name: "CBR500R", brand_id: 2 },
+//   { id: 3, name: "Ninja 400", brand_id: 3 },
+// ];
 
-const mockTypes = [
-  { id: 1, name: "Sport" },
-  { id: 2, name: "Cruiser" },
-  { id: 3, name: "Touring" },
-];
+// const mockTypes = [
+//   { id: 1, name: "Sport" },
+//   { id: 2, name: "Cruiser" },
+//   { id: 3, name: "Touring" },
+// ];
 
 const BikeReviewForm = () => {
+  const [getAllbike, setAllBike] = useState<any[]>([]);
   const [brandOptions, setBrandOptions] = useState<any[]>([]);
   const [modelOptions, setModelOptions] = useState<any[]>([]);
   const [typeOptions, setTypeOptions] = useState<any[]>([]);
@@ -41,17 +42,18 @@ const BikeReviewForm = () => {
 
   const [isAddingModel, setIsAddingModel] = useState(false);
   const [newModelName, setNewModelName] = useState("");
-
+  const [postSuccess, setPostSuccess] = useState(false);
   const [isAddingType, setIsAddingType] = useState(false);
   const [newTypeName, setNewTypeName] = useState("");
-
+  const [isPosting, setIsPosting] = useState(false);
+  const [bike_id, setBike_id] = useState(0);
   const [customToast, setCustomToast] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
 
   const [showToastAnimation, setShowToastAnimation] = useState(false);
-
+  const token = Cookies.get("token");
   const showToast = (message: string, type: "success" | "error") => {
     setCustomToast({ message, type });
 
@@ -81,16 +83,7 @@ const BikeReviewForm = () => {
       return;
     }
 
-    const token = Cookies.get("token"); // Retrieve the token from cookies
-    if (!token) {
-      showToast("You must be logged in to add a brand.", "error");
-      return;
-    }
-
-    // Decode the token to extract user_id
-    const decodedToken: any = jwtDecode(token);
-
-    const userId = decodedToken?.id;
+    const userId = getUserIdFromToken();
 
     if (!userId) {
       showToast("User ID is missing in token.", "error");
@@ -125,13 +118,14 @@ const BikeReviewForm = () => {
       showToast("Error adding brand", "error");
     }
   };
-  const handleAddModel = () => {
+  const handleAddModel = async () => {
     const trimmedName = newModelName.trim();
+    console.log(trimmedName);
     if (trimmedName === "" || !brand_id) return;
 
     const isDuplicate = modelOptions.some(
       (model) =>
-        model.name.toLowerCase() === trimmedName.toLowerCase() &&
+        model?.name?.toLowerCase?.() === trimmedName.toLowerCase() &&
         model.brand_id === brand_id
     );
 
@@ -139,14 +133,43 @@ const BikeReviewForm = () => {
       showToast(`"${trimmedName}" already exists for this brand.`, "error");
       return;
     }
+    const userId = getUserIdFromToken();
+    if (!userId) {
+      showToast("User ID is missing in token.", "error");
+      return;
+    }
 
-    const newId = modelOptions.length + 1;
-    const newModel = { id: newId, name: trimmedName, brand_id };
-    setModelOptions([...modelOptions, newModel]);
-    setModelId(newId);
-    setNewModelName("");
-    setIsAddingModel(false);
-    showToast("Model added successfully!", "success");
+    try {
+      const response = await fetch("http://localhost:4000/models", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          modelName: trimmedName,
+          brand_id,
+          manufacturer: "bd",
+          year: 11,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add brand");
+      }
+
+      const createdModel = await response.json(); // get model from backend
+
+      setModelOptions([...modelOptions, createdModel]);
+      setModelId(createdModel.id);
+
+      setNewModelName("");
+      setIsAddingModel(false);
+      showToast("Model added successfully!", "success");
+    } catch (error) {
+      console.error("Error adding brand:", error);
+      showToast("Error adding brand", "error");
+    }
   };
 
   const handleAddType = async () => {
@@ -161,16 +184,7 @@ const BikeReviewForm = () => {
       showToast(`"${trimmedName}" already exists in the list.`, "error");
       return;
     }
-    const token = Cookies.get("token"); // Retrieve the token from cookies
-    if (!token) {
-      showToast("You must be logged in to add a brand.", "error");
-      return;
-    }
 
-    // Decode the token to extract user_id
-    const decodedToken: any = jwtDecode(token);
-
-    const userId = decodedToken?.id;
     try {
       const response = await fetch("http://localhost:4000/bikeTypes", {
         method: "POST",
@@ -207,24 +221,93 @@ const BikeReviewForm = () => {
       }
     }
   };
+  const handleReviewSubmit = async () => {
+    console.log("this is submitted");
+  };
+  const handelAddNewBike = async () => {
+    if (modelId && brand_id && typeId) {
+      const newBike = {
+        brand_id: brand_id,
+        model_id: modelId,
+        bike_type_id: typeId,
+        imgUrl: "null",
+        engineCC: engineCapacity,
+        horsePower: horsePower,
+        torque: torque,
+        weight: weight,
+      };
+      const userId = getUserIdFromToken();
+      if (!userId) return new Error("Permission denied!!");
+      try {
+        setIsPosting(true);
+        const res = await fetch("http://localhost:4000/bikeLists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newBike),
+        });
 
-  const handleSubmit = (e: FormEvent) => {
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to add bike");
+        }
+
+        const responseData = await res.json();
+        setBike_id(responseData?.id);
+        setPostSuccess(true);
+        console.log("Bike added successfully:", responseData);
+      } catch (error: any) {
+        console.error("Error adding bike:", error.message);
+      } finally {
+        setIsPosting(false);
+      }
+    }
+  };
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const userId = getUserIdFromToken();
 
     const formData = {
-      brand_id,
-      modelId,
-      typeId,
-      engineCapacity,
-      torque,
-      horsePower,
-      weight,
+      bike_id: 3,
+      user_id: userId,
       review,
-      image,
+      like_count: 0,
     };
 
-    console.log("Submitted Data:", formData);
-    message.success("Review submitted (see console for now)");
+    try {
+      const response = await fetch("http://localhost:4000/reviews/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit review");
+      }
+
+      const responseData = await response.json();
+      console.log("Review submitted successfully:", responseData);
+      showToast("Review Submitted successfully", "success");
+
+      // Reset form fields after successful submission
+      setbrand_id(null); // Reset brand_id
+      setModelId(null); // Reset modelId
+      setTypeId(null); // Reset typeId
+      setEngineCapacity(""); // Reset engineCapacity
+      setTorque(""); // Reset torque
+      setHorsePower(""); // Reset horsePower
+      setWeight(""); // Reset weight
+      setReview(""); // Reset review text
+      setImage(null); // Reset image if necessary
+    } catch (error: any) {
+      console.error("Error submitting review:", error.message);
+      showToast("Error submitting review", "error");
+    }
   };
 
   const filteredModels = modelOptions.filter((m) => m.brand_id === brand_id);
@@ -262,6 +345,50 @@ const BikeReviewForm = () => {
 
     fetchData();
   }, []);
+  const fetchData = async () => {
+    try {
+      const [allBikeRes] = await Promise.all([
+        fetch(
+          `http://localhost:4000/bikeLists?brandId=${brand_id}&modelId=${modelId ?? 0}&typeId=${typeId ?? 0}`
+        ),
+      ]);
+
+      if (!allBikeRes.ok) {
+        throw new Error("One or more requests failed");
+      }
+
+      const allbikeList = await allBikeRes.json();
+
+      console.log(allbikeList?.result, "allbikeList data");
+
+      setAllBike(allbikeList?.result);
+      setBike_id(allbikeList[0]?.id);
+    } catch (error) {
+      console.error("Error fetching allBikes:", error);
+      showToast("Failed to load allBikes", "error");
+    }
+  };
+  useEffect(() => {
+    if (brand_id || modelId || typeId) {
+      fetchData();
+    }
+  }, [brand_id, modelId, typeId]);
+
+  useEffect(() => {
+    if (getAllbike && getAllbike.length > 0) {
+      console.log("im  reset the field ");
+      setEngineCapacity(getAllbike[0].engineCC || "");
+      setWeight(getAllbike[0].weight || "");
+      setTorque(getAllbike[0].torque || "");
+      setHorsePower(getAllbike[0].horsePower || "");
+    } else {
+      console.log("Clearing all fields");
+      setEngineCapacity("");
+      setWeight("");
+      setTorque("");
+      setHorsePower("");
+    }
+  }, [getAllbike]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-8 dark:text-white relative">
@@ -273,7 +400,7 @@ const BikeReviewForm = () => {
           Add a Bike Review
         </h2>
 
-        <div className="grid grid-cols-2 gap-5 mb-5 border-b-[2px] border-gray-300 pb-5">
+        <div className="grid grid-cols-2 gap-5 mb-5 ">
           {/* Brand */}
           <div>
             <label className="block mb-1 text-sm font-medium">Brand</label>
@@ -284,6 +411,7 @@ const BikeReviewForm = () => {
               onChange={(value) => {
                 setbrand_id(value);
                 setModelId(null);
+                setTypeId(null);
               }}
               dropdownRender={(menu) => (
                 <>
@@ -337,7 +465,9 @@ const BikeReviewForm = () => {
               placeholder="Select Model"
               className="w-full   rounded-md"
               value={modelId ?? undefined}
-              onChange={(value) => setModelId(value)}
+              onChange={(value) => {
+                setModelId(value);
+              }}
               disabled={!brand_id}
               dropdownRender={(menu) => (
                 <>
@@ -391,7 +521,9 @@ const BikeReviewForm = () => {
               placeholder="Select Type"
               className="w-full  rounded-md"
               value={typeId ?? undefined}
-              onChange={(value) => setTypeId(value)}
+              onChange={(value) => {
+                setTypeId(value);
+              }}
               dropdownRender={(menu) => (
                 <>
                   {menu}
@@ -456,7 +588,7 @@ const BikeReviewForm = () => {
         </div>
 
         {/* Specs */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 border-b-[2px] border-gray-300 pb-5">
           <div>
             <label className="block mb-1 text-sm font-medium">
               Engine Capacity (cc)
@@ -505,6 +637,19 @@ const BikeReviewForm = () => {
               required
             />
           </div>
+          {getAllbike?.length == 0 && (
+            <button
+              type="button"
+              onClick={handelAddNewBike}
+              className=" btn-primary"
+            >
+              {isPosting
+                ? "Loading..."
+                : postSuccess
+                  ? "Done."
+                  : "Add this bike to write review"}
+            </button>
+          )}
         </div>
 
         {/* Review */}
