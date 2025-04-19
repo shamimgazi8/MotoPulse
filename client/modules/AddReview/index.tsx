@@ -6,12 +6,13 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { jwtDecode } from "jwt-decode";
+
 const { Option } = Select;
 
 const mockModels = [
-  { id: 1, name: "R15", brandId: 1 },
-  { id: 2, name: "CBR500R", brandId: 2 },
-  { id: 3, name: "Ninja 400", brandId: 3 },
+  { id: 1, name: "R15", brand_id: 1 },
+  { id: 2, name: "CBR500R", brand_id: 2 },
+  { id: 3, name: "Ninja 400", brand_id: 3 },
 ];
 
 const mockTypes = [
@@ -22,10 +23,10 @@ const mockTypes = [
 
 const BikeReviewForm = () => {
   const [brandOptions, setBrandOptions] = useState<any[]>([]);
-  const [modelOptions, setModelOptions] = useState(mockModels);
-  const [typeOptions, setTypeOptions] = useState(mockTypes);
+  const [modelOptions, setModelOptions] = useState<any[]>([]);
+  const [typeOptions, setTypeOptions] = useState<any[]>([]);
 
-  const [brandId, setBrandId] = useState<number | null>(null);
+  const [brand_id, setbrand_id] = useState<number | null>(null);
   const [modelId, setModelId] = useState<number | null>(null);
   const [typeId, setTypeId] = useState<number | null>(null);
   const [image, setImage] = useState<File | null>(null);
@@ -115,7 +116,7 @@ const BikeReviewForm = () => {
 
       const newBrand = await response.json();
       setBrandOptions([...brandOptions, newBrand]);
-      setBrandId(newBrand.id);
+      setbrand_id(newBrand.id);
       setNewBrandName("");
       setIsAddingBrand(false);
       showToast("Brand added successfully!", "success");
@@ -126,12 +127,12 @@ const BikeReviewForm = () => {
   };
   const handleAddModel = () => {
     const trimmedName = newModelName.trim();
-    if (trimmedName === "" || !brandId) return;
+    if (trimmedName === "" || !brand_id) return;
 
     const isDuplicate = modelOptions.some(
       (model) =>
         model.name.toLowerCase() === trimmedName.toLowerCase() &&
-        model.brandId === brandId
+        model.brand_id === brand_id
     );
 
     if (isDuplicate) {
@@ -140,7 +141,7 @@ const BikeReviewForm = () => {
     }
 
     const newId = modelOptions.length + 1;
-    const newModel = { id: newId, name: trimmedName, brandId };
+    const newModel = { id: newId, name: trimmedName, brand_id };
     setModelOptions([...modelOptions, newModel]);
     setModelId(newId);
     setNewModelName("");
@@ -183,7 +184,7 @@ const BikeReviewForm = () => {
     e.preventDefault();
 
     const formData = {
-      brandId,
+      brand_id,
       modelId,
       typeId,
       engineCapacity,
@@ -198,23 +199,40 @@ const BikeReviewForm = () => {
     message.success("Review submitted (see console for now)");
   };
 
-  const filteredModels = modelOptions.filter((m) => m.brandId === brandId);
+  const filteredModels = modelOptions.filter((m) => m.brand_id === brand_id);
 
   // Fetch brands from API on mount
   useEffect(() => {
-    const fetchBrands = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:4000/brands");
-        const data = await response.json();
-        console.log(data, "data from brand");
-        setBrandOptions(data);
+        const [brandsRes, modelsRes, typeRes] = await Promise.all([
+          fetch("http://localhost:4000/brands"),
+          fetch("http://localhost:4000/models"),
+          fetch("http://localhost:4000/bikeTypes"),
+        ]);
+
+        if (!brandsRes.ok || !modelsRes.ok || !typeRes.ok) {
+          throw new Error("One or more requests failed");
+        }
+
+        const brandsData = await brandsRes.json();
+        const modelsData = await modelsRes.json();
+        const typesData = await typeRes.json();
+
+        console.log(brandsData, "data from brand");
+        console.log(modelsData?.result, "model data");
+        console.log(typesData?.result, "typesData data");
+
+        setBrandOptions(brandsData);
+        setModelOptions(modelsData?.result);
+        setTypeOptions(typesData?.result);
       } catch (error) {
-        console.error("Error fetching brands:", error);
-        showToast("Failed to load brands", "error");
+        console.error("Error fetching brands or models:", error);
+        showToast("Failed to load brand and model data", "error");
       }
     };
 
-    fetchBrands();
+    fetchData();
   }, []);
 
   return (
@@ -234,9 +252,9 @@ const BikeReviewForm = () => {
             <Select
               placeholder="Select Brand"
               className="w-full   rounded-md"
-              value={brandId ?? undefined}
+              value={brand_id ?? undefined}
               onChange={(value) => {
-                setBrandId(value);
+                setbrand_id(value);
                 setModelId(null);
               }}
               dropdownRender={(menu) => (
@@ -292,7 +310,7 @@ const BikeReviewForm = () => {
               className="w-full   rounded-md"
               value={modelId ?? undefined}
               onChange={(value) => setModelId(value)}
-              disabled={!brandId}
+              disabled={!brand_id}
               dropdownRender={(menu) => (
                 <>
                   {menu}
@@ -332,7 +350,7 @@ const BikeReviewForm = () => {
             >
               {filteredModels.map((model) => (
                 <Option key={model.id} value={model.id}>
-                  {model.name}
+                  {model?.modelName}
                 </Option>
               ))}
             </Select>
