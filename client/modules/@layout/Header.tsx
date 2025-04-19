@@ -20,6 +20,7 @@ const Header = () => {
   const [selected, setSelected] = useState(null);
 
   const pathname = usePathname(); // ✅ get current route
+  console.log(pathname, "pathhhh");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,11 +70,40 @@ const Header = () => {
 
                 <ProfileAvater />
                 <ThemeToggleButton />
-                <Link href={"/add-review"}>
-                  <button className="  px-3 py-1.5 bg-black text-white hover:text-black hover:border-black   hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black rounded-lg dark:hover:bg-black dark:hover:text-white dark:hover:border-white">
-                    <FaPen /> Write a Review
+                {pathname === "/add-review" ? (
+                  <button className="text-[12px] mb-0 bg-white dark:bg-black text-black px-3 py-1.5 dark:text-white font-medium rounded-lg shadow-xl relative overflow-hidden min-w-[150px] ">
+                    <span
+                      className="fade-text inline-block overflow-hidden whitespace-nowrap translate-y-[2px]"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {"Happy To See You Writting"}
+                    </span>
+
+                    <style jsx>{`
+                      @keyframes fadeInOut {
+                        0% {
+                          opacity: 0;
+                        }
+                        50% {
+                          opacity: 1;
+                        }
+                        100% {
+                          opacity: 0;
+                        }
+                      }
+
+                      .fade-text {
+                        animation: fadeInOut 4s ease-in-out infinite;
+                      }
+                    `}</style>
                   </button>
-                </Link>
+                ) : (
+                  <Link href={"/add-review"}>
+                    <button className="  px-3 py-1.5 bg-black text-white hover:text-black hover:border-black   hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black rounded-lg dark:hover:bg-black dark:hover:text-white dark:hover:border-white border-[1px] ">
+                      <FaPen /> Write a Review
+                    </button>
+                  </Link>
+                )}
 
                 <SearchAnt />
               </div>

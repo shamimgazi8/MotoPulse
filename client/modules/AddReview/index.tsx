@@ -1,24 +1,14 @@
 "use client";
-import {
-  useState,
-  useEffect,
-  ChangeEvent,
-  FormEvent,
-  use,
-  useRef,
-} from "react";
+import { useState, useEffect, FormEvent, use, useRef } from "react";
 import { Select, Upload, Button, message } from "antd";
 import Cookies from "js-cookie";
-import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { getUserIdFromToken } from "@/utils/utils";
 import CoverImageUpload, {
   CoverImageUploadRef,
 } from "./components/UploadCover";
-import LoadingSpinner from "../@common/loading";
 import LoadingDots from "../@common/loading";
-import DualRingLoader from "../@common/loading";
 import DoneCheckmark from "../@common/DoneCheck";
 import ScrollToTopButton from "../home/@components/ScrollTopTobutton";
 
@@ -33,7 +23,6 @@ const BikeReviewForm = () => {
   const [brand_id, setbrand_id] = useState<number | null>(null);
   const [modelId, setModelId] = useState<number | null>(null);
   const [typeId, setTypeId] = useState<number | null>(null);
-  const [image, setImage] = useState<File | null>(null);
   const [engineCapacity, setEngineCapacity] = useState("");
   const [torque, setTorque] = useState("");
   const [horsePower, setHorsePower] = useState("");
@@ -397,9 +386,11 @@ const BikeReviewForm = () => {
         onSubmit={handleSubmit}
         className="max-w-2xl mx-auto p-8 bg-white dark:bg-black shadow-xl rounded-xl space-y-6"
       >
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Add a Bike Review
-        </h2>
+        <div className=" flex justify-center items-center">
+          <h2 className="text-[30px] font-bold text-gray-800 dark:text-white gradient-text text-center leading-10 tracking-widest w-[60%] ">
+            Add a Bike Review
+          </h2>
+        </div>
 
         <div className="grid grid-cols-2 gap-5 mb-5 ">
           {/* Brand */}
