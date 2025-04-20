@@ -28,7 +28,7 @@ export const getAllReviews = async (req: Request, res: Response) => {
       include: [
         {
           model: User,
-          attributes: ["id", "firstname", "lastname", "email"],
+          attributes: ["id", "firstname", "lastname", "email", "profile_url"],
         },
         {
           model: BikeList,

@@ -1,5 +1,7 @@
+import SpacePage from "@/modules/specs";
+
 const Specs = () => {
-  return <>this is specs page</>;
+  return <SpacePage />;
 };
 
 export default Specs;

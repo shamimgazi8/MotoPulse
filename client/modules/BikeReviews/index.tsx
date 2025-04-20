@@ -1,49 +1,37 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import BlogCard from "../@common/universelCard.tsx";
-
 import ScrollToTopButton from "../home/@components/ScrollTopTobutton";
 
 const PAGE_SIZE = 5;
 
-const generateData = () => {
-  const bikes = [];
-  const types = ["Sport", "Cruiser", "Adventure", "Naked", "Touring"];
-  for (let i = 1; i <= 100; i++) {
-    const type = types[i % types.length];
-    bikes.push({
-      id: i,
-      name: `Bike Model ${i}`,
-      slug: `bike-model-${i}`,
-      description: `A description for Bike Model ${i}, a great ${type} motorcycle.`,
-      price: 5000 + i * 50,
-      imageUrl: `https://cdni.iconscout.com/illustration/premium/thumb/motorcycle-illustration-download-in-svg-png-gif-file-formats--vehicle-bike-transport-motorbike-pack-illustrations-8372440.png?f=webp`,
-      specs: {
-        engine: `${300 + i}cc ${type === "Cruiser" ? "V-Twin" : "inline-four"}`,
-        horsepower: `${50 + i * 2} HP`,
-        topSpeed: `${180 + i} km/h`,
-        weight: `${170 + i} kg`,
-      },
-      type,
-      publishedAt: `2024-${String(1 + (i % 12)).padStart(2, "0")}-${String(1 + (i % 28)).padStart(2, "0")}`,
-    });
-  }
-  return bikes;
-};
-
-const data = generateData();
-
 const BikeReviews = () => {
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState(data.slice(0, PAGE_SIZE));
+  const [items, setItems] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef(null);
 
   useEffect(() => {
-    setItems(data.slice(0, page * PAGE_SIZE));
-    setHasMore(page * PAGE_SIZE < data.length);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/reviews?page=${page}&limit=${PAGE_SIZE}`
+        );
+        const data = await response.json();
+
+        // Append new reviews
+        setItems((prevItems) => [...data?.result]);
+        setHasMore(items.length + data.result.length < data.count);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  console.log(items, "items");
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -71,20 +59,26 @@ const BikeReviews = () => {
   return (
     <div className="grid gap-6 grid-cols-1 p-4 w-full max-w-2xl mx-auto">
       <ScrollToTopButton />
-      {items.map((item) => (
+      {items.map((item: any) => (
         <BlogCard
           key={item.id}
           data={{
-            ...item,
-            highlight: item.type,
-            excerpt: item.description,
+            id: item?.id,
+            name: `${item?.User?.firstname} ${item?.User?.lastname}`,
+            profilePicture: item?.User?.profile_url,
+            excerpt: item?.review,
+            coverPhoto: item?.coverPhoto,
+            highlight: item?.bike?.type?.name,
+            bikeDetails: item?.bike,
+            publishedAt: new Date(item?.createdAt).toLocaleDateString(),
           }}
-          link={`/bike-reviews/${item.id}`}
+          link={`/bike-reviews/${item?.id}`}
           classes={{
+            body: " flex flex-col gap-2 mt-5 ",
             root: "border border-gray-200 dark:border-white/10 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 bg-white dark:bg-neutral-900",
             imageWrapper: "rounded-md overflow-hidden h-[300px]",
             imageStyle: "object-cover w-full h-full rounded-md",
-            name: "text-lg font-semibold leading-snug mb-2",
+            name: "text-lg font-semibold leading-4  ",
             desc: "text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-3",
             date: "text-xs text-gray-400",
             highlight:
@@ -93,7 +87,7 @@ const BikeReviews = () => {
         />
       ))}
 
-      {!hasMore && items.length === data.length ? (
+      {!hasMore && items.length > 0 ? (
         <div className="col-span-full flex justify-center py-4 text-sm text-gray-500">
           No more data found.
         </div>

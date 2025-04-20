@@ -397,6 +397,8 @@ const BikeReviewForm = () => {
           <div>
             <label className="block mb-1 text-sm font-medium">Brand</label>
             <Select
+              showSearch
+              optionFilterProp="children"
               placeholder="Select Brand"
               className="w-full   rounded-md"
               value={brand_id ?? undefined}
@@ -454,6 +456,8 @@ const BikeReviewForm = () => {
           <div>
             <label className="block mb-1 text-sm font-medium">Model</label>
             <Select
+              showSearch
+              optionFilterProp="children"
               placeholder="Select Model"
               className="w-full   rounded-md"
               value={modelId ?? undefined}
@@ -510,6 +514,8 @@ const BikeReviewForm = () => {
           <div>
             <label className="block mb-1 text-sm font-medium">Type</label>
             <Select
+              showSearch
+              optionFilterProp="children"
               placeholder="Select Type"
               className="w-full  rounded-md"
               value={typeId ?? undefined}

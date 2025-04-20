@@ -3,7 +3,7 @@ import Link from "next/link";
 import { GoDotFill } from "react-icons/go";
 import { useState } from "react";
 import { FcLike, FcLikePlaceholder } from "react-icons/fc";
-import { excerpt } from "@/utils/utils";
+import { excerpt, formatDate } from "@/utils/utils";
 import { IoSend } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 
@@ -25,7 +25,7 @@ interface BlogCardProps {
 const BlogCard = ({ data, link, classes }: BlogCardProps) => {
   const [likes, setLikes] = useState<number>(data?.likes || 0);
   const [liked, setLiked] = useState<boolean>(false);
-  const [reviews, setreviews] = useState<number>(data?.reviews || 0);
+  const [comment, setComment] = useState<number>(data?.reviews || 0);
   const [isreviewing, setIsreviewing] = useState<boolean>(false);
   const [reviewText, setreviewText] = useState<string>("");
   const [submittedreviews, setSubmittedreviews] = useState<
@@ -48,7 +48,9 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
 
     const newreview = {
       name: data?.name || "Anonymous",
-      avatar: "https://www.w3schools.com/howto/img_avatar.png",
+      avatar: data?.profilePicture
+        ? "data?.profilePicture"
+        : "https://www.w3schools.com/howto/img_avatar.png",
       review: reviewText.trim(),
     };
 
@@ -64,17 +66,21 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
 
     setSubmittedreviews((prev) => [...prev, newreview]);
     setreviewText("");
-    setreviews((prev) => prev + 1);
+    setComment((prev) => prev + 1);
     setIsreviewing(false);
   };
-
+  console.log(data?.name);
   return (
     <div className={`group relative ${classes?.root || ""}`}>
       {/* User Info */}
       <div className="flex items-center mb-4">
-        <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+        <div className="w-12 h-12 rounded-full overflow-hidden mr-3">
           <Image
-            src="https://www.w3schools.com/howto/img_avatar.png"
+            src={
+              data?.profilePicture
+                ? data?.profilePicture
+                : "https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg"
+            }
             alt="User Avatar"
             width={40}
             height={40}
@@ -85,8 +91,8 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
           <h3 className={`text-lg font-semibold ${classes?.name || ""}`}>
             {data?.name}
           </h3>
-          <span className={`text-xs text-gray-400 ${classes?.date || ""}`}>
-            {data?.publishedAt}
+          <span className={`text-xs text-black ${classes?.date || ""}`}>
+            {formatDate(data?.publishedAt)}
           </span>
         </div>
       </div>
@@ -98,32 +104,49 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
             className={`relative overflow-hidden ${classes?.imageWrapper || ""}`}
           >
             <Image
-              src={data?.imageUrl}
-              alt="Post Image"
+              src={
+                data?.coverPhoto
+                  ? data?.coverPhoto
+                  : "https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg"
+              }
+              alt="Cover Image"
               height={300}
               width={300}
               className={`object-cover w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-110 ${classes?.imageStyle || ""}`}
             />
           </div>
           <div className={classes?.body || ""}>
-            {data?.highlight && (
-              <span
-                className={`inline-flex items-center gap-1 pr-1 ${classes?.highlight || ""}`}
-              >
-                <span className="mb-0 text-primary font-medium leading-[25px]">
-                  {excerpt(data?.highlight, 12)}
+            {/* Highlight + Brand Tag Row */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {data?.highlight && (
+                <span
+                  className={`inline-flex items-center gap-1 pr-1 ${classes?.highlight || ""}`}
+                >
+                  <span className="text-primary font-medium leading-[25px]">
+                    {excerpt(data?.highlight, 12)}
+                  </span>
+                  <GoDotFill className="text-primary text-sm" />
                 </span>
-                <GoDotFill className="text-primary text-sm" />
-              </span>
-            )}
-            <h3
-              className={`group-hover:text-primary transition-all mb-[10px] ${classes?.name || ""}`}
-            >
-              {data?.name}
-            </h3>
+              )}
+
+              {data?.bikeDetails?.brand?.brandName && (
+                <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-teal-500 rounded-full shadow-sm hover:bg-blue-700 transition">
+                  Brand : {data.bikeDetails.brand.brandName}
+                </span>
+              )}
+              {data?.bikeDetails?.model?.modelName && (
+                <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-full shadow-sm hover:bg-blue-700 transition">
+                  Model : {data.bikeDetails.model.modelName}
+                </span>
+              )}
+            </div>
+
+            {/* Review Excerpt */}
             {data?.excerpt && (
-              <p className={`line-clamp-4 ${classes?.desc || ""}`}>
-                {data?.excerpt}
+              <p
+                className={`line-clamp-4 text-base text-gray-700 dark:text-gray-300 ${classes?.desc || ""}`}
+              >
+                {data.excerpt}
               </p>
             )}
           </div>
@@ -142,7 +165,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
         </button>
 
         <button onClick={handlereviewClick} className="ml-4 hover:text-primary">
-          review {reviews}
+          Comment {comment}
         </button>
       </div>
 
@@ -152,7 +175,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
             <textarea
               value={reviewText}
               onChange={(e) => setreviewText(e.target.value)}
-              placeholder="Write a review..."
+              placeholder="Write a Comment on this review..."
               className="w-full p-3 pr-12 border border-gray-300 rounded-md dark:border-white/30 dark:bg-neutral-800 text-sm text-gray-700 dark:text-gray-200 resize-none outline-none"
               rows={3}
             />

@@ -38,3 +38,16 @@ export const getUserIdFromToken = () => {
     return null;
   }
 };
+// utils/formatDate.ts
+export function formatDate(dateStr: string): string {
+  const [month, day, year] = dateStr.split("/").map(Number);
+  const date = new Date(year, month - 1, day);
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
+
+  return date.toLocaleDateString("en-GB", options); // Output: "10 Jan 2025"
+}
