@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import BlogCard from "../@common/universelCard.tsx";
 import ScrollToTopButton from "../home/@components/ScrollTopTobutton";
+import LoadingDots from "../@common/loading/index";
 
 const PAGE_SIZE = 5;
 
@@ -20,8 +21,12 @@ const BikeReviews = () => {
         const data = await response.json();
 
         // Append new reviews
-        setItems((prevItems) => [...data?.result]);
-        setHasMore(items.length + data.result.length < data.count);
+        setItems((prevItems) => {
+          const newItems = [...prevItems, ...data?.result];
+          // Set hasMore based on the new total length
+          setHasMore(newItems.length < data.count);
+          return newItems;
+        });
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
@@ -59,9 +64,9 @@ const BikeReviews = () => {
   return (
     <div className="grid gap-6 grid-cols-1 p-4 w-full max-w-2xl mx-auto">
       <ScrollToTopButton />
-      {items.map((item: any) => (
+      {items.map((item: any, key: any) => (
         <BlogCard
-          key={item.id}
+          key={key}
           data={{
             id: item?.id,
             name: `${item?.User?.firstname} ${item?.User?.lastname}`,
@@ -70,6 +75,7 @@ const BikeReviews = () => {
             coverPhoto: item?.coverPhoto,
             highlight: item?.bike?.type?.name,
             bikeDetails: item?.bike,
+            like: item?.like_count,
             publishedAt: new Date(item?.createdAt).toLocaleDateString(),
           }}
           link={`/bike-reviews/${item?.id}`}
@@ -89,7 +95,7 @@ const BikeReviews = () => {
 
       {!hasMore && items.length > 0 ? (
         <div className="col-span-full flex justify-center py-4 text-sm text-gray-500">
-          No more data found.
+          No more data found
         </div>
       ) : (
         hasMore && (
@@ -97,7 +103,7 @@ const BikeReviews = () => {
             ref={loaderRef}
             className="col-span-full flex justify-center py-4 text-sm text-gray-500"
           >
-            Loading more...
+            <LoadingDots center color="bg-black" />
           </div>
         )
       )}

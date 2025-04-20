@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { GoDotFill } from "react-icons/go";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FcLike, FcLikePlaceholder } from "react-icons/fc";
-import { excerpt, formatDate } from "@/utils/utils";
+import { excerpt, formatDate, getUserIdFromToken } from "@/utils/utils";
 import { IoSend } from "react-icons/io5";
-import { FaRegHeart } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 interface BlogCardProps {
   data?: any;
@@ -21,8 +21,13 @@ interface BlogCardProps {
     body?: string;
   };
 }
+interface LikedReview {
+  id: number;
+  // Add more fields if needed
+}
 
 const BlogCard = ({ data, link, classes }: BlogCardProps) => {
+  const [likedPost, setLikedPost] = useState<LikedReview[]>([]);
   const [likes, setLikes] = useState<number>(data?.likes || 0);
   const [liked, setLiked] = useState<boolean>(false);
   const [comment, setComment] = useState<number>(data?.reviews || 0);
@@ -31,16 +36,86 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
   const [submittedreviews, setSubmittedreviews] = useState<
     { name: string; avatar: string; review: string }[]
   >([]);
+  // Fetch like status and reviews from API
+  useEffect(() => {
+    if (!data?.id) return;
+    const fetchLikeStatus = async () => {
+      const token = Cookies.get("token");
+      if (!token) return;
 
-  const handleLike = (e: React.MouseEvent) => {
+      try {
+        const userId = getUserIdFromToken();
+
+        const response = await fetch(`http://localhost:4000/like/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const result = await response.json();
+        setLikedPost(result?.reviews);
+        setLikes(data?.like);
+      } catch (error) {
+        console.error("Error fetching like status:", error);
+      }
+    };
+
+    fetchLikeStatus();
+  }, [data?.id]);
+  console.log(likedPost, data, "dat");
+  useEffect(() => {
+    // Prevent unnecessary re-renders by using proper conditionals
+    if (Array.isArray(likedPost)) {
+      likedPost.forEach((likeObj: any) => {
+        [data].forEach((review: any) => {
+          if (likeObj.id === review.id) {
+            setLiked(true); // Setting the property to true if IDs match
+          }
+        });
+      });
+    }
+  }, [likedPost, data]);
+  const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setLiked(!liked);
-    setLikes((prev) => (liked ? prev - 1 : prev + 1));
+
+    try {
+      const token = Cookies.get("token");
+      if (!token) {
+        alert("Please login first to like this post.");
+        return;
+      }
+      const method = liked ? "DELETE" : "POST";
+      const response = await fetch(`http://localhost:4000/like/${data?.id}`, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ like: !liked }),
+      });
+
+      if (response.status === 401) {
+        alert("Please login first to like this post.");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to update like");
+      }
+
+      setLiked(!liked);
+      setLikes((prev) => (liked ? prev - 1 : prev + 1));
+    } catch (error) {
+      console.error("Error liking post:", error);
+      alert("Something went wrong while liking the post.");
+    }
   };
 
   const handlereviewClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsreviewing(true);
+    setIsreviewing(!isreviewing);
   };
 
   const handlereviewSubmit = () => {
@@ -69,7 +144,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
     setComment((prev) => prev + 1);
     setIsreviewing(false);
   };
-  console.log(data?.name);
+
   return (
     <div className={`group relative ${classes?.root || ""}`}>
       {/* User Info */}
@@ -160,8 +235,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
           className={`flex items-center hover:text-primary text-xl transition-all ${liked ? "text-blue-500" : ""}`}
         >
           {liked ? <FcLike /> : <FcLikePlaceholder />}
-
-          <span className="ml-2 text-sm">{likes}</span>
+          <span className="ml-2 text-sm">{likes}</span> {/* <- dynamic count */}
         </button>
 
         <button onClick={handlereviewClick} className="ml-4 hover:text-primary">
