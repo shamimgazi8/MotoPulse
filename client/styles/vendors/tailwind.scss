@@ -9,7 +9,7 @@
 }
 
 :root {
-  --background-color: #ffffff;
+  --background-color: #992929;
   --text-color: #000000;
 
   /* Other color variables */
@@ -21,7 +21,7 @@ body {
   color: var(--text-color);
   font-family: "Grey Qo", cursive;
 }
-
+// use for marque gradient
 .custom-gradient {
   background: linear-gradient(
     180deg,
@@ -34,120 +34,4 @@ body {
 .animate-marquee {
   display: inline-block;
   animation: marquee 25s linear infinite;
-}
-@keyframes marquee {
-  0% {
-    transform: translateX(10%);
-  }
-  100% {
-    transform: translateX(-60%);
-  }
-}
-.gradient-text {
-  background: linear-gradient(90deg, #1592ff, #10b981, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-}
-
-.slider {
-  margin: 0 20px;
-  overflow: "hidden";
-  padding: 2rem 0;
-}
-
-.slider img {
-  width: 100%;
-  border-radius: 10px;
-}
-
-.react-multi-carousel-list {
-  padding: 0rem 0 2rem 0;
-}
-
-.custom-dot-list-style button {
-  border: none;
-  background: rgb(255, 68, 68);
-}
-.react-multi-carousel-dot.react-multi-carousel-dot--active button {
-  background: rgb(255, 68, 68) !important;
-}
-
-@mixin gradient-border($color1, $color2, $color3, $color4) {
-  border: 1px solid transparent;
-  border-top: 1px solid $color1;
-  border-right: 1px solid $color2;
-  border-bottom: 1px solid $color3;
-  border-left: 1px solid $color4;
-}
-
-.gradient-border {
-  // background: linear-gradient(to right, #00b3ff, #10b981, #8b5cf6, #10b981);
-  // color: transparent;
-  // -webkit-text-fill-color: transparent;
-  // -webkit-background-clip: text;
-  // background-clip: text;
-  @include gradient-border(
-    #00b2f8,
-    #5a5e5d,
-    #1c1c1c,
-    #000000
-  ); // Replace with your desired colors
-  &:focus {
-    @include gradient-border(
-      #10b981,
-      #363140,
-      #181818,
-      #303644
-    ); // Different colors for focus state
-  }
-}
-
-.hidden-div {
-  position: absolute;
-  bottom: -100%; /* Start hidden below the viewport */
-  left: 0;
-  right: 0;
-  opacity: 0; /* Start with opacity 0 */
-  transition: all 0.5s ease-in-out; /* Transition for smooth animation */
-
-  &.show {
-    bottom: 0;
-    opacity: 1;
-  }
-}
-.form-container {
-  transition: all 0.5s ease-in-out; /* Adjust transition duration and easing as needed */
-}
-/* fade-in animation */
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* bounce-slow animation */
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-/* Usage of animations */
-.fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-.bounce-slow {
-  animation: bounce 2.5s infinite;
 }
