@@ -9,6 +9,8 @@ interface UserAttributes {
   lastname: string;
   email: string;
   password: string;
+  address?: string | null;
+  profile_url?: string | null;
 }
 
 // For creation, id is optional because it's auto-incremented
@@ -23,6 +25,8 @@ class User
   public lastname!: string;
   public email!: string;
   public password!: string;
+  public address?: string | null;
+  public profile_url?: string | null;
 
   // Method to hide sensitive info in responses
   toJSON() {
@@ -58,6 +62,14 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    profile_url: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
