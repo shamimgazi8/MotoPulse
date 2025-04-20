@@ -12,7 +12,7 @@ const mailtoLink = `mailto:${"motopulse@gmail.com"}?subject=${encodeURIComponent
 
 const Footer = () => {
   return (
-    <footer className="dark:bg-gray-800 bg-gray-200 mt-auto bg-footer text-footertext lg:pt-[30px] py-[40px]">
+    <footer className="dark:bg-[#070910] bg-gray-200 mt-auto bg-footer text-footertext lg:pt-[30px] py-[40px]">
       <div className="lg:w-[30%] container mb-10 lg:px-0 px-10">
         <Link href="/" className="w-full flex justify-center items-start h-16">
           <Image
@@ -27,7 +27,7 @@ const Footer = () => {
         <div className="relative group">
           <input
             type="text"
-            className="w-full py-3 px-5 focus:outline-none text-black"
+            className="w-full py-3 px-5 focus:outline-none text-black dark:bg-gray-900 dark:text-white"
             placeholder="Enter your email"
           />
           <IoIosArrowRoundForward className="text-[32px] absolute right-0 top-2 text-purple-400 mr-3 group-hover:scale-125 transition-all" />

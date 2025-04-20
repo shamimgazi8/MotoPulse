@@ -36,13 +36,12 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
   const [submittedreviews, setSubmittedreviews] = useState<
     { name: string; avatar: string; review: string }[]
   >([]);
+
   // Fetch like status and reviews from API
   useEffect(() => {
-    if (!data?.id) return;
     const fetchLikeStatus = async () => {
       const token = Cookies.get("token");
       if (!token) return;
-
       try {
         const userId = getUserIdFromToken();
 
@@ -66,6 +65,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
   }, [data?.id]);
   console.log(likedPost, data, "dat");
   useEffect(() => {
+    setLikes(data?.like);
     // Prevent unnecessary re-renders by using proper conditionals
     if (Array.isArray(likedPost)) {
       likedPost.forEach((likeObj: any) => {

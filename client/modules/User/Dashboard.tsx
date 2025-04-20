@@ -183,7 +183,7 @@ const DashboardProfile = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-start justify-center pt-[100px]">
       <div className="bg- dark:bg-black rounded-2xl shadow-lg p-6 w-[70%]">
-        <h1 className="mb-10 gradient-text text-3xl font-semibold">
+        <h1 className="mb-10 gradient-text text-3xl font-semibold w-[200px]">
           Dashboard
         </h1>
         <div className="flex items-start gap-6">
@@ -285,7 +285,7 @@ const DashboardProfile = () => {
               </button>
               <button
                 onClick={handleSave}
-                className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition"
+                className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition "
               >
                 Save
               </button>

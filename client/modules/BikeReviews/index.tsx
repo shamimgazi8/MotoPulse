@@ -13,6 +13,13 @@ const BikeReviews = () => {
   const loaderRef = useRef(null);
 
   useEffect(() => {
+    // Reset on mount
+    setPage(1);
+    setItems([]);
+    setHasMore(true);
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -20,12 +27,15 @@ const BikeReviews = () => {
         );
         const data = await response.json();
 
-        // Append new reviews
         setItems((prevItems) => {
-          const newItems = [...prevItems, ...data?.result];
-          // Set hasMore based on the new total length
-          setHasMore(newItems.length < data.count);
-          return newItems;
+          // Avoid duplicates by checking existing IDs
+          const newItems = data?.result.filter(
+            (item: any) => !prevItems.some((i) => i.id === item.id)
+          );
+          const updatedItems = [...prevItems, ...newItems];
+
+          setHasMore(updatedItems.length < data.count);
+          return updatedItems;
         });
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -33,10 +43,8 @@ const BikeReviews = () => {
     };
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  console.log(items, "items");
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -64,9 +72,9 @@ const BikeReviews = () => {
   return (
     <div className="grid gap-6 grid-cols-1 p-4 w-full max-w-2xl mx-auto">
       <ScrollToTopButton />
-      {items.map((item: any, key: any) => (
+      {items.map((item: any) => (
         <BlogCard
-          key={key}
+          key={item.id}
           data={{
             id: item?.id,
             name: `${item?.User?.firstname} ${item?.User?.lastname}`,
