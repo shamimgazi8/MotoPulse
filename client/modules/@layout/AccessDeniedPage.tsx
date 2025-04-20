@@ -20,7 +20,7 @@ export default function AccessDenied() {
   return (
     <div
       data-aos="fade-bottom"
-      className="flex flex-col items-center justify-start min-h-screen text-center space-y-6 mt-5 animate-fade-in"
+      className="flex flex-col items-center justify-center min-h-screen text-center space-y-6 animate-fade-in"
     >
       <p className="gradient-text font-semibold text-[30px]">
         {errorMessage || "You have to Login!"}

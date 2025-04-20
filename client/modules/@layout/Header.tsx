@@ -20,7 +20,6 @@ const Header = () => {
   const [selected, setSelected] = useState(null);
 
   const pathname = usePathname(); // ✅ get current route
-  console.log(pathname, "pathhhh");
 
   useEffect(() => {
     const handleScroll = () => {

@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie"; // Assuming token is stored in cookies
+import Cookies from "js-cookie";
+import CoverImageUpload from "../AddReview/components/UploadCover";
+import { FaPen } from "react-icons/fa";
 
 type UserProfile = {
   id: number;
@@ -19,19 +21,19 @@ const DashboardProfile = () => {
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
+    profile_url: "",
   });
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = Cookies.get("token"); // Retrieve token from cookies
+    const token = Cookies.get("token");
     const id = Cookies.get("userId");
 
     if (!token) {
-      // If token is missing, redirect to login page
       window.location.href = "/users/login";
       return;
     }
-    // If token exists, proceed to fetch user data
+
     const fetchUser = async () => {
       try {
         const res = await fetch(`http://localhost:4000/users/profile/${id}`, {
@@ -44,33 +46,35 @@ const DashboardProfile = () => {
 
         const data = await res.json();
         if (res.ok) {
+          const profileUrl =
+            data.profile_url ||
+            "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg";
+
           setUser({
             id: data.id,
             name: `${data.firstname} ${data.lastname}`,
             email: data.email,
             address: data.address || "No address provided",
-            profile_url:
-              data.profile_url ||
-              "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg",
+            profile_url: profileUrl,
           });
 
           setFormData((prev) => ({
             ...prev,
             email: data.email,
             address: data.address || "",
+            profile_url: profileUrl,
           }));
         } else {
-          // Handle error from backend (e.g., invalid token)
           console.error("Failed to load user:", data.message);
-          Cookies.remove("token"); // Remove invalid token
-          window.location.href = "/users/login"; // Redirect to login
+          Cookies.remove("token");
+          window.location.href = "/users/login";
         }
       } catch (error) {
         console.error("Error fetching user:", error);
-        Cookies.remove("token"); // Remove invalid token
-        window.location.href = "/users/login"; // Redirect to login
+        Cookies.remove("token");
+        window.location.href = "/users/login";
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
@@ -81,8 +85,7 @@ const DashboardProfile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    // Password validation
+  const handleSave = async () => {
     if (
       formData.newPassword ||
       formData.confirmPassword ||
@@ -101,27 +104,66 @@ const DashboardProfile = () => {
         alert("New password and confirmation do not match.");
         return;
       }
-
-      console.log("Updating password...");
-      // You would send oldPassword and newPassword to backend here
     }
 
-    // Update email and address locally
-    if (user) {
-      setUser({
-        ...user,
-        email: formData.email,
-        address: formData.address,
+    try {
+      const token = Cookies.get("token");
+      const id = Cookies.get("userId");
+
+      if (!token || !id) {
+        alert("User not authenticated.");
+        return;
+      }
+
+      const res = await fetch(`http://localhost:4000/users/profile/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          address: formData.address,
+          profile_url: formData.profile_url,
+          oldPassword: formData.oldPassword,
+          newPassword: formData.newPassword,
+        }),
       });
-    }
 
-    setIsEditing(false);
-    setFormData((prev) => ({
-      ...prev,
-      oldPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    }));
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Profile updated successfully!");
+
+        // If password was changed, force logout
+        if (formData.oldPassword && formData.newPassword) {
+          alert("Password changed successfully. Please log in again.");
+          Cookies.remove("token");
+          Cookies.remove("userId");
+          window.location.href = "/users/login";
+          return;
+        }
+
+        // If not a password change, just update profile info
+        setUser({
+          ...user!,
+          address: data.user.address,
+          profile_url: data.user.profile_url,
+          email: data.user.email,
+        });
+        setIsEditing(false);
+        setFormData((prev) => ({
+          ...prev,
+          oldPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        }));
+      } else {
+        alert(data.message || "Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("An error occurred while updating profile.");
+    }
   };
 
   if (loading) {
@@ -139,24 +181,42 @@ const DashboardProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center pt-[100px]">
-      <div className="bg-white rounded-2xl shadow-lg p-6 w-[70%]">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-start justify-center pt-[100px]">
+      <div className="bg- dark:bg-black rounded-2xl shadow-lg p-6 w-[70%]">
         <h1 className="mb-10 gradient-text text-3xl font-semibold">
           Dashboard
         </h1>
-        <div className="flex items-start gap-4">
-          <img
-            src={user.profile_url}
-            alt={`${user.name} profile`}
-            className="w-16 h-16 rounded-full object-cover border-2 border-gray-300"
-          />
-          <div className="flex flex-col gap-3">
-            <h2 className="text-2xl font-semibold text-gray-800">
+        <div className="flex items-start gap-6">
+          <div className="flex flex-col items-center gap-2">
+            <img
+              src={formData.profile_url}
+              alt={`${user.name} profile`}
+              className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+            />
+
+            {isEditing && (
+              <CoverImageUpload
+                profile
+                onUploadSuccess={(url) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    profile_url: url,
+                  }))
+                }
+              />
+            )}
+          </div>
+
+          <div className="flex flex-col gap-3 flex-1">
+            <h2 className="text-2xl font-semibold dark:gradient-text">
               {user.name}
             </h2>
+
             {!isEditing ? (
               <>
-                <p className="text-sm text-gray-500">{user.email}</p>
+                <p className="text-sm text-gray-500 dark:text-white">
+                  {user.email}
+                </p>
                 <p className="text-sm text-gray-500">{user.address}</p>
               </>
             ) : (
@@ -167,7 +227,7 @@ const DashboardProfile = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email"
-                  className="border rounded px-3 py-1 text-sm"
+                  className="border rounded px-3 py-1 text-sm dark:text-white dark:bg-gray-900 dark:border-black"
                 />
                 <input
                   type="text"
@@ -175,7 +235,7 @@ const DashboardProfile = () => {
                   value={formData.address}
                   onChange={handleChange}
                   placeholder="Address"
-                  className="border rounded px-3 py-1 text-sm"
+                  className="border rounded px-3 py-1 text-sm dark:text-white dark:bg-gray-900 dark:border-black"
                 />
                 <hr className="my-2" />
                 <input
@@ -184,7 +244,7 @@ const DashboardProfile = () => {
                   value={formData.oldPassword}
                   onChange={handleChange}
                   placeholder="Old Password"
-                  className="border rounded px-3 py-1 text-sm"
+                  className="border rounded px-3 py-1 text-sm dark:text-white dark:bg-gray-900 dark:border-black"
                 />
                 <input
                   type="password"
@@ -192,7 +252,7 @@ const DashboardProfile = () => {
                   value={formData.newPassword}
                   onChange={handleChange}
                   placeholder="New Password"
-                  className="border rounded px-3 py-1 text-sm"
+                  className="border rounded px-3 py-1 text-sm dark:text-white dark:bg-gray-900 dark:border-black"
                 />
                 <input
                   type="password"
@@ -200,20 +260,20 @@ const DashboardProfile = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm New Password"
-                  className="border rounded px-3 py-1 text-sm"
+                  className="border rounded px-3 py-1 text-sm dark:text-white dark:bg-gray-900 dark:border-black"
                 />
               </div>
             )}
           </div>
         </div>
 
-        <div className="mt-4 text-right">
+        <div className="mt-4 flex justify-end">
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
+              className="btn-primary  flex justify-center items-center gap-2"
             >
-              Edit
+              <FaPen /> Edit
             </button>
           ) : (
             <div className="flex justify-end gap-2">

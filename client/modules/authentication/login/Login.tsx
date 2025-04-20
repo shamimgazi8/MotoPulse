@@ -18,7 +18,8 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [isLoginView, setIsLoginView] = useState(true); // toggle between login and signup
+  const [isLoginView, setIsLoginView] = useState(true);
+  const [loading, setLoading] = useState(false); // 🔄 New loading state
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,6 +29,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setLoading(true); // ⏳ Show loading
 
     try {
       if (!formData.email || !formData.password) {
@@ -55,6 +57,8 @@ const LoginPage: React.FC = () => {
       window.location.href = "/users/dashboard";
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false); // ✅ Hide loading
     }
   };
 
@@ -139,9 +143,33 @@ const LoginPage: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-[50%] bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-full font-semibold transition"
+                  className="w-[50%] bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-full font-semibold transition flex items-center justify-center"
+                  disabled={loading}
                 >
-                  Login
+                  {loading ? (
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </form>
             </>

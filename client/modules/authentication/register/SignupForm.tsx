@@ -78,6 +78,7 @@ const SignUpForm: React.FC<Props> = ({ onSwitchToLogin }) => {
 
   return (
     <form
+      data-aos="fade-left"
       onSubmit={handleSignup}
       className="w-full max-w-md p-6 rounded-2xl text-black flex flex-col gap-4"
     >

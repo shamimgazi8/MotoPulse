@@ -1,10 +1,11 @@
 import React, { useState, useImperativeHandle, forwardRef } from "react";
 import { Upload, Button, message, Progress } from "antd";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { CgPlayListRemove } from "react-icons/cg";
 import type { UploadProps } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
-import { CgPlayListRemove } from "react-icons/cg";
-
+const savedTheme = localStorage.getItem("theme");
+console.log("upload comp", savedTheme);
 export interface CoverImageUploadRef {
   reset: () => void;
 }
@@ -13,8 +14,9 @@ const CoverImageUpload = forwardRef<
   CoverImageUploadRef,
   {
     onUploadSuccess: (url: string) => void;
+    profile?: boolean;
   }
->(({ onUploadSuccess }, ref) => {
+>(({ onUploadSuccess, profile = false }, ref) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<number>(0);
@@ -62,7 +64,9 @@ const CoverImageUpload = forwardRef<
         setUploading(false);
         if (xhr.status === 200) {
           const data = JSON.parse(xhr.responseText);
-          message.success("Image uploaded successfully!");
+          message.success(
+            `${profile ? "Profile" : "Cover"} photo uploaded successfully!`
+          );
           setUploadDone(true);
           onUploadSuccess(data.url);
         } else {
@@ -76,7 +80,7 @@ const CoverImageUpload = forwardRef<
         message.error("Something went wrong during upload.");
       };
 
-      xhr.open("POST", "http://localhost:4000/upload-cover", true);
+      xhr.open("POST", `http://localhost:4000/upload-${"cover"}`, true);
       xhr.send(formData);
     } catch (error) {
       setUploading(false);
@@ -95,13 +99,15 @@ const CoverImageUpload = forwardRef<
 
   return (
     <div className="space-y-3 flex justify-center items-center flex-col">
-      <label className="block text-sm font-medium">Cover Image</label>
+      <label className="block text-sm font-medium">
+        {profile ? "Profile Photo" : "Cover Image"}
+      </label>
 
       {previewUrl && (
         <img
           src={previewUrl}
           alt="preview"
-          className=" h-[150px] max-w-xs rounded border"
+          className={`max-w-xs rounded border ${profile ? "h-[100px] w-[100px] rounded-full" : "h-[150px]"}`}
         />
       )}
 
@@ -119,8 +125,17 @@ const CoverImageUpload = forwardRef<
               icon={<FaCloudUploadAlt />}
               loading={uploading}
               disabled={uploading}
+              style={{
+                width: profile ? 200 : 600,
+                backgroundColor: savedTheme === "dark" ? "#1f2937" : "",
+                color: savedTheme === "dark" ? "#ffff" : "",
+              }}
             >
-              {uploading ? "Uploading..." : "Click to Upload"}
+              {uploading
+                ? "Uploading..."
+                : profile
+                  ? "Click to Change Profile"
+                  : "Click to Upload"}
             </Button>
           </Upload>
 
@@ -135,7 +150,7 @@ const CoverImageUpload = forwardRef<
           className="border-gray-400 flex justify-center items-center"
         >
           <CgPlayListRemove className=" text-xl text-red-500" />
-          Remove Photo
+          Remove {profile ? "Profile" : "Cover"} Photo
         </Button>
       )}
     </div>

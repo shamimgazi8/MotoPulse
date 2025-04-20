@@ -4,6 +4,7 @@ import { CgProfile } from "react-icons/cg";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import ProfileCard from "../profileCard";
+import ProfileCardWrapper from "../profileCard/ProfileWrapped";
 
 type JWTPayload = {
   name: string;
@@ -63,26 +64,19 @@ const ProfileAvater = () => {
   };
 
   const content = user ? (
-    <ProfileCard
-      name={user.name}
-      title={user.role}
-      avatarUrl={user.avatarUrl}
-      description={
-        user.description ||
-        "An administrator is responsible for overseeing and coordinating various administrative tasks."
-      }
-      onLogout={handleLogout}
-    />
+    <ProfileCardWrapper />
   ) : (
     <div className="space-y-2 text-center">
       <p className="text-gray-700 text-sm">
         Welcome! Please log in or sign up.
       </p>
       <div className="flex justify-center gap-2">
-        <Button type="primary" onClick={handleLogin}>
+        <button className=" btn-primary" onClick={handleLogin}>
           Login
-        </Button>
-        <Button onClick={handleSignup}>Sign Up</Button>
+        </button>
+        <button onClick={handleSignup} className="btn-primary">
+          Sign Up
+        </button>
       </div>
     </div>
   );
