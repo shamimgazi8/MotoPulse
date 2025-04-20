@@ -22,8 +22,16 @@ export const getAllReviews = async (req: Request, res: Response) => {
       type,
     } = buildReviewFilters(req.query);
 
-    const reviews = await Review.findAll({
+    // 🔹 Parse pagination query params
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = (page - 1) * limit;
+
+    // 🔹 Fetch data with pagination
+    const reviews = await Review.findAndCountAll({
       where: reviewWhere,
+      limit,
+      offset,
       attributes: { exclude: ["bike_id", "user_id"] },
       include: [
         {
@@ -69,9 +77,12 @@ export const getAllReviews = async (req: Request, res: Response) => {
       ],
     });
 
+    // 🔹 Send paginated response
     res.status(200).json({
-      count: reviews.length,
-      result: reviews,
+      count: reviews.count,
+      currentPage: page,
+      totalPages: Math.ceil(reviews.count / limit),
+      result: reviews.rows,
     });
   } catch (error) {
     console.error("Error fetching reviews:", error);
@@ -81,6 +92,7 @@ export const getAllReviews = async (req: Request, res: Response) => {
     });
   }
 };
+
 export const createReview = async (req: Request, res: Response) => {
   try {
     const { bike_id, user_id, review, like_count, coverPhoto } = req.body;
