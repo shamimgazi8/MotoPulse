@@ -45,8 +45,8 @@ const Header = () => {
           scroll ? "header" : ""
         }`}
       >
-        <div className="container">
-          <div className="grid grid-cols-[1fr_2fr_1fr] items-center px-4 py-4 lg:py-0">
+        <div className="">
+          <div className="grid grid-cols-[1fr_2fr_1fr] items-center px-4 py-4 lg:py-0 min-w-[1460px] m-auto">
             <div onClick={() => setOpen(true)} className="block lg:hidden">
               <BiMenuAltLeft className="text-2xl" />
             </div>

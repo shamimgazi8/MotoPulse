@@ -41,10 +41,10 @@ const SearchAnt: React.FC = () => {
   return (
     <>
       <button
-        className="px-3 py-1.5 bg-black text-white border-[1px] hover:text-black hover:border-black  hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black rounded-lg dark:hover:bg-black dark:hover:text-white dark:hover:border-white"
+        className="px-3 py-1.5 text-[12px] text-black border-[1px] hover:text-black hover:bg-white focus:outline-none flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black rounded-lg dark:hover:bg-black dark:hover:text-white dark:hover:border-white"
         onClick={showModal}
       >
-        <IoSearchOutline className="text-xl" />
+        <IoSearchOutline className="text-sm" /> search
       </button>
 
       <Modal
@@ -52,13 +52,20 @@ const SearchAnt: React.FC = () => {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}
+        centered
+        className="custom-modal"
+        modalRender={(modal) => (
+          <div className="backdrop-blur-md bg-black/10 dark:bg-black/50 rounded-xl p-4 transition-all">
+            {modal}
+          </div>
+        )}
       >
         <div className="relative w-full mb-4">
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search"
-            className="rounded-full w-full dark:bg-transparent dark:text-white bg-transparent outline-none border-white border-[1px] dark:border-white px-2 py-1 transition-all placeholder:dark:text-white placeholder:text-white"
+            className="rounded-full placeholder:text-white w-full text-white dark:bg-white/30 dark:text-white bg-transparent outline-none  border-gray-400 border-[1px] dark:border-white px-2 py-1 transition-all placeholder:dark:text-white "
           />
           <BsSearch className="absolute right-3 top-[9px] text-white" />
         </div>
@@ -68,7 +75,7 @@ const SearchAnt: React.FC = () => {
             filteredBikes.map((bike) => (
               <div
                 key={bike.id}
-                className="p-2 mb-2 border rounded dark:border-white border-gray-300"
+                className="p-2 mb-2 border text-white rounded dark:border-white border-gray-300"
               >
                 <p className="font-semibold">{bike.name}</p>
                 <p>Model: {bike.model}</p>

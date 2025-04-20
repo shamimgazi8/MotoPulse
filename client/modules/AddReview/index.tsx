@@ -381,10 +381,10 @@ const BikeReviewForm = () => {
   }, [getAllbike]);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-8 dark:text-white relative">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#131318] p-8 dark:text-white relative">
       <form
         onSubmit={handleSubmit}
-        className="max-w-2xl mx-auto p-8 bg-white dark:bg-black shadow-xl rounded-xl space-y-6"
+        className="max-w-2xl mx-auto p-8 bg-white dark:bg-[#1e1e1f] shadow-xl rounded-xl space-y-6 [&_label]:mb-3"
       >
         <div className=" flex justify-center items-center">
           <h2 className="text-[30px] font-bold text-gray-800 dark:text-white gradient-text text-center leading-10 tracking-widest w-[60%] ">
@@ -568,8 +568,9 @@ const BikeReviewForm = () => {
               Weight (kg)
             </label>
             <input
-              type="text"
-              className="w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
+              placeholder="Input Wight"
+              type="number"
+              className="w-full h-[32px] p-2 border rounded border-gray-300 dark:bg-[#141414] dark:border-[#141414] focus:outline-none focus:ring-1 focus:ring-green-500/50 dark:focus:ring-gray-500/50 focus:border-green-500/50 transition-all appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] placeholder:text-[12px] placeholder:text-[#4F4F4F]"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               required
@@ -584,8 +585,9 @@ const BikeReviewForm = () => {
               Engine Capacity (cc)
             </label>
             <input
+              placeholder="Input CC"
               type="number"
-              className="w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
+              className="w-full h-[32px] p-2 border rounded border-gray-300 dark:bg-[#141414] dark:border-[#141414] focus:outline-none focus:ring-1 focus:ring-green-500/50 dark:focus:ring-gray-500/50 focus:border-green-500/50 transition-all appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] placeholder:text-[12px] placeholder:text-[#4F4F4F]"
               value={engineCapacity}
               onChange={(e) => setEngineCapacity(e.target.value)}
               required
@@ -596,8 +598,9 @@ const BikeReviewForm = () => {
               Torque (Nm)
             </label>
             <input
-              type="text"
-              className="w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
+              placeholder="Input Torque"
+              type="number"
+              className="w-full h-[32px] p-2 border rounded border-gray-300 dark:bg-[#141414] dark:border-[#141414] focus:outline-none focus:ring-1 focus:ring-green-500/50 dark:focus:ring-gray-500/50 focus:border-green-500/50 transition-all appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] placeholder:text-[12px] placeholder:text-[#4F4F4F]"
               value={torque}
               onChange={(e) => setTorque(e.target.value)}
               required
@@ -608,8 +611,9 @@ const BikeReviewForm = () => {
               Horse Power (HP)
             </label>
             <input
-              type="text"
-              className="w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
+              placeholder="Input HP"
+              type="number"
+              className="w-full h-[32px] p-2 border rounded border-gray-300 dark:bg-[#141414] dark:border-[#141414] focus:outline-none focus:ring-1 focus:ring-green-500/50 dark:focus:ring-gray-500/50 focus:border-green-500/50 transition-all appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] placeholder:text-[12px] placeholder:text-[#4F4F4F]"
               value={horsePower}
               onChange={(e) => setHorsePower(e.target.value)}
               required
@@ -639,7 +643,7 @@ const BikeReviewForm = () => {
           )}
         </div>
         {/* Cover Image */}
-        <div className=" w-full flex justify-center items-center  border-b-[2px] border-gray-300 pb-5">
+        <div className=" w-full flex justify-center items-center  border-b-[2px] border-gray-300 dark:border-gray-700 pb-5">
           <CoverImageUpload
             onUploadSuccess={(url) => {
               setCoverPhoto(url);
@@ -653,7 +657,7 @@ const BikeReviewForm = () => {
         <div>
           <label className="block mb-1 text-sm font-medium">Review</label>
           <textarea
-            className="w-full p-2 border rounded border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 focus:border-green-500/50 transition-all"
+            className="w-full  p-2 border rounded border-gray-300 dark:bg-[#141414] dark:border-[#141414] focus:outline-none focus:ring-1 focus:ring-green-500/50 dark:focus:ring-gray-500/50 focus:border-green-500/50 transition-all"
             rows={4}
             value={review}
             onChange={(e) => setReview(e.target.value)}
@@ -663,7 +667,7 @@ const BikeReviewForm = () => {
 
         {/* Submit */}
         <div className="text-right flex justify-end items-end">
-          <button className="mt-4 px-4 py-2 bg-black text-white hover:text-black hover:border-black border-[2px]  hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all rounded-lg">
+          <button className="mt-4 px-4 py-2 text-[12px] bg-black text-white hover:text-black hover:border-black border-[2px]  hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all rounded-lg dark:border-black">
             Submit Review
           </button>
         </div>

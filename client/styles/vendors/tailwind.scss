@@ -9,7 +9,7 @@
 }
 
 :root {
-  --background-color: #992929;
+  --background-color: #ffffff;
   --text-color: #000000;
 
   /* Other color variables */
@@ -34,4 +34,44 @@ body {
 .animate-marquee {
   display: inline-block;
   animation: marquee 25s linear infinite;
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(10%);
+  }
+  100% {
+    transform: translateX(-60%);
+  }
+}
+
+//Gradient text
+.gradient-text {
+  background: linear-gradient(90deg, #1592ff, #10b981, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* fade-in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* bounce-slow animation */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }

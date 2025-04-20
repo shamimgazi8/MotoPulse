@@ -98,8 +98,8 @@ const CoverImageUpload = forwardRef<
   };
 
   return (
-    <div className="space-y-3 flex justify-center items-center flex-col">
-      <label className="block text-sm font-medium">
+    <div className="space-y-1 flex justify-center items-center flex-col">
+      <label className="block text-sm font-medium mb-0">
         {profile ? "Profile Photo" : "Cover Image"}
       </label>
 

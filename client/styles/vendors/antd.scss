@@ -74,8 +74,8 @@
 :where(.css-dev-only-do-not-override-d2lrxs).ant-modal .ant-modal-title {
   color: white;
 }
-:where(.css-dev-only-do-not-override-1261szd).ant-select-single {
-  height: 45px;
+:where(.css-dev-only-do-not-override-1rgv2ha).ant-btn {
+  height: 42px;
 }
 :where(.css-dev-only-do-not-override-1261szd).ant-btn-variant-outlined,
 :where(.css-dev-only-do-not-override-1261szd).ant-btn-variant-dashed {
@@ -96,4 +96,19 @@
   ):not(.ant-btn-disabled):hover {
   color: #22c55e9f;
   border-color: #22c55ec1;
+}
+// :where(.css-dev-only-do-not-override-1261szd).ant-select-single {
+//   background-color: red;
+// }
+
+:where(.css-dev-only-do-not-override-1261szd).ant-modal .ant-modal-content {
+  background-color: rgba(255, 255, 255, 0);
+  box-shadow: none;
+}
+
+:where(.css-dev-only-do-not-override-1261szd).ant-modal .ant-modal-header {
+  background-color: rgba(255, 255, 255, 0);
+}
+:where(.css-dev-only-do-not-override-1261szd).ant-modal .ant-modal-title {
+  color: white;
 }
