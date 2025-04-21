@@ -15,10 +15,23 @@ const BikeReviews = () => {
 
   const fetchData = async (reset = false) => {
     try {
+      const filterKeyMap: Record<string, string> = {
+        brand: "brandName",
+        bikeType: "type",
+      };
+
+      const cleanedFilters: Record<string, string> = {};
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          const mappedKey = filterKeyMap[key] || key;
+          cleanedFilters[mappedKey] = String(value);
+        }
+      });
+
       const params = new URLSearchParams({
         page: String(page),
         limit: String(PAGE_SIZE),
-        ...filters,
+        ...cleanedFilters,
       });
 
       const res = await fetch(
@@ -32,7 +45,6 @@ const BikeReviews = () => {
         );
         const updated = reset ? newItems : [...prev, ...newItems];
 
-        // ✅ Corrected hasMore logic
         setHasMore(page * PAGE_SIZE < data.count);
 
         return updated;

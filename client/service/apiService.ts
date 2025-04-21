@@ -1,134 +1,110 @@
-// services/apiService.ts
+// Base URL for your backend API (adjust based on your environment)
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-export const apiService = {
-  async fetchBrands() {
-    const response = await fetch("http://localhost:4000/brands");
-    if (!response.ok) {
-      throw new Error("Failed to fetch brands");
+class ApiService {
+  private static async request(
+    endpoint: string,
+    method: string = "GET",
+    body?: any
+  ) {
+    try {
+      const options: RequestInit = {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      if (body) {
+        options.body = JSON.stringify(body);
+      }
+
+      const res = await fetch(`${API_URL}${endpoint}`, options);
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || res.statusText);
+      }
+
+      return res.json();
+    } catch (error) {
+      console.error(`Error in request ${method} ${endpoint}:`, error);
+      throw error;
     }
-    return response.json();
-  },
+  }
 
-  async fetchModels() {
-    const response = await fetch("http://localhost:4000/models");
-    if (!response.ok) {
-      throw new Error("Failed to fetch models");
-    }
-    return response.json();
-  },
+  static getBrands() {
+    return this.request("/brands");
+  }
 
-  async fetchTypes() {
-    const response = await fetch("http://localhost:4000/bikeTypes");
-    if (!response.ok) {
-      throw new Error("Failed to fetch bike types");
-    }
-    return response.json();
-  },
+  static createBrand(newBrand: string) {
+    return this.request("/brands", "POST", { brandName: newBrand });
+  }
 
-  async addBrand(brandName: string, userId: string, token: string) {
-    const response = await fetch("http://localhost:4000/brands", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        brandName,
-        user_id: userId,
-      }),
+  static getModelsByBrand() {
+    return this.request(`/models`);
+  }
+
+  static createModel(brandId: number, newModel: string) {
+    return this.request(`/brands/${brandId}/models`, "POST", {
+      modelName: newModel,
     });
+  }
 
-    if (!response.ok) {
-      throw new Error("Failed to add brand");
+  static getBikeTypes() {
+    return this.request("/bikeTypes");
+  }
+
+  static createBikeType(newType: string) {
+    return this.request("/bikeTypes", "POST", { name: newType });
+  }
+
+  static createReview(reviewData: {
+    bikeId: number;
+    userId: number;
+    review: string;
+    weight: number;
+    engineCapacity: number;
+    torque: number;
+    horsePower: number;
+    coverPhoto?: string;
+  }) {
+    return this.request("/reviews", "POST", reviewData);
+  }
+
+  static getReviewsByBike(bikeId: number) {
+    return this.request(`/bikes/${bikeId}/reviews`);
+  }
+
+  static likeReview(reviewId: number, userId: number) {
+    return this.request(`/reviews/${reviewId}/like`, "POST", { userId });
+  }
+
+  static async unlikeReview(reviewId: number, userId: number) {
+    try {
+      const res = await fetch(`${API_URL}/reviews/${reviewId}/like`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || res.statusText);
+      }
+
+      return res.json();
+    } catch (error) {
+      console.error("Error unliking review:", error);
+      throw error;
     }
+  }
 
-    return response.json();
-  },
+  static makeRequest(method: string, endpoint: string, data: any = {}) {
+    return this.request(endpoint, method, data);
+  }
+}
 
-  async addModel(modelName: string, brandId: number, token: string) {
-    const response = await fetch("http://localhost:4000/models", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        modelName,
-        brand_id: brandId,
-        manufacturer: "bd", // Static value, adjust as needed
-        year: 11, // Static value, adjust as needed
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to add model");
-    }
-
-    return response.json();
-  },
-
-  async addType(typeName: string, token: string) {
-    const response = await fetch("http://localhost:4000/bikeTypes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name: typeName,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to add bike type");
-    }
-
-    return response.json();
-  },
-
-  async addBike(newBike: any, token: string) {
-    const response = await fetch("http://localhost:4000/bikeLists", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(newBike),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to add bike");
-    }
-
-    return response.json();
-  },
-
-  async submitReview(formData: any, token: string) {
-    const response = await fetch("http://localhost:4000/reviews/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to submit review");
-    }
-
-    return response.json();
-  },
-
-  async fetchAllBikes(brandId: number, modelId: number, typeId: number) {
-    const response = await fetch(
-      `http://localhost:4000/bikeLists?brandId=${brandId}&modelId=${modelId ?? 0}&typeId=${typeId ?? 0}`
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch all bikes");
-    }
-
-    return response.json();
-  },
-};
+export default ApiService;

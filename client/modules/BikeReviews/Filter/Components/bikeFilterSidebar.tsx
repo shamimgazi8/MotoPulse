@@ -1,6 +1,7 @@
 // components/BikeFilterSidebar.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Slider, Select, Checkbox, InputNumber, Button, Collapse } from "antd";
+import ApiService from "@/service/apiService";
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -19,7 +20,31 @@ const BikeFilterSidebar = ({
     fuelType: [],
     rating: undefined,
   });
+  const [bikeTypes, setBikeTypes] = useState<{ id: number; name: string }[]>(
+    []
+  );
+  const [brands, setBrands] = useState<{ id: number; brandName: string }[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [brands, types] = await Promise.all([
+          ApiService.getBrands(),
 
+          ApiService.getBikeTypes(),
+        ]);
+
+        setBrands(brands);
+
+        setBikeTypes(types?.result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log("brand", brands, "types", bikeTypes);
   const handleChange = (field: string, value: any) => {
     setFilters((prev: any) => ({ ...prev, [field]: value }));
   };
@@ -38,9 +63,11 @@ const BikeFilterSidebar = ({
             style={{ width: "100%" }}
             onChange={(value) => handleChange("brand", value)}
           >
-            <Option value="Yamaha">Yamaha</Option>
-            <Option value="Honda">Honda</Option>
-            <Option value="KTM">KTM</Option>
+            {brands.map((brand: any) => (
+              <Option key={brand.id} value={brand.brandName}>
+                {brand.brandName}
+              </Option>
+            ))}
           </Select>
         </Panel>
 
@@ -51,9 +78,11 @@ const BikeFilterSidebar = ({
             style={{ width: "100%" }}
             onChange={(value) => handleChange("bikeType", value)}
           >
-            <Option value="Cruiser">Cruiser</Option>
-            <Option value="Sport">Sport</Option>
-            <Option value="Touring">Touring</Option>
+            {bikeTypes?.map((type: any) => (
+              <Option key={type.id} value={type.name}>
+                {type.name}
+              </Option>
+            ))}
           </Select>
         </Panel>
 

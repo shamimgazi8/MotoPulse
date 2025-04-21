@@ -63,7 +63,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
 
     fetchLikeStatus();
   }, [data?.id]);
-  console.log(likedPost, data, "dat");
+
   useEffect(() => {
     setLikes(data?.like);
     // Prevent unnecessary re-renders by using proper conditionals
