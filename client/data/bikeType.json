@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Sportbike",
+      "description": "High-performance bikes designed for speed and agility on the road.",
+      "imageUrl": "https://www.slideegg.com/image/catalog/44628-bike-model-powerpoint.png"
+    },
+    {
+      "id": 2,
+      "title": "Cruiser",
+      "description": "Comfortable and stylish bikes designed for long-distance cruising.",
+      "imageUrl": "https://www.slideegg.com/image/catalog/44628-bike-model-powerpoint.png"
+    },
+    {
+      "id": 3,
+      "title": "Touring",
+      "description": "Bikes designed for long-distance travel, equipped with more storage and comfort.",
+      "imageUrl": "https://www.slideegg.com/image/catalog/44628-bike-model-powerpoint.png"
+    },
+    {
+      "id": 4,
+      "title": "Dirt Bike",
+      "description": "Off-road bikes designed for dirt trails, rough terrains, and challenging landscapes.",
+      "imageUrl": "https://www.slideegg.com/image/catalog/44628-bike-model-powerpoint.png"
+    },
+    {
+      "id": 5,
+      "title": "Naked Bike",
+      "description": "Lightweight bikes with a minimalist design, ideal for city commuting.",
+      "imageUrl": "https://www.slideegg.com/image/catalog/44628-bike-model-powerpoint.png"
+    },
+    {
+      "id": 6,
+      "title": "Chopper",
+      "description": "Custom motorcycles with unique designs, often featuring long forks and custom frames.",
+      "imageUrl": "https://www.slideegg.com/image/catalog/44628-bike-model-powerpoint.png"
+    },
+    {
+      "id": 7,
+      "title": "Cafe Racer",
+      "description": "Retro-styled motorcycles inspired by the cafe racer culture, known for their sporty look.",
+      "imageUrl": "https://via.placeholder.com/200x200?text=Cafe+Racer"
+    },
+    {
+      "id": 8,
+      "title": "Electric Bike",
+      "description": "Motorcycles powered by electric motors, offering eco-friendly transportation options.",
+      "imageUrl": "https://via.placeholder.com/200x200?text=Electric+Bike"
+    }
+  ]
+}

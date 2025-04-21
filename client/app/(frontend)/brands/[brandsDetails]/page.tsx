@@ -1,5 +1,12 @@
+import BikeTypeList from "@/modules/BikeTypeList";
+
 const BrandDetails = () => {
-  return <>this is BrandDetails page</>;
+  return (
+    <>
+      {" "}
+      <BikeTypeList />
+    </>
+  );
 };
 
 export default BrandDetails;
