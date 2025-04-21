@@ -381,10 +381,10 @@ const BikeReviewForm = () => {
   }, [getAllbike]);
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-[#131318] p-8 dark:text-white relative">
+    <div className="dark:bg-[url('/misc/bg1.jpg')] bg-cover bg-center bg-no-repeat min-h-screen bg-gray-100 dark:text-white relative">
       <form
         onSubmit={handleSubmit}
-        className="max-w-2xl mx-auto p-8 bg-white dark:bg-[#1e1e1f] shadow-xl rounded-xl space-y-6 [&_label]:mb-3"
+        className="max-w-2xl mx-auto p-8 bg-white/30 dark:bg-black/10 backdrop-blur-lg rounded-xl space-y-6 [&_label]:mb-3"
       >
         <div className=" flex justify-center items-center">
           <h2 className="text-[30px] font-bold text-gray-800 dark:text-white gradient-text text-center leading-10 tracking-widest w-[60%] ">
@@ -417,7 +417,7 @@ const BikeReviewForm = () => {
                           placeholder="New brand name"
                           value={newBrandName}
                           onChange={(e) => setNewBrandName(e.target.value)}
-                          className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-300 transition-all"
+                          className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-300 transition-all text-black"
                         />
                         <button onClick={handleAddBrand}>
                           <IoMdAdd className=" text-green-500 h-6 w-6 hover:scale-125 transition-all" />
@@ -475,7 +475,7 @@ const BikeReviewForm = () => {
                           placeholder="New model name"
                           value={newModelName}
                           onChange={(e) => setNewModelName(e.target.value)}
-                          className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-300 transition-all"
+                          className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-300 transition-all text-black"
                         />
                         <button onClick={handleAddModel}>
                           <IoMdAdd className=" text-green-500 h-6 w-6 hover:scale-125 transition-all" />
@@ -532,7 +532,7 @@ const BikeReviewForm = () => {
                           placeholder="New type name"
                           value={newTypeName}
                           onChange={(e) => setNewTypeName(e.target.value)}
-                          className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-300 transition-all"
+                          className="flex-1 px-2 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-green-300 transition-all text-black"
                         />
                         <button onClick={handleAddType}>
                           <IoMdAdd className=" text-green-500 h-6 w-6 hover:scale-125 transition-all" />
@@ -635,7 +635,7 @@ const BikeReviewForm = () => {
               {isPosting ? (
                 <LoadingDots center color="bg-white" size={20} />
               ) : postSuccess ? (
-                <DoneCheckmark />
+                <DoneCheckmark size={25} />
               ) : (
                 "ADD BIKE"
               )}
@@ -667,9 +667,7 @@ const BikeReviewForm = () => {
 
         {/* Submit */}
         <div className="text-right flex justify-end items-end">
-          <button className="mt-4 px-4 py-2 text-[12px] bg-black text-white hover:text-black hover:border-black border-[2px]  hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all rounded-lg dark:border-black">
-            Submit Review
-          </button>
+          <button className="mt-4 btn-secondary rounded">Submit Review</button>
         </div>
       </form>
 

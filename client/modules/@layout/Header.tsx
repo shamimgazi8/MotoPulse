@@ -46,7 +46,7 @@ const Header = () => {
         }`}
       >
         <div className="">
-          <div className="grid grid-cols-[1fr_2fr_1fr] items-center px-4 py-4 lg:py-0 min-w-[1460px] m-auto">
+          <div className="flex justify-between items-center px-4 py-4 lg:py-0 min-w-[1460px] m-auto">
             <div onClick={() => setOpen(true)} className="block lg:hidden">
               <BiMenuAltLeft className="text-2xl" />
             </div>
@@ -63,7 +63,7 @@ const Header = () => {
               </Link>
             </div>
             <NavBar />
-            <div className="flex items-center justify-end gap-2 lg:gap-4 rounded w-full">
+            <div className="flex items-center justify-center gap-2 lg:gap-4 rounded">
               <div className="flex items-center gap-3 justify-center">
                 <div className="hidden lg:flex"></div>
 

@@ -2,6 +2,7 @@
 import { Inter } from "next/font/google";
 import "./../styles/main.scss";
 import AppProviders from "@/appstore/AppProviders";
+import Script from "next/script"; // ✅ Import Script component
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* 👇 Move the script here, NOT in <Head> */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
+      <head>
+        <Script id="theme-script" strategy="beforeInteractive">
+          {`
             (function() {
               try {
                 var savedTheme = localStorage.getItem('theme');
@@ -31,9 +31,9 @@ export default function RootLayout({
                 }
               } catch(e) {}
             })();
-          `,
-        }}
-      />
+          `}
+        </Script>
+      </head>
       <body className={inter.className}>
         <AppProviders>{children}</AppProviders>
       </body>
