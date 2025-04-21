@@ -7,7 +7,7 @@ const themeDark = "dark";
 const themeLight = "light";
 
 const ThemeToggleButton = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
     const root = document.documentElement;

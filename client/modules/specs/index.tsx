@@ -2,7 +2,7 @@ import FilterSpecs from "./filter/Filter";
 
 const SpacePage = () => {
   return (
-    <div>
+    <div className=" ">
       <FilterSpecs />
     </div>
   );

@@ -9,8 +9,8 @@
 }
 
 :root {
-  --background-color: #ffffff;
-  --text-color: #000000;
+  --background-color: #000000;
+  --text-color: #ffffff;
 
   /* Other color variables */
 }
@@ -47,6 +47,7 @@ body {
 //Gradient text
 .gradient-text {
   background: linear-gradient(90deg, #1592ff, #10b981, #8b5cf6);
+  // background: linear-gradient(80deg, #1592ff, #e31230, #8b5cf6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

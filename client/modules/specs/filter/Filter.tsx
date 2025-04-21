@@ -1,4 +1,4 @@
 const FilterSpecs = () => {
-  return <div>filter bikes by specifications</div>;
+  return <div className="">filter bikes by specifications</div>;
 };
 export default FilterSpecs;

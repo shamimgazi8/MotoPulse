@@ -17,6 +17,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      {/* 👇 Move the script here, NOT in <Head> */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var savedTheme = localStorage.getItem('theme');
+                if (!savedTheme || savedTheme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch(e) {}
+            })();
+          `,
+        }}
+      />
       <body className={inter.className}>
         <AppProviders>{children}</AppProviders>
       </body>
