@@ -127,3 +127,21 @@ body {
   transform: scaleX(1);
   transform-origin: bottom left;
 }
+@layer utilities {
+  /* Blinking effect to white for the entire loading screen */
+  .animate-blink {
+    animation: blinkToWhite 1s infinite alternate;
+  }
+
+  @keyframes blinkToWhite {
+    0% {
+      background-color: #0f1f2c; /* Original background color */
+    }
+    50% {
+      background-color: white; /* Blink to white */
+    }
+    100% {
+      background-color: #0f1f2c; /* Back to the original background */
+    }
+  }
+}

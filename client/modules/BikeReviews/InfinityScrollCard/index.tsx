@@ -4,6 +4,8 @@ import LoadingDots from "@/modules/@common/loading";
 import BlogCard from "@/modules/@common/universelCard.tsx";
 import ScrollToTopButton from "@/modules/home/@components/ScrollTopTobutton";
 import SkeletonCard from "@/modules/@common/Skelton/SkeltonCard";
+import Image from "next/image";
+import Loading from "@/modules/@common/loading";
 
 // InfinityScrollCard component
 const InfinityScrollCard = ({
@@ -81,6 +83,22 @@ const InfinityScrollCard = ({
             />
           ))}
 
+      {/* No data found message with animation */}
+      {!loading && items.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-12 text-center ">
+          <Image
+            height={200}
+            width={200}
+            src="https://cdni.iconscout.com/illustration/premium/thumb/employee-is-unable-to-find-sensitive-data-illustration-download-in-svg-png-gif-file-formats--no-found-misplaced-files-privacy-secret-business-pack-illustrations-8062130.png" // Optional: replace with your own image or animated SVG
+            alt="No bikes"
+            className=" "
+          />
+          <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
+            No Bike Found!
+          </p>
+        </div>
+      )}
+
       {/* Bottom loader or no more data message */}
       {!hasMore && items.length > 0 ? (
         <div className="col-span-full flex justify-center py-4 text-sm text-gray-500">
@@ -92,7 +110,7 @@ const InfinityScrollCard = ({
             ref={loaderRef}
             className="col-span-full flex justify-center py-4 text-sm text-gray-500"
           >
-            <LoadingDots center color="bg-black" />
+            <Loading />
           </div>
         )
       )}

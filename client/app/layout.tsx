@@ -1,8 +1,10 @@
 // app/layout.tsx
 import { Inter } from "next/font/google";
+import "antd/dist/reset.css";
 import "./../styles/main.scss";
 import AppProviders from "@/appstore/AppProviders";
 import Script from "next/script"; // ✅ Import Script component
+import InitialLoader from "@/modules/@common/intialLoader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +37,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={inter.className}>
+        <InitialLoader />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
