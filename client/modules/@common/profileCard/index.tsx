@@ -35,7 +35,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         />
 
         <div className="px-8 py-2">
-          <h1 className="block mt-1 text-lg leading-tight font-medium text-black">
+          <h1 className="block mt-1 text-lg leading-tight font-medium ">
             {name}
           </h1>
           <div className="uppercase tracking-wide text-[12px] text-indigo-500 font-semibold">
