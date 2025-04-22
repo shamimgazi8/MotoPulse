@@ -100,6 +100,8 @@ const BikeCategoryList = () => {
                 : dataArray.map((item, i) => (
                     <Link href={`/${item?.slug}`}>
                       <div
+                        data-aos="fade-up"
+                        data-aos-anchor-placement="top-bottom"
                         key={i}
                         className="parallax-card p-6   backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105"
                       >
@@ -116,7 +118,7 @@ const BikeCategoryList = () => {
                         <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                           {item.description}
                         </p>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                        <button className="btn-outline  text-[12px] hover:bg-white hover:text-black py-1 px-2 ">
                           View Details
                         </button>
                       </div>

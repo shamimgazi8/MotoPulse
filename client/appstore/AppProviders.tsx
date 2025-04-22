@@ -15,7 +15,7 @@ export default function AppProviders({
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    AOS.init({ duration: 1200, once: false });
+    AOS.init({ duration: 1000, once: false });
 
     const root = document.documentElement;
     setIsDarkMode(root.classList.contains("dark"));

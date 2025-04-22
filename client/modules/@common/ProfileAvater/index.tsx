@@ -67,7 +67,7 @@ const ProfileAvater = () => {
     <ProfileCardWrapper />
   ) : (
     <div className="space-y-2 text-center">
-      <p className="text-gray-700 text-sm">
+      <p className="text-gray-700 dark:text-white text-sm">
         Welcome! Please log in or sign up.
       </p>
       <div className="flex justify-center gap-2">

@@ -64,17 +64,8 @@
 }
 
 .btn-outline {
-  padding: 10px 15px;
-
   border: 1px solid #eee;
   transition: all 0.4s ease-in-out;
-  &:hover {
-    border: 1px solid #eee;
-    color: #fff;
-    transition: all 0.4s ease-in-out;
-    background-image: linear-gradient(to right, rgb(201, 75, 75), white);
-    border-image-source: linear-gradient(to right, black, white);
-  }
 }
 .btn-cancel {
   background-color: #fff;

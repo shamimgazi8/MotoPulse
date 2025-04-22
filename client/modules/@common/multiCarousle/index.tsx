@@ -16,7 +16,7 @@ const CarouselMulti = () => {
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current;
-      const scrollAmount = clientWidth / 1.2; // adjust scroll step
+      const scrollAmount = clientWidth / 1.3; // adjust scroll step
       scrollRef.current.scrollTo({
         left:
           direction === "left"
@@ -29,7 +29,11 @@ const CarouselMulti = () => {
 
   return (
     <section className="w-full py-10 ">
-      <div className="container mx-auto px-4">
+      <div
+        className="container mx-auto px-4"
+        data-aos="fade-up"
+        data-aos-anchor-placement="top-bottom"
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
             Bike Highlights
@@ -43,17 +47,17 @@ const CarouselMulti = () => {
           {sampleCards.map((item, i) => (
             <div
               key={i}
-              className="min-w-[250px] max-w-[250px] bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex-shrink-0"
+              className="min-w-[310px] max-w-[250px] parallax-card p-6   backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105"
             >
               <img
                 src={item.imageUrl}
                 alt={item.title}
                 className="w-full h-40 object-cover rounded mb-3"
               />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white poiret-one-regular">
                 {item.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300 poiret-one-regular">
                 {item.description}
               </p>
             </div>

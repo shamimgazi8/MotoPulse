@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
 
 const HoverCart = ({ data }: any) => {
   return (
     <>
-      <Link href={`/products/${data?.slug}`}>
+      <Link href={`/${data?.slug}`}>
         <div
           key={data?.id}
           className="product group relative w-64 h-48 overflow-hidden "

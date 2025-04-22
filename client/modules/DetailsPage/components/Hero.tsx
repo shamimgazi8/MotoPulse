@@ -1,5 +1,6 @@
 "use client";
 
+import { Statistic } from "antd";
 import { useEffect, useState } from "react";
 
 export default function DetailsPage() {
@@ -59,20 +60,21 @@ export default function DetailsPage() {
           transition: "background-position 0.2s ease-out",
         }}
       >
-        <div className="bg-white/90 dark:bg-black/80 rounded-xl p-6 max-w-5xl m-auto">
+        <div className="backdrop-blur-md  bg-black/40 rounded-xl p-6 max-w-5xl m-auto border border-white/20 dark:border-white/10">
           <h2 className="text-3xl font-semibold mb-4">About the Bike</h2>
-          <p className="text-lg text-[#001f1a] dark:text-gray-300 mb-10">
-            {bike.description}
-          </p>
+          <p className="text-lg text-gray-300 mb-10">{bike.description}</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
             {bike.specs.map((spec, idx) => (
               <div
                 key={idx}
-                className="bg-gray-100 dark:bg-[#171717] rounded-xl p-6 shadow-md text-center"
+                className="bg-white dark:bg-[#1f1f1f] rounded-xl p-2 shadow text-center"
               >
-                <h4 className="text-xl font-medium">{spec.label}</h4>
-                <p className="text-lg mt-1">{spec.value}</p>
+                <Statistic
+                  title={spec.label}
+                  value={spec.value}
+                  valueStyle={{ fontSize: "1.5rem", color: "#1890ff" }}
+                />
               </div>
             ))}
           </div>
