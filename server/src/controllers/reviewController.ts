@@ -15,22 +15,29 @@ export const getAllReviews = async (req: Request, res: Response) => {
       brandWhere,
       modelWhere,
       typeWhere,
+      engineCCFilter,
+      order,
       brandName,
       modelName,
       search,
       type,
     } = buildReviewFilters(req.query);
 
-    // 🔹 Parse pagination query params
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = (page - 1) * limit;
 
-    // 🔹 Fetch data with pagination
+    // Construct bike filter based on engineCC
+    const bikeWhere: any = {};
+    if (Object.keys(engineCCFilter).length > 0) {
+      bikeWhere.engineCC = engineCCFilter; // Apply engineCC filter here
+    }
+
     const reviews = await Review.findAndCountAll({
       where: reviewWhere,
       limit,
       offset,
+      order,
       attributes: { exclude: ["bike_id", "user_id"] },
       include: [
         {
@@ -40,7 +47,8 @@ export const getAllReviews = async (req: Request, res: Response) => {
         {
           model: BikeList,
           as: "bike",
-          required: true,
+          required: true, // Ensure the bike exists
+          where: bikeWhere, // Pass engineCC filter here
           attributes: [
             "id",
             "imgUrl",
@@ -76,7 +84,7 @@ export const getAllReviews = async (req: Request, res: Response) => {
       ],
     });
 
-    // 🔹 Send paginated response
+    // Return paginated results
     res.status(200).json({
       count: reviews.count,
       currentPage: page,

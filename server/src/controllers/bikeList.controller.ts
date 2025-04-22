@@ -1,16 +1,24 @@
 import { Request, Response } from "express";
 import BikeList from "../models/BikeList";
+import { Op } from "sequelize";
 
 // Get all bikes from the database
 export const getAllBikes = async (req: Request, res: Response) => {
   try {
-    const { brandId, modelId, typeId } = req.query;
+    const { brandId, modelId, typeId, ccMin, ccMax } = req.query;
 
     // Construct dynamic filter object
     const whereClause: any = {};
     if (brandId) whereClause.brand_id = brandId;
     if (modelId) whereClause.model_id = modelId;
     if (typeId) whereClause.bike_type_id = typeId;
+
+    // Add engineCC range filtering
+    if (ccMin || ccMax) {
+      whereClause.engineCC = {};
+      if (ccMin) whereClause.engineCC[Op.gte] = Number(ccMin);
+      if (ccMax) whereClause.engineCC[Op.lte] = Number(ccMax);
+    }
 
     const bikes = await BikeList.findAll({
       where: whereClause,
