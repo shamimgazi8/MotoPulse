@@ -79,7 +79,9 @@ class ApiService {
   static likeReview(reviewId: number, userId: number) {
     return this.request(`/reviews/${reviewId}/like`, "POST", { userId });
   }
-
+  static getReviewByBikeId(bikeId: number) {
+    return this.request(`/reviews/bike/${bikeId}`);
+  }
   static async unlikeReview(reviewId: number, userId: number) {
     try {
       const res = await fetch(`${API_URL}/reviews/${reviewId}/like`, {

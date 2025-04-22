@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useImperativeHandle, forwardRef } from "react";
 import { Upload, Button, message, Progress } from "antd";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -5,7 +6,7 @@ import { CgPlayListRemove } from "react-icons/cg";
 import type { UploadProps } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
 const savedTheme = localStorage.getItem("theme");
-console.log("upload comp", savedTheme);
+
 export interface CoverImageUploadRef {
   reset: () => void;
 }

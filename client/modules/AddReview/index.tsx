@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, FormEvent, use, useRef } from "react";
-import { Select, Upload, Button, message } from "antd";
+import { Select, Upload, Button, message, Spin } from "antd";
 import Cookies from "js-cookie";
 import { MdCancel } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
@@ -297,6 +297,7 @@ const BikeReviewForm = () => {
       setReview(""); // Reset review text
       setCoverPhoto(null); // Reset image if necessary
       uploadRef.current?.reset();
+      window.location.href = "./bike-reviews";
     } catch (error: any) {
       console.error("Error submitting review:", error.message);
       showToast("Error submitting review", "error");
@@ -633,7 +634,7 @@ const BikeReviewForm = () => {
               `}
             >
               {isPosting ? (
-                <LoadingDots center color="bg-white" size={20} />
+                <Spin />
               ) : postSuccess ? (
                 <DoneCheckmark size={25} />
               ) : (

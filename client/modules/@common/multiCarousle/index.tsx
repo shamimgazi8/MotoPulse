@@ -29,11 +29,7 @@ const CarouselMulti = () => {
 
   return (
     <section className="w-full py-10 ">
-      <div
-        className="container mx-auto px-4"
-        data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom"
-      >
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
             Bike Highlights

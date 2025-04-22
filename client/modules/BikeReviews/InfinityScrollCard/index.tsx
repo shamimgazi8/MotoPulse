@@ -68,7 +68,7 @@ const InfinityScrollCard = ({
                 like: item?.like_count,
                 publishedAt: new Date(item?.createdAt).toLocaleDateString(),
               }}
-              link={`/bike-reviews/${item?.id}`}
+              link={`/${item?.slug}`}
               classes={{
                 body: "flex flex-col gap-2 mt-5",
                 root: "border border-gray-200 dark:border-white/10 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 bg-white dark:bg-neutral-900",
