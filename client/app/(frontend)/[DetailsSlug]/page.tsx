@@ -1,7 +1,10 @@
-import Categories from "@/modules/BikeCategories";
-import Link from "next/link";
+import DetailsPage from "@/modules/DetailsPage";
 
 const ProductPage = () => {
-  return <>This is bike category</>;
+  return (
+    <>
+      <DetailsPage />
+    </>
+  );
 };
 export default ProductPage;

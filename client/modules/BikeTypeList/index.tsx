@@ -7,6 +7,7 @@ import Filters from "../@common/Filters";
 import { useState, useEffect } from "react";
 import bikeData from "../../data/bikeType.json";
 import CarouselMulti from "../@common/multiCarousle";
+import Link from "next/link";
 
 const BikeCategoryList = () => {
   useEffect(() => {
@@ -97,27 +98,29 @@ const BikeCategoryList = () => {
                       </div>
                     ))
                 : dataArray.map((item, i) => (
-                    <div
-                      key={i}
-                      className="parallax-card p-6   backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105"
-                    >
-                      <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded mb-4 relative overflow-hidden">
-                        <img
-                          src={item.imageUrl}
-                          alt={item.title}
-                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110 "
-                        />
+                    <Link href={`/${item?.slug}`}>
+                      <div
+                        key={i}
+                        className="parallax-card p-6   backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105"
+                      >
+                        <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded mb-4 relative overflow-hidden">
+                          <img
+                            src={item.imageUrl}
+                            alt={item.title}
+                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110 "
+                          />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 poiret-one-regular">
+                          {item.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
+                          {item.description}
+                        </p>
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                          View Details
+                        </button>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 poiret-one-regular">
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                        {item.description}
-                      </p>
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                        View Details
-                      </button>
-                    </div>
+                    </Link>
                   ))}
             </div>
           </div>
