@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/db";
+import slugify from "slugify"; // Make sure to install this: npm install slugify
 import User from "./User";
 import BikeList from "./BikeList";
 
@@ -9,12 +10,14 @@ interface ReviewAttributes {
   user_id: number;
   like_count: number;
   review: string;
-  coverPhoto?: string; // Optional field for the cover photo
+  slug?: string;
+  coverPhoto?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface ReviewCreationAttributes extends Optional<ReviewAttributes, "id"> {}
+interface ReviewCreationAttributes
+  extends Optional<ReviewAttributes, "id" | "slug"> {}
 
 class Review
   extends Model<ReviewAttributes, ReviewCreationAttributes>
@@ -25,7 +28,8 @@ class Review
   public user_id!: number;
   public like_count!: number;
   public review!: string;
-  public coverPhoto?: string; // Add coverPhoto property
+  public slug?: string;
+  public coverPhoto?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -54,9 +58,13 @@ Review.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    slug: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
     coverPhoto: {
-      type: DataTypes.STRING, // New field for cover photo URL
-      allowNull: true, // This can be nullable if not every review has a cover photo
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
@@ -64,6 +72,22 @@ Review.init(
     modelName: "Review",
     tableName: "reviews",
     timestamps: true,
+    hooks: {
+      beforeCreate: (review) => {
+        review.slug = slugify(review.review.slice(0, 50), {
+          lower: true,
+          strict: true,
+        });
+      },
+      beforeUpdate: (review) => {
+        if (review.changed("review")) {
+          review.slug = slugify(review.review.slice(0, 50), {
+            lower: true,
+            strict: true,
+          });
+        }
+      },
+    },
   }
 );
 

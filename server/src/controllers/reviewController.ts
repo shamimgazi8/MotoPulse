@@ -5,7 +5,6 @@ import User from "../models/User";
 import Brand from "../models/Brand";
 import Model from "../models/Model";
 import BikeType from "../models/BikeType";
-import { Op } from "sequelize";
 
 import { buildReviewFilters } from "../helpers/reviewFilters";
 
@@ -121,5 +120,111 @@ export const createReview = async (req: Request, res: Response) => {
     res.status(201).json(newReview);
   } catch (error) {
     res.status(500).json({ message: "Error creating review", error });
+  }
+};
+export const getReviewBySlug = async (req: Request, res: Response) => {
+  try {
+    const { slug } = req.params;
+
+    const review = await Review.findOne({
+      where: { slug },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "firstname", "lastname", "profile_url"],
+        },
+        {
+          model: BikeList,
+          as: "bike", // Assuming 'bike' is the alias in the Review model association
+          required: true,
+          attributes: [
+            "id",
+            "imgUrl",
+            "engineCC",
+            "horsePower",
+            "torque",
+            "weight",
+          ],
+          include: [
+            {
+              model: Brand,
+              as: "brand",
+              attributes: ["id", "brandName"],
+            },
+            {
+              model: Model,
+              as: "model",
+              attributes: ["id", "modelName"],
+            },
+            {
+              model: BikeType,
+              as: "type",
+              attributes: ["id", "name"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    res.status(200).json(review);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching review", error });
+  }
+};
+
+export const getReviewsByBikeId = async (req: Request, res: Response) => {
+  try {
+    const { bikeId } = req.params;
+
+    const reviews = await Review.findAll({
+      where: { bike_id: bikeId },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "firstname", "lastname", "email", "profile_url"],
+        },
+        {
+          model: BikeList,
+          as: "bike",
+          required: true,
+          attributes: [
+            "id",
+            "imgUrl",
+            "engineCC",
+            "horsePower",
+            "torque",
+            "weight",
+          ],
+          include: [
+            {
+              model: Brand,
+              as: "brand",
+              attributes: ["id", "brandName"],
+            },
+            {
+              model: Model,
+              as: "model",
+              attributes: ["id", "modelName"],
+            },
+            {
+              model: BikeType,
+              as: "type",
+              attributes: ["id", "name"],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error("Error fetching reviews by bike ID:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching reviews by bike ID", error });
   }
 };
