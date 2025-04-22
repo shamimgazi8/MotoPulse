@@ -5,63 +5,63 @@
   },
   {
     "title": "Types",
-    "link": "/bike-types",
+    "link": "/type",
     "children": [
       {
         "title": "Adventure Touring",
-        "link": "/types/adventure-touring"
+        "link": "/type/adventure-touring"
       },
       {
         "title": "Cruiser",
-        "link": "/types/cruiser"
+        "link": "/type/cruiser"
       },
       {
         "title": "Electric",
-        "link": "/types/electric"
+        "link": "/type/electric"
       },
       {
         "title": "Off-Road",
-        "link": "/types/off-road"
+        "link": "/type/off-road"
       },
       {
         "title": "On-Off-Road",
-        "link": "/types/on-off-road"
+        "link": "/type/on-off-road"
       },
       {
         "title": "Other",
-        "link": "/types/other"
+        "link": "/type/other"
       },
       {
         "title": "Scooter",
-        "link": "/types/scooter"
+        "link": "/type/scooter"
       },
       {
         "title": "Sport-Touring",
-        "link": "/types/sport-touring"
+        "link": "/type/sport-touring"
       },
       {
         "title": "Sportbikes",
-        "link": "/types/sportbikes"
+        "link": "/type/sportbikes"
       },
       {
         "title": "Standard",
-        "link": "/types/standard"
+        "link": "/type/standard"
       },
       {
         "title": "Touring",
-        "link": "/types/touring"
+        "link": "/type/touring"
       },
       {
         "title": "Touring Scooter",
-        "link": "/types/touring-scooter"
+        "link": "/type/touring-scooter"
       },
       {
         "title": "Track",
-        "link": "/types/track"
+        "link": "/type/track"
       },
       {
         "title": "Youth",
-        "link": "/types/youth"
+        "link": "/type/youth"
       }
     ]
   },

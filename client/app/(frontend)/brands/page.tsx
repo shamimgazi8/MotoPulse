@@ -1,5 +1,7 @@
+import BikeCategoryList from "@/modules/BikeTypeList";
+
 const Brands = () => {
-  return <>this is Brands page</>;
+  return <BikeCategoryList />;
 };
 
 export default Brands;

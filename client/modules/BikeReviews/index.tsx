@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import InfinityScrollCard from "./InfinityScrollCard";
 import TrendingBikes from "./TrandingBikes";
 import BikeFilterSidebar from "./Filter/bikeFilterSidebar";
+import { message } from "antd";
 
 const PAGE_SIZE = 5;
 
@@ -45,6 +46,11 @@ const BikeReviews = () => {
       const url = `http://localhost:4000/reviews?${queryString}`;
 
       const res = await fetch(url);
+
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status} ${res.statusText}`);
+      }
+
       const data = await res.json();
 
       if (currentPage === 1) {
@@ -58,6 +64,10 @@ const BikeReviews = () => {
       setHasMore(currentPage < totalPages);
     } catch (error) {
       console.error("Error fetching reviews:", error);
+      setHasMore(false);
+      alert(
+        "Unable to fetch data. Please check your server or internet connection."
+      );
     } finally {
       setLoading(false);
     }

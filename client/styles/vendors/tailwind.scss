@@ -1,7 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url("https://fonts.googleapis.com/css2?family=Poiret+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Neonderthaw&display=swap");
 @layer components {
   .container {
     @apply max-w-[1350px] px-5 mx-auto w-full;
@@ -14,13 +15,32 @@
 
   /* Other color variables */
 }
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior: none;
+}
 body {
   margin: 0;
   padding: 0;
   background-color: var(--background-color);
   color: var(--text-color);
-  font-family: "Grey Qo", cursive;
+  font-family: "Poiret One", sans-serif;
+  -webkit-overflow-scrolling: touch;
 }
+// <weight>: Use a value from 400 to 700
+// <uniquifier>: Use a unique and descriptive class name
+.style {
+  font-size: 60px;
+  font-family: "Neonderthaw", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+.poiret-one-regular {
+  font-family: "Poiret One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 // use for marque gradient
 .custom-gradient {
   background: linear-gradient(
@@ -144,4 +164,28 @@ body {
       background-color: #0f1f2c; /* Back to the original background */
     }
   }
+}
+/* styles/parallax.css */
+.parallax-bg {
+  background-image: url("/your-parallax-background.jpg"); /* replace with your image */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.parallax-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.parallax-card:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
