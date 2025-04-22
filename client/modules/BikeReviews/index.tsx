@@ -41,6 +41,9 @@ const BikeReviews = () => {
       if (queryObj.bikeType) {
         params.append("type", queryObj.bikeType);
       }
+      if (queryObj.sortby) {
+        params.append("sortby", queryObj.sortby);
+      }
 
       const queryString = params.toString();
       const url = `http://localhost:4000/reviews?${queryString}`;

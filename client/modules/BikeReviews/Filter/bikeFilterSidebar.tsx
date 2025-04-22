@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Slider, Select, Checkbox, InputNumber, Collapse } from "antd";
+import { Slider, Select, Checkbox, InputNumber, Collapse, Radio } from "antd";
 import ApiService from "@/service/apiService";
+import { CheckboxGroupProps } from "antd/es/checkbox";
 
 const { Option } = Select;
 
@@ -12,11 +13,10 @@ const BikeFilterSidebar = ({
   onApplyFilters: (filters: any) => void;
 }) => {
   const [filters, setFilters] = useState<any>({
+    sortby: "recent",
     brand: undefined,
     bikeType: undefined,
     ccRange: [100, 160],
-    priceRange: [50000, 2000000],
-    abs: undefined,
   });
 
   const [bikeTypes, setBikeTypes] = useState<{ id: number; name: string }[]>(
@@ -46,10 +46,23 @@ const BikeFilterSidebar = ({
     setFilters((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleApply = () => {
-    onApplyFilters(filters);
-  };
+  const onRadioChange = (value: any) => {
+    console.log(value);
+    setFilters((prev: any) => {
+      const updatedFilters = { ...prev, sortby: value };
 
+      console.log(updatedFilters);
+      return updatedFilters;
+    });
+  };
+  useEffect(() => {
+    onApplyFilters(filters);
+  }, [filters]); // Runs only when filters state updates
+
+  const options: CheckboxGroupProps<string>["options"] = [
+    { label: "Recent Reviews", value: "recent" },
+    { label: "Most Populer", value: "popular" },
+  ];
   const collapseItems = [
     {
       key: "1",
@@ -90,60 +103,68 @@ const BikeFilterSidebar = ({
     {
       key: "3",
       label: "Engine CC",
-      children: (
-        <Slider
-          range
-          min={50}
-          max={2000}
-          step={50}
-          value={filters.ccRange}
-          onChange={(value) => handleChange("ccRange", value)}
-        />
-      ),
-    },
-    {
-      key: "4",
-      label: "Price",
-      children: (
-        <Slider
-          range
-          min={30000}
-          max={2500000}
-          step={10000}
-          value={filters.priceRange}
-          onChange={(value) => handleChange("priceRange", value)}
-        />
-      ),
-    },
+      children: (() => {
+        const [tempCcRange, setTempCcRange] = useState<[number?, number?]>([
+          filters.ccRange?.[0] ?? 50,
+          filters.ccRange?.[1] ?? 2000,
+        ]);
 
-    {
-      key: "6",
-      label: "ABS",
-      children: (
-        <Select
-          allowClear
-          placeholder="ABS Type"
-          style={{ width: "100%" }}
-          onChange={(value) => handleChange("abs", value)}
-        >
-          <Option value="None">None</Option>
-          <Option value="Single Channel">Single Channel</Option>
-          <Option value="Dual Channel">Dual Channel</Option>
-        </Select>
-      ),
+        const isChanged =
+          tempCcRange[0] !== filters.ccRange?.[0] ||
+          tempCcRange[1] !== filters.ccRange?.[1];
+
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <InputNumber
+                min={50}
+                max={2000}
+                step={50}
+                value={tempCcRange[0]}
+                onChange={(value) =>
+                  setTempCcRange([value ?? undefined, tempCcRange[1] ?? 2000])
+                }
+                placeholder="Min CC"
+                style={{ width: "100%" }}
+              />
+              <InputNumber
+                min={50}
+                max={2000}
+                step={50}
+                value={tempCcRange[1]}
+                onChange={(value) =>
+                  setTempCcRange([tempCcRange[0] ?? 50, value ?? undefined])
+                }
+                placeholder="Max CC"
+                style={{ width: "100%" }}
+              />
+            </div>
+            {isChanged && (
+              <button
+                className="btn-outline hover:bg-white hover:text-black transition-all"
+                onClick={() => handleChange("ccRange", tempCcRange)}
+              >
+                Confirm
+              </button>
+            )}
+          </div>
+        );
+      })(),
     },
   ];
 
   return (
-    <div className="flex flex-col mt-5">
+    <div className="flex flex-col mt-5 gap-5">
+      <Radio.Group
+        onChange={(value) => {
+          onRadioChange(value?.target?.value);
+        }}
+        block
+        options={options}
+        defaultValue="recent"
+        buttonStyle="solid"
+      />
       <Collapse defaultActiveKey={["1", "2", "3"]} items={collapseItems} />
-      <button
-        className="btn-secondary rounded"
-        style={{ marginTop: 16 }}
-        onClick={handleApply}
-      >
-        Apply Filters
-      </button>
     </div>
   );
 };
