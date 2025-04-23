@@ -16,7 +16,7 @@ const BikeFilterSidebar = ({
     sortby: "recent",
     brand: undefined,
     bikeType: undefined,
-    ccRange: [100, 160],
+    // ccRange: [100, 160],
   });
 
   const [bikeTypes, setBikeTypes] = useState<{ id: number; name: string }[]>(
@@ -105,8 +105,8 @@ const BikeFilterSidebar = ({
       label: "Engine CC",
       children: (() => {
         const [tempCcRange, setTempCcRange] = useState<[number?, number?]>([
-          filters.ccRange?.[0] ?? 50,
-          filters.ccRange?.[1] ?? 2000,
+          filters.ccRange?.[0],
+          filters.ccRange?.[1],
         ]);
 
         const isChanged =
