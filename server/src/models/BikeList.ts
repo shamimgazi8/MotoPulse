@@ -103,9 +103,4 @@ BikeList.init(
   }
 );
 
-// Associations
-BikeList.belongsTo(Brand, { foreignKey: "brand_id", as: "brand" });
-BikeList.belongsTo(Model, { foreignKey: "model_id", as: "model" });
-BikeList.belongsTo(BikeType, { foreignKey: "bike_type_id", as: "type" });
-
 export default BikeList;

@@ -24,11 +24,15 @@ BikeList.hasMany(Review, { foreignKey: "bike_id", as: "reviews" });
 Review.hasMany(ReviewLike, { foreignKey: "review_id" });
 ReviewLike.belongsTo(Review, { foreignKey: "review_id" });
 
+BikeList.belongsTo(Brand, { foreignKey: "brand_id", as: "brand" });
+BikeList.belongsTo(Model, { foreignKey: "model_id", as: "model" });
+BikeList.belongsTo(BikeType, { foreignKey: "bike_type_id", as: "type" });
+
 User.hasMany(ReviewLike, { foreignKey: "user_id" });
 ReviewLike.belongsTo(User, { foreignKey: "user_id" });
 
 Review.hasMany(Comment, { foreignKey: "review_id", as: "comments" });
-Comment.belongsTo(Review, { foreignKey: "review_id" });
+Comment.belongsTo(Review, { foreignKey: "review_id", as: "reviews" });
 
 User.hasMany(Comment, { foreignKey: "user_id" });
 Comment.belongsTo(User, { foreignKey: "user_id" });

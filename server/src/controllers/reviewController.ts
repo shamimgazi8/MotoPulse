@@ -7,6 +7,7 @@ import Model from "../models/Model";
 import BikeType from "../models/BikeType";
 
 import { buildReviewFilters } from "../helpers/reviewFilters";
+import Comment from "../models/comment";
 
 export const getAllReviews = async (req: Request, res: Response) => {
   try {
@@ -36,8 +37,6 @@ export const getAllReviews = async (req: Request, res: Response) => {
       bikeWhere.engineCC = engineCCFilter;
     }
 
-    console.log("engineCCFilter", engineCCFilter);
-    console.log("bikeWhere", bikeWhere);
     const reviews = await Review.findAndCountAll({
       where: reviewWhere,
       limit,
@@ -50,10 +49,27 @@ export const getAllReviews = async (req: Request, res: Response) => {
           attributes: ["id", "firstname", "lastname", "email", "profile_url"],
         },
         {
+          model: Comment,
+          as: "comments",
+          attributes: ["id", "content", "createdAt"],
+          include: [
+            {
+              model: User,
+              attributes: [
+                "id",
+                "firstname",
+                "lastname",
+                "email",
+                "profile_url",
+              ],
+            },
+          ],
+        },
+        {
           model: BikeList,
           as: "bike",
-          required: true, // Ensure the bike exists
-          where: bikeWhere, // Pass engineCC filter here
+          required: true,
+          where: bikeWhere,
           attributes: [
             "id",
             "imgUrl",
@@ -61,6 +77,9 @@ export const getAllReviews = async (req: Request, res: Response) => {
             "horsePower",
             "torque",
             "weight",
+            "brand_id",
+            "model_id",
+            "bike_type_id",
           ],
           include: [
             {
