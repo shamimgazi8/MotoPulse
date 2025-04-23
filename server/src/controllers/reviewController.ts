@@ -29,10 +29,15 @@ export const getAllReviews = async (req: Request, res: Response) => {
 
     // Construct bike filter based on engineCC
     const bikeWhere: any = {};
-    if (Object.keys(engineCCFilter).length > 0) {
-      bikeWhere.engineCC = engineCCFilter; // Apply engineCC filter here
+    if (
+      Object.keys(engineCCFilter).length > 0 ||
+      Object.getOwnPropertySymbols(engineCCFilter).length > 0
+    ) {
+      bikeWhere.engineCC = engineCCFilter;
     }
 
+    console.log("engineCCFilter", engineCCFilter);
+    console.log("bikeWhere", bikeWhere);
     const reviews = await Review.findAndCountAll({
       where: reviewWhere,
       limit,
