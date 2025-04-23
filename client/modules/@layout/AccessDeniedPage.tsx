@@ -1,19 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
-export default function AccessDenied() {
+function AccessDeniedContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const from = searchParams.get("from");
-
     if (from === "/add-review") {
-      setErrorMessage(`You must be logged in to write your own review.`);
+      setErrorMessage("You must be logged in to write your own review.");
     }
   }, [searchParams]);
 
@@ -33,11 +32,9 @@ export default function AccessDenied() {
         src="/misc/acc.png"
         alt="Access Denied"
       />
-
       <h1 className="text-4xl md:text-5xl font-bold text-red-800 mb-4 animate-fade-in">
         Access Denied
       </h1>
-
       <div className="space-x-4">
         <button
           onClick={() => router.push("/users/login")}
@@ -53,5 +50,13 @@ export default function AccessDenied() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function AccessDenied() {
+  return (
+    <Suspense fallback={<div className="text-center mt-20">Loading...</div>}>
+      <AccessDeniedContent />
+    </Suspense>
   );
 }

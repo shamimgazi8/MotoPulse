@@ -6,11 +6,9 @@ export const metadata = {
 };
 const AddReview = () => {
   return (
-    <>
-      <div>
-        <BikeReviewForm />
-      </div>
-    </>
+    <div>
+      <BikeReviewForm />
+    </div>
   );
 };
 export default AddReview;

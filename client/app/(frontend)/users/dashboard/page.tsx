@@ -1,4 +1,5 @@
 // pages/dashboard.tsx
+"use client";
 import DashboardProfile from "@/modules/User/Dashboard";
 import React from "react";
 

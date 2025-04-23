@@ -8,7 +8,7 @@ import { getUserIdFromToken } from "@/utils/utils";
 import CoverImageUpload, {
   CoverImageUploadRef,
 } from "./components/UploadCover";
-import LoadingDots from "../@common/loading";
+
 import DoneCheckmark from "../@common/DoneCheck";
 import ScrollToTopButton from "../home/@components/ScrollTopTobutton";
 import FullPagePopup from "../@common/fullpagePopUp/FullPagePopup";

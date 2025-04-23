@@ -1,7 +1,6 @@
 // pages/404.tsx
 import React from "react";
 import Link from "next/link";
-import InitialLoader from "@/modules/@common/intialLoader";
 
 const Custom404 = () => {
   return (
@@ -9,8 +8,9 @@ const Custom404 = () => {
       <h1 className="text-6xl font-bold text-red-600">404</h1>
       <h2 className="text-2xl  mt-4">Page Not Found</h2>
       <p className="text-lg text-gray-600 mt-2">
-        Sorry, we couldn't find the page you're looking for.
+        Sorry, we couldn&apos;t find the page you&apos;re looking for.
       </p>
+
       <Link className="btn-secondary mt-10" href="/">
         Go Back to Home
       </Link>
