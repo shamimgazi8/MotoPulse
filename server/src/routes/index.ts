@@ -8,6 +8,7 @@ import bikeListRoutes from "./bikeList"; // Import bike list routes
 import reviewRoutes from "./review";
 import reviewLike from "./reviewLike";
 import uploadRoutes from "./upload";
+import commentRoutes from "./comment";
 const router = Router();
 
 // Existing routes
@@ -22,6 +23,7 @@ router.use("/bikeLists", bikeListRoutes); // Route for bike lists
 router.use("/reviews", reviewRoutes); //
 router.use("/like", reviewLike); //
 router.use("/upload-cover", uploadRoutes);
+router.use("/comments", commentRoutes);
 // router.use("/upload-cover", (req, res) => {
 //   res.status(200).json({ message: "upload" });
 // });
