@@ -1,41 +1,63 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "antd";
+import { Modal, Spin } from "antd";
 import { IoSearchOutline } from "react-icons/io5";
 import { BsSearch } from "react-icons/bs";
+import ApiService from "@/service/apiService";
+import Link from "next/link";
 
-// Sample data
-const bikes = [
-  { id: 1, name: "Yamaha R15", model: "R15 V4", type: "Sport" },
-  { id: 2, name: "KTM Duke", model: "200", type: "Naked" },
-  { id: 3, name: "Royal Enfield Classic", model: "350", type: "Cruiser" },
-  { id: 4, name: "Honda CBR", model: "650R", type: "Sport" },
-];
+interface Review {
+  id: number;
+  review: string;
+  coverPhoto: string;
+  createdAt: string;
+  slug: string;
+  bike: {
+    brand: { brandName: string };
+    model: { modelName: string };
+    type: { name: string };
+  };
+  User: {
+    firstname: string;
+    lastname: string;
+    profile_url: string;
+  };
+}
 
 const SearchAnt: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredBikes, setFilteredBikes] = useState<typeof bikes>([]);
+  const [filteredResults, setFilteredResults] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+  const showModal = () => setIsModalOpen(true);
 
   const handleCancel = () => {
     setIsModalOpen(false);
     setSearchQuery("");
-    setFilteredBikes([]);
+    setFilteredResults([]);
   };
 
-  // Real-time search effect
   useEffect(() => {
-    const query = searchQuery.toLowerCase();
-    const results = bikes.filter(
-      (bike) =>
-        bike.name.toLowerCase().includes(query) ||
-        bike.model.toLowerCase().includes(query) ||
-        bike.type.toLowerCase().includes(query)
-    );
-    setFilteredBikes(results);
+    const fetchData = async () => {
+      if (!searchQuery.trim()) {
+        setFilteredResults([]);
+        return;
+      }
+      setLoading(true);
+      try {
+        console.log(searchQuery);
+        const response = await ApiService.GetReviewFromSearch(searchQuery); // API call
+        setFilteredResults(response.result); // assuming response.data is an array
+      } catch (error) {
+        console.error("Search error:", error);
+        setFilteredResults([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const debounce = setTimeout(fetchData, 400); // debounce API calls
+    return () => clearTimeout(debounce);
   }, [searchQuery]);
 
   return (
@@ -48,7 +70,7 @@ const SearchAnt: React.FC = () => {
       </button>
 
       <Modal
-        title="Search by bike name, model or types"
+        title="Search by model, brand or type"
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}
@@ -71,16 +93,30 @@ const SearchAnt: React.FC = () => {
         </div>
 
         <div>
-          {filteredBikes.length > 0 ? (
-            filteredBikes.map((bike) => (
-              <div
-                key={bike.id}
-                className="p-2 mb-2 border text-white rounded dark:border-white border-gray-300"
+          {loading ? (
+            <div className="text-center my-4">
+              <Spin />
+            </div>
+          ) : filteredResults.length > 0 ? (
+            filteredResults.map((item) => (
+              <Link
+                onClick={() => {
+                  setIsModalOpen(false);
+                }}
+                key={item.id}
+                href={`/${item?.slug}`}
               >
-                <p className="font-semibold">{bike.name}</p>
-                <p>Model: {bike.model}</p>
-                <p>Type: {bike.type}</p>
-              </div>
+                <div className="p-2 mb-2 border text-white rounded dark:border-white border-gray-300">
+                  <p className="font-semibold">
+                    {item.bike.brand.brandName} {item.bike.model.modelName}
+                  </p>
+                  <p className="italic text-sm">Type: {item.bike.type.name}</p>
+                  <p>{item.review.slice(0, 100)}...</p>
+                  <p className="text-xs mt-1">
+                    By {item.User.firstname} {item.User.lastname}
+                  </p>
+                </div>
+              </Link>
             ))
           ) : searchQuery ? (
             <p className="text-gray-500 dark:text-white">No results found.</p>

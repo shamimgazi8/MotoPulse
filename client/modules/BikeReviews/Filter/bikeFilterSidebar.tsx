@@ -16,13 +16,17 @@ const BikeFilterSidebar = ({
     sortby: "recent",
     brand: undefined,
     bikeType: undefined,
-    // ccRange: [100, 160],
   });
 
   const [bikeTypes, setBikeTypes] = useState<{ id: number; name: string }[]>(
     []
   );
   const [brands, setBrands] = useState<{ id: number; brandName: string }[]>([]);
+  const [tempCcRange, setTempCcRange] = useState<[number?, number?]>([
+    filters.ccRange?.[0],
+    filters.ccRange?.[1],
+  ]);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +46,10 @@ const BikeFilterSidebar = ({
     fetchData();
   }, []);
 
+  useEffect(() => {
+    onApplyFilters(filters);
+  }, [filters]); // Runs only when filters state updates
+
   const handleChange = (field: string, value: any) => {
     setFilters((prev: any) => ({ ...prev, [field]: value }));
   };
@@ -50,19 +58,16 @@ const BikeFilterSidebar = ({
     console.log(value);
     setFilters((prev: any) => {
       const updatedFilters = { ...prev, sortby: value };
-
       console.log(updatedFilters);
       return updatedFilters;
     });
   };
-  useEffect(() => {
-    onApplyFilters(filters);
-  }, [filters]); // Runs only when filters state updates
 
   const options: CheckboxGroupProps<string>["options"] = [
     { label: "Recent Reviews", value: "recent" },
-    { label: "Most Populer", value: "popular" },
+    { label: "Most Popular", value: "popular" },
   ];
+
   const collapseItems = [
     {
       key: "1",
@@ -103,62 +108,65 @@ const BikeFilterSidebar = ({
     {
       key: "3",
       label: "Engine CC",
-      children: (() => {
-        const [tempCcRange, setTempCcRange] = useState<[number?, number?]>([
-          filters.ccRange?.[0],
-          filters.ccRange?.[1],
-        ]);
-
-        const isChanged =
-          tempCcRange[0] !== filters.ccRange?.[0] ||
-          tempCcRange[1] !== filters.ccRange?.[1];
-
-        return (
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <InputNumber
-                min={50}
-                max={2000}
-                step={50}
-                value={tempCcRange[0]}
-                onChange={(value) =>
-                  setTempCcRange([value ?? undefined, tempCcRange[1] ?? 2000])
-                }
-                placeholder="Min CC"
-                style={{ width: "100%" }}
-              />
-              <InputNumber
-                min={50}
-                max={2000}
-                step={50}
-                value={tempCcRange[1]}
-                onChange={(value) =>
-                  setTempCcRange([tempCcRange[0] ?? 50, value ?? undefined])
-                }
-                placeholder="Max CC"
-                style={{ width: "100%" }}
-              />
-            </div>
-            {isChanged && (
-              <button
-                className="btn-outline hover:bg-white hover:text-black transition-all"
-                onClick={() => handleChange("ccRange", tempCcRange)}
-              >
-                Confirm
-              </button>
-            )}
+      children: (
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <InputNumber
+              min={50}
+              max={2000}
+              step={50}
+              value={tempCcRange[0]}
+              onChange={(value) =>
+                setTempCcRange([value ?? undefined, tempCcRange[1] ?? 2000])
+              }
+              placeholder="Min CC"
+              style={{ width: "100%" }}
+            />
+            <InputNumber
+              min={50}
+              max={2000}
+              step={50}
+              value={tempCcRange[1]}
+              onChange={(value) =>
+                setTempCcRange([tempCcRange[0] ?? 50, value ?? undefined])
+              }
+              placeholder="Max CC"
+              style={{ width: "100%" }}
+            />
           </div>
-        );
-      })(),
+          {tempCcRange[0] !== filters.ccRange?.[0] ||
+          tempCcRange[1] !== filters.ccRange?.[1] ? (
+            <button
+              className="btn-outline hover:bg-white hover:text-black transition-all px-2 py-1"
+              onClick={() => {
+                handleChange("ccRange", tempCcRange);
+                setShowConfirm(true);
+              }}
+            >
+              Confirm
+            </button>
+          ) : null}
+          {tempCcRange[0] != null || tempCcRange[1] != null ? (
+            <button
+              className="btn-outline hover:bg-white hover:text-black transition-all px-2 py-1"
+              onClick={() => {
+                setTempCcRange([undefined, undefined]);
+                handleChange("ccRange", undefined);
+                setShowConfirm(false);
+              }}
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
+      ),
     },
   ];
 
   return (
     <div className="flex flex-col mt-5 gap-5">
       <Radio.Group
-        onChange={(value) => {
-          onRadioChange(value?.target?.value);
-        }}
+        onChange={(e) => onRadioChange(e.target.value)}
         block
         options={options}
         defaultValue="recent"

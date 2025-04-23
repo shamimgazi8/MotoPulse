@@ -146,7 +146,7 @@ const LatestBikes = () => {
                           className="w-full h-full object-cover transition-transform duration-300"
                         />
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 poiret-one-regular">
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                         {item.name}
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">

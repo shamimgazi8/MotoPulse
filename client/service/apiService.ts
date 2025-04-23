@@ -72,6 +72,10 @@ class ApiService {
     return this.request("/reviews", "POST", reviewData);
   }
 
+  static GetReviewFromSearch(searchQuery: string) {
+    console.log(searchQuery, "this is api search");
+    return this.request(`/reviews?search=${searchQuery}`);
+  }
   static getReviewsByBike(bikeId: number) {
     return this.request(`/bikes/${bikeId}/reviews`);
   }
@@ -81,6 +85,12 @@ class ApiService {
   }
   static getReviewByBikeId(bikeId: number) {
     return this.request(`/reviews/bike/${bikeId}`);
+  }
+  static getReviewBybyBrand(brandName: string) {
+    return this.request(`/reviews?brandName=${brandName}`);
+  }
+  static getReviewBybyType(Type: string) {
+    return this.request(`/reviews?type=${Type}`);
   }
   static async unlikeReview(reviewId: number, userId: number) {
     try {

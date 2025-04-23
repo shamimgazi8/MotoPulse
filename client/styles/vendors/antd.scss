@@ -97,15 +97,14 @@
   color: #22c55e9f;
   border-color: #22c55ec1;
 }
-// :where(.css-dev-only-do-not-override-1261szd).ant-select-single {
-//   background-color: red;
-// }
 
 :where(.css-dev-only-do-not-override-1261szd).ant-modal .ant-modal-content {
   background-color: rgba(255, 255, 255, 0);
   box-shadow: none;
 }
-
+:where(.css-dev-only-do-not-override-1rgv2ha).ant-modal .ant-modal-content {
+  box-shadow: none;
+}
 :where(.css-dev-only-do-not-override-1261szd).ant-modal .ant-modal-header {
   background-color: rgba(255, 255, 255, 0);
 }
@@ -118,18 +117,21 @@
 :where(.css-dev-only-do-not-override-1rgv2ha).ant-modal .ant-modal-header {
   background-color: rgba(0, 0, 0, 0);
 }
-// :where(.css-dev-only-do-not-override-1rgv2ha).ant-radio-button-wrapper
-//   > .ant-radio-button {
-//   background-color: #ffffff;
-//   color: black;
-//   border-radius: 1px;
-// }
-// .ant-radio-group-solid
-//   :where(
-//     .css-dev-only-do-not-override-1rgv2ha
-//   ).ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-//   border: #07021b;
-// }
-// :where(.css-dev-only-do-not-override-1rgv2ha).ant-radio-button-wrapper:hover {
-//   color: rgb(255, 255, 255);
-// }
+.ant-statistic-content-value-int {
+  background: linear-gradient(90deg, #1592ff, #10b981, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+.ant-statistic-content-value {
+  background: linear-gradient(90deg, #1592ff, #10b981, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+:where(.css-dev-only-do-not-override-1rgv2ha).ant-statistic
+  .ant-statistic-title {
+  color: white;
+}

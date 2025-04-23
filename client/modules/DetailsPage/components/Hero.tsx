@@ -138,7 +138,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
             {/* Engine CC */}
-            <div className="bg-white dark:bg-[#1f1f1f] rounded-xl p-2 shadow text-center">
+            <div className="bg-white dark:bg-[#1f1f1f91] rounded-xl p-2 shadow text-center">
               <Statistic
                 title="Engine CC"
                 value={bike.bike?.engineCC}
@@ -191,7 +191,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
           </div>
 
           <div>
-            <h3 className="text-2xl font-semibold mb-6">User Reviews</h3>
+            <h3 className="text-2xl font-semibold mb-6">Others Review</h3>
             {reviews
               .slice(0, showMoreReviews ? reviews.length : 3)
               .map((item, key) => (
