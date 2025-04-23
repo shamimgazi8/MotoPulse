@@ -103,7 +103,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       alert("Something went wrong while liking the post.");
     }
   };
-
+  console.log(data);
   return (
     <div className={`group relative ${classes?.root || ""}`}>
       {/* User Info */}
@@ -207,10 +207,8 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       {/* Comment Section */}
       {showComments && (
         <CommentSection
-          user={{
-            name: data?.name || "Anonymous",
-            avatar: data?.profilePicture,
-          }}
+          user={data}
+          reviewId={data?.id}
           onCommentSubmit={() => setCommentCount((prev) => prev + 1)}
         />
       )}

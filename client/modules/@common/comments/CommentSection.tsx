@@ -1,8 +1,9 @@
-// components/CommentSection.tsx
 import Image from "next/image";
 import { IoSend } from "react-icons/io5";
 import React, { useState } from "react";
 
+import { getUserIdFromToken } from "@/utils/utils";
+import Cookies from "js-cookie";
 export interface Comment {
   name: string;
   avatar: string;
@@ -14,31 +15,63 @@ interface CommentSectionProps {
   user?: {
     name: string;
     avatar?: string;
+    id?: number;
+    profilePicture: string;
   };
+  reviewId: number;
   onCommentSubmit?: (comment: Comment) => void;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
   initialComments = [],
-  user = { name: "Anonymous" },
+  user,
+  reviewId,
   onCommentSubmit,
 }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>(initialComments);
-  const avatarFallback = "https://www.w3schools.com/howto/img_avatar.png";
-
-  const handleSubmit = () => {
+  const avatarFallback =
+    user?.profilePicture || "https://www.w3schools.com/howto/img_avatar.png";
+  const token = Cookies.get("token");
+  const handleSubmit = async () => {
     if (!commentText.trim()) return;
+    console.log(user);
+    const userId = getUserIdFromToken();
+    if (!userId) {
+      alert("You must be logged in to comment.");
+      return;
+    }
+    console.log(userId, "user id");
 
-    const newComment: Comment = {
-      name: user.name,
-      avatar: user.avatar || avatarFallback,
-      content: commentText.trim(),
-    };
+    try {
+      const response = await fetch("http://localhost:4000/comments/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          content: commentText.trim(),
+          review_id: reviewId,
+        }),
+      });
 
-    setComments((prev) => [...prev, newComment]);
-    setCommentText("");
-    onCommentSubmit?.(newComment);
+      if (!response.ok) {
+        throw new Error("Failed to post comment");
+      }
+
+      const newComment: Comment = {
+        name: user?.name || "Anonymous",
+        avatar: user?.avatar || avatarFallback,
+        content: commentText.trim(),
+      };
+
+      setComments((prev) => [...prev, newComment]);
+      setCommentText("");
+      onCommentSubmit?.(newComment);
+    } catch (error) {
+      console.error("Failed to submit comment:", error);
+    }
   };
 
   return (
