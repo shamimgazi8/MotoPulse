@@ -103,7 +103,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       alert("Something went wrong while liking the post.");
     }
   };
-  console.log(data);
+
   return (
     <div className={`group relative ${classes?.root || ""}`}>
       {/* User Info */}
@@ -200,14 +200,14 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
           onClick={() => setShowComments(!showComments)}
           className="ml-4 hover:text-primary"
         >
-          Comment {commentCount}
+          Comment {data?.comment?.length}
         </button>
       </div>
 
       {/* Comment Section */}
       {showComments && (
         <CommentSection
-          user={data}
+          data={data}
           reviewId={data?.id}
           onCommentSubmit={() => setCommentCount((prev) => prev + 1)}
         />

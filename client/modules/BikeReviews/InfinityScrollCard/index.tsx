@@ -43,7 +43,7 @@ const InfinityScrollCard = ({
       if (currentLoader) observer.unobserve(currentLoader);
     };
   }, [hasMore, loadMore]);
-
+  console.log(items, "data load with api");
   return (
     <div
       data-aos="fade-in"
@@ -67,6 +67,7 @@ const InfinityScrollCard = ({
                 bikeDetails: item?.bike,
                 like: item?.like_count,
                 publishedAt: new Date(item?.createdAt).toLocaleDateString(),
+                comment: item?.comments,
               }}
               link={`/${item?.slug}`}
               classes={{
