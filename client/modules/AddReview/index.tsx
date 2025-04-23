@@ -11,6 +11,7 @@ import CoverImageUpload, {
 import LoadingDots from "../@common/loading";
 import DoneCheckmark from "../@common/DoneCheck";
 import ScrollToTopButton from "../home/@components/ScrollTopTobutton";
+import FullPagePopup from "../@common/fullpagePopUp/FullPagePopup";
 
 const { Option } = Select;
 
@@ -41,6 +42,8 @@ const BikeReviewForm = () => {
   const [newTypeName, setNewTypeName] = useState("");
   const [isPosting, setIsPosting] = useState(false);
   const [bike_id, setBike_id] = useState(0);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   const [customToast, setCustomToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -283,7 +286,6 @@ const BikeReviewForm = () => {
 
       const responseData = await response.json();
       console.log("Review submitted successfully:", responseData);
-      showToast("Review Submitted successfully", "success");
 
       // Reset form fields after successful submission
       setFormrest(true);
@@ -297,7 +299,8 @@ const BikeReviewForm = () => {
       setReview(""); // Reset review text
       setCoverPhoto(null); // Reset image if necessary
       uploadRef.current?.reset();
-      window.location.href = "./bike-reviews";
+
+      setIsPopupOpen(true);
     } catch (error: any) {
       console.error("Error submitting review:", error.message);
       showToast("Error submitting review", "error");
@@ -671,7 +674,6 @@ const BikeReviewForm = () => {
           <button className="mt-4 btn-secondary rounded">Submit Review</button>
         </div>
       </form>
-
       {/* Custom Toast */}
       {customToast && (
         <div
@@ -684,6 +686,7 @@ const BikeReviewForm = () => {
         </div>
       )}
       <ScrollToTopButton />
+      <FullPagePopup isOpen={isPopupOpen} />;
     </div>
   );
 };
