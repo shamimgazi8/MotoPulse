@@ -48,7 +48,9 @@ const BikeReviews = () => {
       const queryString = params.toString();
       const url = `http://localhost:4000/reviews?${queryString}`;
 
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        cache: "no-store",
+      });
 
       if (!res.ok) {
         throw new Error(`Server error: ${res.status} ${res.statusText}`);

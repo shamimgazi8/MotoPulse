@@ -5,7 +5,7 @@ const LatestShots = () => {
   return (
     <div
       data-aos="fade-right"
-      className=" lg:grid lg:grid-cols-[2fr_1fr]  mt-5 px-5 my-5"
+      className=" lg:grid lg:grid-cols-[2fr_1fr]  my-5  container"
     >
       <div className="">
         <Accordion auto={false} />

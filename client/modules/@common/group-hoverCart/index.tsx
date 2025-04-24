@@ -7,7 +7,7 @@ const HoverCart = ({ data }: any) => {
       <Link href={`/${data?.slug}`}>
         <div
           key={data?.id}
-          className="product group relative w-64 h-48 overflow-hidden "
+          className="product group relative w-68 h-52 overflow-hidden "
         >
           <Image
             height={300}

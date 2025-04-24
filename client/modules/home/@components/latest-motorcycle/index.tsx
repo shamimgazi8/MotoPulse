@@ -104,6 +104,38 @@ const data = [
     },
     type: "Adventure",
   },
+  {
+    id: 7,
+    name: "Yamaha YZF-R3",
+    slug: "yamaha-yzf-r3-001",
+    description: "A lightweight supersport bike built for speed and agility.",
+    price: 5500,
+    imageUrl:
+      "https://global-fs.webike-cdn.net/uiu/mybike/202402/03_124141_65be276f42abb.jpg",
+    specs: {
+      engine: "321cc parallel twin",
+      horsepower: "42 HP",
+      topSpeed: "180 km/h",
+      weight: "169 kg",
+    },
+    type: "Sport",
+  },
+  {
+    id: 8,
+    name: "Kawasaki Z650",
+    slug: "kawasaki-z650-002",
+    description: "A powerful and versatile naked bike, perfect for city rides.",
+    price: 7600,
+    imageUrl:
+      "https://bikesguide.bikroy.com/wp-content/uploads/2023/11/kawasaki-z650-abs-feature.jpg",
+    specs: {
+      engine: "649cc parallel twin",
+      horsepower: "67 HP",
+      topSpeed: "200 km/h",
+      weight: "187 kg",
+    },
+    type: "Naked",
+  },
 ];
 
 const LatestBikes = () => {

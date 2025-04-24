@@ -61,17 +61,17 @@
   },
   {
     "id": 5,
-    "name": "Ducati Scrambler Icon",
-    "slug": "ducati-scrambler-icon-005",
-    "description": "A stylish scrambler with iconic design and impressive performance.",
-    "price": 9200,
-    "imageUrl": "https://images.ctfassets.net/x7j9qwvpvr5s/4MMF3fxCFL0dkBVyzAj3y0/b4f2f59738bda826fd003a5105671c0f/Ducati_Scrambler_Icon_Yellow.png",
+    "name": "Royal Enfield Classic 350",
+    "slug": "royal-enfield-classic-350-003",
+    "description": "A retro-styled bike known for its comfort and timeless design.",
+    "price": 4500,
+    "imageUrl": "https://www.financialexpress.com/wp-content/uploads/2024/08/Royal-Enfield-Classic-350-3.jpg",
     "specs": {
-      "engine": "803cc L-Twin",
-      "horsepower": "73 HP",
-      "topSpeed": "200 km/h",
-      "weight": "189 kg"
+      "engine": "349cc single-cylinder",
+      "horsepower": "20 HP",
+      "topSpeed": "120 km/h",
+      "weight": "195 kg"
     },
-    "type": "Scrambler"
+    "type": "Cruiser"
   }
 ]

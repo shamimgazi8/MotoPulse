@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import CarouselMulti from "../@common/multiCarousle";
 import Link from "next/link";
 import ApiService from "@/service/apiService";
+import Image from "next/image";
 const BikeCategoryList = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter((segment) => segment);
@@ -76,7 +77,7 @@ const BikeCategoryList = () => {
         id="parallaxHero"
         className="relative parallaxHero flex items-center flex-col justify-center overflow-hidden"
         style={{
-          backgroundImage: "url('/misc/dt1.jpg')",
+          backgroundImage: "url('/misc/dt1.webp')",
           backgroundSize: "cover",
           backgroundAttachment: "sticky",
           backgroundPosition: "center right",
@@ -126,7 +127,9 @@ const BikeCategoryList = () => {
                       >
                         <div>
                           <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded mb-4 relative overflow-hidden">
-                            <img
+                            <Image
+                              height={100}
+                              width={100}
                               src={item.coverPhoto}
                               alt="Review Cover"
                               className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"

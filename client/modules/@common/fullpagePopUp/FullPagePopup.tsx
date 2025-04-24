@@ -23,7 +23,7 @@ const FullPagePopup: React.FC<FullPagePopupProps> = ({ isOpen }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-500 ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-500  ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
