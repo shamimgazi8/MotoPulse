@@ -164,12 +164,12 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
               )}
 
               {data?.bikeDetails?.brand?.brandName && (
-                <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-teal-500 rounded-full shadow-sm hover:bg-blue-700 transition">
+                <span className="inline-block px-3 py-1 text-xs font-medium text-black bg-white rounded-full shadow-sm hover:bg-blue-700 transition">
                   Brand : {data.bikeDetails.brand.brandName}
                 </span>
               )}
               {data?.bikeDetails?.model?.modelName && (
-                <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-full shadow-sm hover:bg-blue-700 transition">
+                <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-teal-500 rounded-full shadow-sm hover:bg-blue-700 transition">
                   Model : {data.bikeDetails.model.modelName}
                 </span>
               )}

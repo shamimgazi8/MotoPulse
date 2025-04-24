@@ -4,20 +4,21 @@ import React, { useState } from "react";
 import { getUserIdFromToken } from "@/utils/utils";
 import Cookies from "js-cookie";
 import { CiCircleAlert } from "react-icons/ci";
+
 // Interfaces
 export interface User {
   firstname: string;
   lastname: string;
-  profile_url: string; // Or use `avatar` depending on your backend structure
+  profile_url: string;
 }
 
 export interface Comment {
   content: string;
-  User: User; // Reference to the user object
+  User: User;
 }
 
 interface CommentSectionProps {
-  initialComments?: Comment[]; // Optionally provide initial comments
+  initialComments?: Comment[];
   user?: {
     name: string;
     avatar?: string;
@@ -29,9 +30,9 @@ interface CommentSectionProps {
     name: string;
     avatar?: string;
     profilePicture?: string;
-    comment: Comment[]; // List of comments related to the review
+    comment: Comment[];
   };
-  onCommentSubmit?: (comment: Comment) => void; // Callback to handle new comment submission
+  onCommentSubmit?: (comment: Comment) => void;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
@@ -40,27 +41,26 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   reviewId,
   onCommentSubmit,
 }) => {
-  // State
   const [commentText, setCommentText] = useState<string>("");
   const [failedCommentIndex, setFailedCommentIndex] = useState<number | null>(
     null
-  ); // Track failed comment index
+  );
   const [comments, setComments] = useState<Comment[]>(data?.comment || []);
+  const [visibleCount, setVisibleCount] = useState<number>(3); // Number of comments to show
   const avatarFallback =
     data?.profilePicture || "https://www.w3schools.com/howto/img_avatar.png";
-  const token = Cookies.get("token"); // Getting the token for authorization
+  const token = Cookies.get("token");
 
   const handleSubmit = async () => {
-    if (!commentText.trim()) return; // Don't submit if comment is empty
+    if (!commentText.trim()) return;
 
-    const userId = getUserIdFromToken(); // Get user ID from the token
+    const userId = getUserIdFromToken();
     if (!userId) {
       alert("You must be logged in to comment.");
       return;
     }
 
     try {
-      // Sending the new comment to the backend
       const response = await fetch("http://localhost:4000/comments/", {
         method: "POST",
         headers: {
@@ -73,33 +73,36 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         }),
       });
 
-      // Constructing a new comment to be added to the UI
       const newComment: Comment = {
         content: commentText.trim(),
         User: {
           firstname: data?.name || "Anonymous",
-          lastname: "", // Add this if you have a last name field
-          profile_url: data?.avatar || avatarFallback, // Default avatar if not available
+          lastname: "",
+          profile_url: data?.avatar || avatarFallback,
         },
       };
 
-      // Update the comments state
       setComments((prev) => [...prev, newComment]);
-      setCommentText(""); // Clear the input field
-      onCommentSubmit?.(newComment); // Call the callback if provided
+      setCommentText("");
+      onCommentSubmit?.(newComment);
 
-      // Check if the response is successful
       if (!response.ok) {
-        setFailedCommentIndex(comments.length); // Set the failed comment index
+        setFailedCommentIndex(comments.length);
         throw new Error("Failed to post comment");
       }
 
-      // Reset failed comment index on success
       setFailedCommentIndex(null);
     } catch (error) {
       console.error("Failed to submit comment:", error);
     }
   };
+
+  const handleSeeMore = () => {
+    setVisibleCount((prev) => prev + 3);
+  };
+
+  const visibleComments = comments.slice(0, visibleCount);
+  const hasMoreComments = comments.length > visibleCount;
 
   return (
     <div className="mt-4 relative">
@@ -121,32 +124,31 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       </div>
 
       {/* Display Comments */}
-      {comments.length > 0 && (
+      {visibleComments.length > 0 && (
         <div className="mt-4">
           <ul>
-            {comments.map((comment, index) => (
+            {visibleComments.map((comment, index) => (
               <li
                 key={index}
                 className="flex items-start mb-2 text-sm text-gray-600 dark:text-gray-300"
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden mr-3">
                   <Image
-                    src={comment.User.profile_url} // Display the user's avatar
+                    src={comment.User.profile_url}
                     alt={`${comment.User.firstname}'s Avatar`}
                     width={32}
                     height={32}
                     className="object-cover w-full h-full"
                   />
                 </div>
-                <div className="flex flex-col bg-gray-700 py-2 px-4 rounded-2xl font-normal">
+                <div className="flex flex-col bg-[#252525] py-2 px-4 rounded-2xl font-normal">
                   <span className="font-semibold">
                     {comment.User.firstname} {comment.User.lastname}
                   </span>
-                  <span className=" flex gap-3">
-                    {comment.content}{" "}
-                    {failedCommentIndex === index && ( // Only show the error message for the failed comment
-                      <div className=" text-red-400 flex gap-[2px] justify-center items-center">
-                        {" "}
+                  <span className="flex gap-3">
+                    {comment.content}
+                    {failedCommentIndex === index && (
+                      <div className="text-red-400 flex gap-[2px] items-center">
                         <CiCircleAlert />
                         Something went wrong
                       </div>
@@ -156,6 +158,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               </li>
             ))}
           </ul>
+
+          {/* See More Toggle */}
+          {hasMoreComments && (
+            <div
+              className="text-blue-500 cursor-pointer text-sm mt-2 ml-11"
+              onClick={handleSeeMore}
+            >
+              See more
+            </div>
+          )}
         </div>
       )}
     </div>

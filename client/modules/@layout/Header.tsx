@@ -11,7 +11,7 @@ import SearchAnt from "../@common/search/antdSearch";
 import ProfileAvater from "../@common/ProfileAvater";
 import NavBar from "./Navbar";
 import { usePathname } from "next/navigation"; // ✅ import pathname hook
-import { FaPen, FaPlus } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
