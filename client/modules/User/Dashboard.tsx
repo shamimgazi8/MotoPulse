@@ -181,8 +181,8 @@ const DashboardProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-start justify-center pt-[100px]">
-      <div className="bg- dark:bg-black rounded-2xl shadow-lg p-6 w-[70%]">
+    <div className="">
+      <div className="bg- dark:bg-black/50 rounded-2xl shadow-lg p-6 w-[70%]">
         <h1 className="mb-10 gradient-text text-3xl font-semibold w-[200px]">
           Dashboard
         </h1>
