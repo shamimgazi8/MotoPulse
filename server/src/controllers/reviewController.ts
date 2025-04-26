@@ -318,3 +318,65 @@ export const getReviewsByUserId = async (req: Request, res: Response) => {
     });
   }
 };
+// Update a review by user
+export const updateReviewByUser = async (req: Request, res: Response) => {
+  try {
+    const { reviewId } = req.params;
+    const { user_id, review, coverPhoto } = req.body;
+
+    // Find the review
+    const existingReview = await Review.findOne({
+      where: { id: reviewId, user_id },
+    });
+
+    if (!existingReview) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "Review not found or you're not authorized to update this review",
+        });
+    }
+
+    // Update the fields
+    existingReview.review = review ?? existingReview.review;
+    existingReview.coverPhoto = coverPhoto ?? existingReview.coverPhoto;
+
+    await existingReview.save();
+
+    res
+      .status(200)
+      .json({ message: "Review updated successfully", review: existingReview });
+  } catch (error) {
+    console.error("Error updating review:", error);
+    res.status(500).json({ message: "Error updating review", error });
+  }
+};
+
+// Delete a review by user
+export const deleteReviewByUser = async (req: Request, res: Response) => {
+  try {
+    const { reviewId } = req.params;
+    const { user_id } = req.body;
+
+    const existingReview = await Review.findOne({
+      where: { id: reviewId, user_id },
+    });
+
+    if (!existingReview) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "Review not found or you're not authorized to delete this review",
+        });
+    }
+
+    await existingReview.destroy();
+
+    res.status(200).json({ message: "Review deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    res.status(500).json({ message: "Error deleting review", error });
+  }
+};

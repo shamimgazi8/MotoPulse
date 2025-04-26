@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/:reviewId", authMiddleware, likeReview);
 router.delete("/:reviewId", authMiddleware, unlikeReview);
-// router.get("/:reviewId", authMiddleware, getUsersWhoLikedReview);
+
 router.get("/:userId", getReviewsLikedByUser);
 
 export default router;
