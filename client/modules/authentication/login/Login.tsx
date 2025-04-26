@@ -85,7 +85,6 @@ const LoginPage: React.FC = () => {
                 className="w-full p-8 rounded-2xl max-w-[550px] flex flex-col justify-center gap-8 items-center mx-auto"
               >
                 {error && <p className="text-red-500 text-sm">{error}</p>}
-
                 <div className="w-full space-y-2">
                   <label
                     htmlFor="email"
@@ -104,7 +103,6 @@ const LoginPage: React.FC = () => {
                     required
                   />
                 </div>
-
                 <div className="w-full space-y-2">
                   <label
                     htmlFor="password"
@@ -136,11 +134,9 @@ const LoginPage: React.FC = () => {
                     </button>
                   </div>
                 </div>
-
                 {success && (
                   <Alert message="Login Successfully" type="success" showIcon />
                 )}
-
                 <button
                   type="submit"
                   className="w-[50%] bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-full font-semibold transition flex items-center justify-center"
@@ -171,6 +167,9 @@ const LoginPage: React.FC = () => {
                     "Login"
                   )}
                 </button>
+                <a className=" underline underline-offset-4" href="/">
+                  Browse as a guest User
+                </a>
               </form>
             </>
           ) : (

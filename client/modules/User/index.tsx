@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
 import { Tabs } from "antd";
-
 import Cookies from "js-cookie";
 // Import your components
 import DashboardProfile from "./Dashboard";
@@ -11,13 +9,15 @@ import { MdDashboard } from "react-icons/md";
 import { BsFillFilePostFill } from "react-icons/bs";
 import MyReviews from "./MyReviews";
 import LikedReviews from "./LikedReviews";
-import ApiService from "@/service/apiService";
+import { getUserIdFromToken } from "@/utils/utils";
+
+const id = getUserIdFromToken();
 
 const MainDashboard: React.FC = () => {
   const [reviewDataById, setReviewDataById] = useState();
+
   useEffect(() => {
     const token = Cookies.get("token");
-    const id = Cookies.get("userId");
 
     if (!token) {
       window.location.href = "/users/login";
@@ -48,6 +48,7 @@ const MainDashboard: React.FC = () => {
 
     FetchReview();
   }, []);
+
   const tabItems = [
     {
       label: (
@@ -74,12 +75,17 @@ const MainDashboard: React.FC = () => {
         </span>
       ),
       key: "3",
-      children: <MyReviews reviewData={reviewDataById} />,
+      children: (
+        <MyReviews
+          reviewData={reviewDataById}
+          setReviewData={setReviewDataById}
+        />
+      ),
     },
   ];
 
   return (
-    <div className="w-[80%] m-auto mt-10  h-[80vh]">
+    <div className="w-[80%] m-auto mt-10 h-[80vh]">
       <Tabs tabPosition="left" items={tabItems} />
     </div>
   );
