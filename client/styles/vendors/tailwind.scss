@@ -259,3 +259,81 @@ body {
   align-items: center;
   text-align: center;
 }
+// .custom-modal-overlay {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   z-index: 9999;
+//   opacity: 0; /* Initial state: fully transparent */
+//   transition: opacity 0.3s ease-in-out; /* Animation for fade-in/out */
+// }
+
+// .custom-modal-overlay.show {
+//   opacity: 1; /* Final state: fully opaque (visible) */
+// }
+
+// .custom-modal {
+//   background-color: rgb(0, 0, 0);
+//   padding: 20px;
+//   border-radius: 8px;
+//   text-align: center;
+//   width: 300px;
+//   transform: translateY(-50px); /* Initial state: moved up by 50px */
+//   opacity: 0; /* Initial state: fully transparent */
+//   transition:
+//     transform 0.3s ease-in-out,
+//     opacity 0.3s ease-in-out; /* Animation for slide-down/up and fade-in/out */
+// }
+
+// .custom-modal-overlay.show .custom-modal {
+//   transform: translateY(0); /* Final state: in its normal position */
+//   opacity: 1; /* Final state: fully opaque (visible) */
+// }
+
+// .custom-modal h2 {
+//   margin-bottom: 10px;
+//   font-size: 18px;
+// }
+
+// .custom-modal p {
+//   margin-bottom: 20px;
+//   font-size: 14px;
+// }
+
+// .custom-modal-buttons {
+//   display: flex;
+//   justify-content: space-around;
+// }
+
+// .custom-modal-buttons button {
+//   padding: 10px;
+//   border: none;
+//   border-radius: 5px;
+//   cursor: pointer;
+//   font-size: 14px;
+//   transition: background-color 0.2s ease-in-out; /* Subtle animation for button hover */
+// }
+
+// .confirm-btn {
+//   background-color: red;
+//   color: white;
+// }
+
+// .confirm-btn:hover {
+//   background-color: darkred;
+// }
+
+// .cancel-btn {
+//   background-color: gray;
+//   color: white;
+// }
+
+// .cancel-btn:hover {
+//   background-color: darkgray;
+// }

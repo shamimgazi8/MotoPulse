@@ -67,6 +67,13 @@
   -webkit-backdrop-filter: blur(10px); /* for Safari */
   color: white;
 }
+:where(.css-dev-only-do-not-override-59baty).ant-modal .ant-modal-content {
+  background-color: rgba(255, 0, 0, 0);
+  box-shadow: none;
+}
+:where(.css-dev-only-do-not-override-59baty).ant-modal .ant-modal-header {
+  background-color: rgba(255, 0, 0, 0);
+}
 :where(.css-dev-only-do-not-override-d2lrxs).ant-modal .ant-modal-header {
   color: white;
   background-color: rgba(255, 0, 0, 0);

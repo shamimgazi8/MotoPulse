@@ -5,7 +5,7 @@ import "./../styles/main.scss";
 import AppProviders from "@/appstore/AppProviders";
 import Script from "next/script"; // ✅ Import Script component
 import InitialLoader from "@/modules/@common/intialLoader";
-
+import "antd/dist/reset.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {

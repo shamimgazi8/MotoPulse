@@ -10,6 +10,7 @@ import { BsFillFilePostFill } from "react-icons/bs";
 import MyReviews from "./MyReviews";
 import LikedReviews from "./LikedReviews";
 import { getUserIdFromToken } from "@/utils/utils";
+import { CiBookmarkCheck } from "react-icons/ci";
 
 const id = getUserIdFromToken();
 
@@ -62,7 +63,7 @@ const MainDashboard: React.FC = () => {
     {
       label: (
         <span className=" flex justify-center items-center gap-2">
-          <FaHeart /> Liked Reviews
+          <CiBookmarkCheck className=" text-lg" /> Bookmarks
         </span>
       ),
       key: "2",

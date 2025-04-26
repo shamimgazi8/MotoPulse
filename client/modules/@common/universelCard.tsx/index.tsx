@@ -6,6 +6,7 @@ import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { excerpt, formatDate, getUserIdFromToken } from "@/utils/utils";
 import Cookies from "js-cookie";
 import CommentSection from "../comments/CommentSection";
+import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 
 interface BlogCardProps {
   data?: any;
@@ -30,6 +31,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
   const [likedPost, setLikedPost] = useState<LikedReview[]>([]);
   const [likes, setLikes] = useState<number>(data?.likes || 0);
   const [liked, setLiked] = useState<boolean>(false);
+  const [bookmark, setbookmark] = useState<boolean>(false);
   const [showComments, setShowComments] = useState<boolean>(false);
   const [commentCount, setCommentCount] = useState<number>(data?.reviews || 0);
 
@@ -66,6 +68,9 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       setLiked(isLiked);
     }
   }, [likedPost, data]);
+  const handleBookmark = async (e: React.MouseEvent) => {
+    setbookmark(!bookmark);
+  };
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -187,20 +192,28 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       </Link>
 
       {/* Like and Comment Buttons */}
-      <div className="flex items-center mt-3 text-sm text-gray-500">
+      <div className=" flex justify-between">
+        <div className="flex items-center mt-3 text-sm text-gray-500">
+          <button
+            onClick={handleLike}
+            className={`flex items-center hover:text-primary text-xl transition-all ${liked ? "text-blue-500" : ""}`}
+          >
+            {liked ? <FcLike /> : <FcLikePlaceholder />}
+            <span className="ml-2 text-sm">{likes}</span>
+          </button>
+
+          <button
+            onClick={() => setShowComments(!showComments)}
+            className="ml-4 hover:text-primary"
+          >
+            Comment {data?.comment?.length}
+          </button>
+        </div>
         <button
-          onClick={handleLike}
+          onClick={handleBookmark}
           className={`flex items-center hover:text-primary text-xl transition-all ${liked ? "text-blue-500" : ""}`}
         >
-          {liked ? <FcLike /> : <FcLikePlaceholder />}
-          <span className="ml-2 text-sm">{likes}</span>
-        </button>
-
-        <button
-          onClick={() => setShowComments(!showComments)}
-          className="ml-4 hover:text-primary"
-        >
-          Comment {data?.comment?.length}
+          {bookmark ? <IoBookmark /> : <IoBookmarkOutline />}
         </button>
       </div>
 
