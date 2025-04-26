@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation"; // ✅ import pathname hook
 import navData from "@/data/nav-data.json";
 import { Drawer, DrawerProps } from "antd";
 import Image from "next/image";
@@ -10,16 +11,14 @@ import ThemeToggleButton from "../@common/darkmode";
 import SearchAnt from "../@common/search/antdSearch";
 import ProfileAvater from "../@common/ProfileAvater";
 import NavBar from "./Navbar";
-import { usePathname } from "next/navigation"; // ✅ import pathname hook
 import { FaPen } from "react-icons/fa";
 
 const Header = () => {
+  const pathname = usePathname(); // ✅ get current route
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<DrawerProps["placement"]>("left");
   const [scroll, setScroll] = useState(false);
   const [selected, setSelected] = useState(null);
-
-  const pathname = usePathname(); // ✅ get current route
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,168 +37,87 @@ const Header = () => {
     setSelected(selected === i ? null : i);
   };
 
+  // Define the routes where the header should be hidden
+  const hideHeaderRoutes = ["/users/login"];
+
+  // Check if the current pathname matches any of the hideHeaderRoutes
+  const hideHeader = hideHeaderRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // If the current route should hide the header, return null (nothing will be rendered)
+  if (hideHeader) return null;
+
   return (
-    <>
-      <header
-        className={`backdrop-blur-md bg-header sticky top-0 z-[1000] flex justify-center ${
-          scroll ? "header" : ""
-        }`}
-      >
-        <div className="">
-          <div className="flex justify-between items-center px-4 py-4 lg:py-0 min-w-[1460px] m-auto">
-            <div onClick={() => setOpen(true)} className="block lg:hidden">
-              <BiMenuAltLeft className="text-2xl" />
-            </div>
-            <div>
-              <Link href="/">
-                <Image
-                  src={"/logo/moto.png"}
-                  width={450}
-                  height={50}
-                  alt="logo"
-                  priority
-                  className="lg:h-[40px] lg:w-[120px] w-[120px] mt-1"
-                />
-              </Link>
-            </div>
-            <NavBar />
-            <div className="flex items-center justify-center gap-2 lg:gap-4 rounded">
-              <div className="flex items-center gap-3 justify-center">
-                <div className="hidden lg:flex"></div>
+    <header
+      className={`backdrop-blur-md bg-header sticky top-0 z-[1000] flex justify-center ${scroll ? "header" : ""}`}
+    >
+      <div className="">
+        <div className="flex justify-between items-center px-4 py-4 lg:py-0 min-w-[1460px] m-auto">
+          <div onClick={() => setOpen(true)} className="block lg:hidden">
+            <BiMenuAltLeft className="text-2xl" />
+          </div>
+          <div>
+            <Link href="/">
+              <Image
+                src={"/logo/moto.png"}
+                width={450}
+                height={50}
+                alt="logo"
+                priority
+                className="lg:h-[40px] lg:w-[120px] w-[120px] mt-1"
+              />
+            </Link>
+          </div>
+          <NavBar />
+          <div className="flex items-center justify-center gap-2 lg:gap-4 rounded">
+            <div className="flex items-center gap-3 justify-center">
+              <ProfileAvater />
+              <ThemeToggleButton />
+              {pathname === "/add-review" ? (
+                <button className="text-[12px] mb-0 bg-white dark:bg-black text-black px-3 py-1.5 dark:text-white font-medium rounded-lg shadow-xl relative overflow-hidden min-w-[150px] ">
+                  <span
+                    className="fade-text inline-block overflow-hidden whitespace-nowrap translate-y-[2px]"
+                    style={{ maxWidth: "100%" }}
+                  >
+                    {"Happy To See You Writing"}
+                  </span>
 
-                <ProfileAvater />
-                <ThemeToggleButton />
-                {pathname === "/add-review" ? (
-                  <button className="text-[12px] mb-0 bg-white dark:bg-black text-black px-3 py-1.5 dark:text-white font-medium rounded-lg shadow-xl relative overflow-hidden min-w-[150px] ">
-                    <span
-                      className="fade-text inline-block overflow-hidden whitespace-nowrap translate-y-[2px]"
-                      style={{ maxWidth: "100%" }}
-                    >
-                      {"Happy To See You Writting"}
-                    </span>
-
-                    <style jsx>{`
-                      @keyframes fadeInOut {
-                        0% {
-                          opacity: 0;
-                        }
-                        50% {
-                          opacity: 1;
-                        }
-                        100% {
-                          opacity: 0;
-                        }
+                  <style jsx>{`
+                    @keyframes fadeInOut {
+                      0% {
+                        opacity: 0;
                       }
-
-                      .fade-text {
-                        animation: fadeInOut 4s ease-in-out infinite;
+                      50% {
+                        opacity: 1;
                       }
-                    `}</style>
+                      100% {
+                        opacity: 0;
+                      }
+                    }
+
+                    .fade-text {
+                      animation: fadeInOut 4s ease-in-out infinite;
+                    }
+                  `}</style>
+                </button>
+              ) : (
+                <Link href={"/add-review"}>
+                  <button className="px-3 py-[5px] bg-black text-white hover:text-black hover:border-black rounded hover:bg-white focus:outline-none flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black dark:hover:bg-black dark:hover:text-white dark:hover:border-white border-[1px] ">
+                    <FaPen /> Write a Review
                   </button>
-                ) : (
-                  <Link href={"/add-review"}>
-                    <button className="  px-3 py-[5px] bg-black text-white hover:text-black hover:border-black rounded   hover:bg-white focus:outline-none  flex justify-center items-center gap-2 transition-all text-sm dark:bg-white dark:text-black  dark:hover:bg-black dark:hover:text-white dark:hover:border-white border-[1px] ">
-                      <FaPen /> Write a Review
-                    </button>
-                  </Link>
-                )}
-
-                <SearchAnt />
-              </div>
-            </div>
-          </div>
-          <div className="flex lg:hidden mb-[20px] justify-center w-full items-center">
-            <SearchAnt />
-          </div>
-        </div>
-      </header>
-
-      <Drawer
-        title="Menu"
-        placement={placement}
-        onClose={onClose}
-        open={open}
-        key={placement}
-      >
-        <div className="h-[100vh] overflow-auto">
-          <div
-            className="flex flex-col overflow-auto"
-            style={{ height: "calc(100vh - 60px)" }}
-          >
-            <div>
-              {navData && navData.length > 0 && (
-                <div className="flex flex-col">
-                  {navData.map((item: any, i: any) => (
-                    <Fragment key={i}>
-                      <div className="relative">
-                        {item?.children && item.children.length > 0 ? (
-                          item?.isHidden ? null : (
-                            <div
-                              onClick={() => toggle(i)}
-                              className="flex items-center justify-between w-full py-2 z-10 gap-1 cursor-pointer"
-                            >
-                              <span
-                                className={`text-left ${
-                                  pathname === item.link
-                                    ? "underline underline-offset-4 font-medium"
-                                    : ""
-                                }`}
-                              >
-                                {item.title}
-                              </span>
-                              {selected === i ? (
-                                <FiChevronUp className="shrink-0" />
-                              ) : (
-                                <FiChevronDown className="shrink-0" />
-                              )}
-                            </div>
-                          )
-                        ) : (
-                          <Link
-                            href={item?.link || "#"}
-                            onClick={() => setOpen(false)}
-                            className="flex items-center justify-between w-full py-2 z-10 gap-1"
-                          >
-                            <span
-                              className={`text-left ${
-                                pathname === item.link
-                                  ? "underline underline-offset-4 font-medium"
-                                  : ""
-                              }`}
-                            >
-                              {item.title}
-                            </span>
-                          </Link>
-                        )}
-
-                        {selected === i && item?.children && (
-                          <ul>
-                            {item.children.map((cldn: any, j: any) => (
-                              <li key={j} onClick={() => setOpen(false)}>
-                                <Link
-                                  href={cldn?.link || "#"}
-                                  className={`flex p-2 ${
-                                    pathname === cldn.link
-                                      ? "underline underline-offset-4 font-medium"
-                                      : ""
-                                  }`}
-                                >
-                                  {cldn?.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </Fragment>
-                  ))}
-                </div>
+                </Link>
               )}
+
+              <SearchAnt />
             </div>
           </div>
         </div>
-      </Drawer>
-    </>
+        <div className="flex lg:hidden mb-[20px] justify-center w-full items-center">
+          <SearchAnt />
+        </div>
+      </div>
+    </header>
   );
 };
 

@@ -4,6 +4,7 @@ import {
   createReview,
   getReviewBySlug,
   getReviewsByBikeId,
+  getReviewsByUserId,
 } from "../controllers/reviewController";
 
 const router = Router();
@@ -12,4 +13,5 @@ router.get("/", getAllReviews);
 router.post("/", createReview as any);
 router.get("/:slug", getReviewBySlug as any);
 router.get("/bike/:bikeId", getReviewsByBikeId);
+router.get("/user/:userId", getReviewsByUserId);
 export default router;

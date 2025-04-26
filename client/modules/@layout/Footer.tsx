@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { BsCashStack } from "react-icons/bs";
 import { IoIosArrowRoundForward, IoMdMail } from "react-icons/io";
@@ -7,12 +8,27 @@ import { SiMastercard } from "react-icons/si";
 import Image from "next/image";
 
 import SocialLinks from "../@common/SocialLinks";
+import { usePathname } from "next/navigation";
 
 const mailtoLink = `mailto:${"motopulse@gmail.com"}?subject=${encodeURIComponent("furniture")}&body=${encodeURIComponent("")}`;
 
 const Footer = () => {
+  const pathname = usePathname();
+  console.log(pathname, "path");
+
+  // Remove any trailing space
+  const hideRoutes = ["/users/dashboard", "/users/login"];
+
+  // Or use pattern matching with startsWith if you need to match any route starting with "/users/dashboard"
+  const hide = hideRoutes.some((route) => pathname.startsWith(route));
   return (
-    <footer className="dark:bg-[#070910] bg-gray-200 mt-auto bg-footer text-footertext lg:pt-[30px] py-[40px]">
+    <footer
+      className={`${
+        hide
+          ? "hidden"
+          : "dark:bg-[#070910] bg-gray-200 mt-auto bg-footer text-footertext lg:pt-[30px] py-[40px]"
+      }`}
+    >
       <div className="lg:w-[30%] container mb-10 lg:px-0 px-10">
         <Link href="/" className="w-full flex justify-center items-start h-16">
           <Image

@@ -86,6 +86,10 @@ class ApiService {
   static getReviewByBikeId(bikeId: number) {
     return this.request(`/reviews/bike/${bikeId}`);
   }
+  static getReviewsByUser(userId: number) {
+    return this.request(`/reviews/user/${userId}`);
+  }
+
   static getReviewBybyBrand(brandName: string) {
     return this.request(`/reviews?brandName=${brandName}`);
   }

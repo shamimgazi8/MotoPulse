@@ -1,12 +1,53 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+
 import { Tabs } from "antd";
 
+import Cookies from "js-cookie";
 // Import your components
 import DashboardProfile from "./Dashboard";
 import { FaHeart } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
+import { BsFillFilePostFill } from "react-icons/bs";
+import MyReviews from "./MyReviews";
+import LikedReviews from "./LikedReviews";
+import ApiService from "@/service/apiService";
 
 const MainDashboard: React.FC = () => {
+  const [reviewDataById, setReviewDataById] = useState();
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const id = Cookies.get("userId");
+
+    if (!token) {
+      window.location.href = "/users/login";
+      return;
+    }
+
+    const FetchReview = async () => {
+      try {
+        const res = await fetch(`http://localhost:4000/reviews/user/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await res.json();
+        setReviewDataById(data);
+        if (!res.ok) {
+          alert("something is wrong");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        Cookies.remove("token");
+        window.location.href = "/users/login";
+      }
+    };
+
+    FetchReview();
+  }, []);
   const tabItems = [
     {
       label: (
@@ -24,21 +65,21 @@ const MainDashboard: React.FC = () => {
         </span>
       ),
       key: "2",
-      children: "<UserSettings />",
+      children: <LikedReviews />,
     },
     {
       label: (
         <span className=" flex justify-center items-center gap-2">
-          <FaHeart /> Dashboard
+          <BsFillFilePostFill /> My Reviews
         </span>
       ),
       key: "3",
-      children: " <Notifications />",
+      children: <MyReviews reviewData={reviewDataById} />,
     },
   ];
 
   return (
-    <div className="w-[80%] m-auto mt-10 h-screen">
+    <div className="w-[80%] m-auto mt-10  h-[80vh]">
       <Tabs tabPosition="left" items={tabItems} />
     </div>
   );

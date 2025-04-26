@@ -260,3 +260,61 @@ export const getReviewsByBikeId = async (req: Request, res: Response) => {
       .json({ message: "Error fetching reviews by bike ID", error });
   }
 };
+
+export const getReviewsByUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const reviews = await Review.findAll({
+      where: { user_id: userId },
+      attributes: [
+        "id",
+        "review",
+        "like_count",
+        "slug",
+        "coverPhoto",
+        "createdAt",
+      ],
+      include: [
+        {
+          model: BikeList,
+          as: "bike",
+          required: true,
+          attributes: [
+            "id",
+            "imgUrl",
+            "engineCC",
+            "horsePower",
+            "torque",
+            "weight",
+          ],
+          include: [
+            {
+              model: Brand,
+              as: "brand",
+              attributes: ["id", "brandName"],
+            },
+            {
+              model: Model,
+              as: "model",
+              attributes: ["id", "modelName"],
+            },
+            {
+              model: BikeType,
+              as: "type",
+              attributes: ["id", "name"],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).json({ count: reviews?.length, result: reviews });
+  } catch (error) {
+    console.error("Error fetching reviews by user ID:", error);
+    res.status(500).json({
+      message: "Error fetching reviews by user ID",
+      error,
+    });
+  }
+};
