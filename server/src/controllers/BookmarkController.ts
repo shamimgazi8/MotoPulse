@@ -25,8 +25,8 @@ export const bookmarkReview = async (req: Request, res: Response) => {
 };
 
 export const unbookmarkReview = async (req: Request, res: Response) => {
-  const { review_id } = req.params;
-  const user_id = req.user?.id;
+  const { review_id } = req.body; // 🔥 getting review_id from body now
+  const user_id = req.user?.id; // 🔥 same as before
 
   try {
     const deleted = await ReviewBookmark.destroy({
