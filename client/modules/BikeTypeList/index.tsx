@@ -22,9 +22,14 @@ const BikeCategoryList = () => {
   const bredcums = [
     { title: "Home", link: "/" },
     { title: decodedSlug, link: `/${bikeCategories}` },
-    { title: decodedSlug1, link: `/${bikeCategories}/${bikeTypes}` },
   ];
 
+  if (bikeTypes) {
+    bredcums.push({
+      title: decodedSlug1,
+      link: `/${bikeCategories}/${bikeTypes}`,
+    });
+  }
   const [dataArray, setDataArray] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 

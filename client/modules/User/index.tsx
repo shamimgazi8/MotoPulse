@@ -2,15 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { Tabs } from "antd";
 import Cookies from "js-cookie";
-// Import your components
 import DashboardProfile from "./Dashboard";
-import { FaHeart } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { BsFillFilePostFill } from "react-icons/bs";
 import MyReviews from "./MyReviews";
-import LikedReviews from "./LikedReviews";
 import { getUserIdFromToken } from "@/utils/utils";
-import { CiBookmarkCheck } from "react-icons/ci";
 
 const id = getUserIdFromToken();
 

@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, FormEvent, use, useRef } from "react";
-import { Select, Upload, Button, message, Spin } from "antd";
+import { useState, useEffect, FormEvent, useRef } from "react";
+import { Select, Button, Spin } from "antd";
 import Cookies from "js-cookie";
 import { MdCancel } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
@@ -50,7 +50,14 @@ const BikeReviewForm = () => {
   } | null>(null);
 
   const [showToastAnimation, setShowToastAnimation] = useState(false);
-  const token = Cookies.get("token");
+  const [token, setToken] = useState<string | null>(null); // Add token state
+
+  // Fetch token in useEffect to ensure it's only done on the client-side
+  useEffect(() => {
+    const storedToken = Cookies.get("token");
+    setToken(storedToken || ""); // Set token from cookies after the initial render
+  }, []);
+
   const showToast = (message: string, type: "success" | "error") => {
     setCustomToast({ message, type });
 
@@ -115,6 +122,7 @@ const BikeReviewForm = () => {
       showToast("Error adding brand", "error");
     }
   };
+
   const handleAddModel = async () => {
     const trimmedName = newModelName.trim();
 
@@ -254,6 +262,7 @@ const BikeReviewForm = () => {
       }
     }
   };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const userId = getUserIdFromToken();
@@ -333,6 +342,7 @@ const BikeReviewForm = () => {
 
     fetchData();
   }, []);
+
   const fetchData = async () => {
     try {
       const [allBikeRes] = await Promise.all([

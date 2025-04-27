@@ -5,10 +5,6 @@ export const metadata = {
   description: "Share your motorcycle review with the MotoPulse community.",
 };
 const AddReview = () => {
-  return (
-    <div>
-      <BikeReviewForm />
-    </div>
-  );
+  return <div>{/* <BikeReviewForm /> */}</div>;
 };
 export default AddReview;
