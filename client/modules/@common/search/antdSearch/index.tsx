@@ -5,6 +5,8 @@ import { BsSearch } from "react-icons/bs";
 import ApiService from "@/service/apiService";
 import Link from "next/link";
 import { IoMdClose } from "react-icons/io";
+import Image from "next/image";
+import { RxCross2 } from "react-icons/rx";
 
 interface Review {
   id: number;
@@ -93,11 +95,11 @@ const SearchAnt: React.FC = () => {
             placeholder="Search"
             className="rounded-full placeholder:text-white w-full text-white dark:bg-white/30 dark:text-white bg-transparent outline-none border-gray-400 border-[1px] dark:border-white px-2 py-1 transition-all placeholder:dark:text-white"
           />
-          <BsSearch className="absolute right-10 top-[9px] text-white translate-x-[25px]" />
+          {/* <BsSearch className="absolute right-10 top-[9px] text-white translate-x-[25px]" /> */}
           {searchQuery && (
-            <IoMdClose
+            <RxCross2
               onClick={handleClear}
-              className={`absolute top-[9px] text-white cursor-pointer transition-all translate-x-[35px] ${
+              className={`absolute top-[9px] text-white cursor-pointer transition-all  text-center text-lg hover:text-[#ff5d5d] mt-[-2px] ${
                 searchQuery ? "right-3 opacity-100" : "right-[-30px] opacity-0"
               }`}
               style={{
@@ -121,15 +123,30 @@ const SearchAnt: React.FC = () => {
                 key={item.id}
                 href={`/${item?.slug}`}
               >
-                <div className="p-2 mb-2 border text-white rounded dark:border-white border-gray-300">
-                  <p className="font-semibold">
-                    {item.bike.brand.brandName} {item.bike.model.modelName}
-                  </p>
-                  <p className="italic text-sm">Type: {item.bike.type.name}</p>
-                  <p>{item.review.slice(0, 100)}...</p>
-                  <p className="text-xs mt-1">
-                    By {item.User.firstname} {item.User.lastname}
-                  </p>
+                <div className="p-4 mb-2 border text-white rounded dark:border-white border-gray-300 flex gap-5">
+                  <div className="relative w-[600px] h-40">
+                    {" "}
+                    {/* Increased width and adjusted height */}
+                    <Image
+                      height={160}
+                      width={320}
+                      alt="cover"
+                      src={item?.coverPhoto}
+                      className="rounded object-cover w-full h-full"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold gradient-text">
+                      {item.bike.brand.brandName} {item.bike.model.modelName}
+                    </p>
+                    <p className="italic text-sm">
+                      Type: {item.bike.type.name}
+                    </p>
+                    <p>{item.review.slice(0, 100)}...</p>
+                    <p className="text-xs mt-1">
+                      By {item.User.firstname} {item.User.lastname}
+                    </p>
+                  </div>
                 </div>
               </Link>
             ))

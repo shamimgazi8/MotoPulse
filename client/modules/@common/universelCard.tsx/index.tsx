@@ -7,6 +7,7 @@ import { excerpt, formatDate, getUserIdFromToken } from "@/utils/utils";
 import Cookies from "js-cookie";
 import CommentSection from "../comments/CommentSection";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
+import CustomMessage from "../message/CustomMessage";
 
 interface BlogCardProps {
   data?: any;
@@ -28,6 +29,15 @@ interface LikedReview {
 }
 
 const BlogCard = ({ data, link, classes }: BlogCardProps) => {
+  const [messageInfo, setMessageInfo] = useState<{
+    type: "success" | "error" | "warning";
+    text: string;
+  } | null>(null);
+
+  const showMessage = (type: "success" | "error" | "warning", text: string) => {
+    setMessageInfo({ type, text });
+  };
+
   const [likedPost, setLikedPost] = useState<LikedReview[]>([]);
   const [likes, setLikes] = useState<number>(data?.likes || 0);
   const [liked, setLiked] = useState<boolean>(false);
@@ -68,9 +78,6 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       setLiked(isLiked);
     }
   }, [likedPost, data]);
-  const handleBookmark = async (e: React.MouseEvent) => {
-    setbookmark(!bookmark);
-  };
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -106,6 +113,77 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
     } catch (error) {
       console.error("Error liking post:", error);
       alert("Something went wrong while liking the post.");
+    }
+  };
+  useEffect(() => {
+    const fetchBookmarkStatus = async () => {
+      const token = Cookies.get("token");
+      if (!token) return;
+      try {
+        const response = await fetch(`http://localhost:4000/bookmark/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const result = await response.json();
+
+        if (Array.isArray(result?.bookmarks)) {
+          const isBookmarked = result.bookmarks.some(
+            (bookmarkObj: any) => bookmarkObj.review_id === data?.id
+          );
+          setbookmark(isBookmarked);
+        }
+      } catch (error) {
+        console.error("Error fetching bookmark status:", error);
+      }
+    };
+
+    fetchBookmarkStatus();
+  }, [data?.id]);
+
+  const handleBookmark = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    try {
+      const token = Cookies.get("token");
+      if (!token) {
+        alert("Please login first to bookmark this post.");
+        return;
+      }
+
+      const method = bookmark ? "DELETE" : "POST";
+
+      const response = await fetch(`http://localhost:4000/bookmark/`, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ review_id: data?.id }),
+      });
+
+      if (response.status === 401) {
+        alert("Please login first to bookmark this post.");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to update bookmark");
+      }
+
+      setbookmark(!bookmark);
+
+      if (method === "POST") {
+        showMessage("success", "Bookmark added successfully!");
+      } else {
+        showMessage("success", "Bookmark removed successfully!");
+      }
+    } catch (error) {
+      console.error("Error bookmarking post:", error);
+      showMessage("warning", "Bookmark removed successfully!");
     }
   };
 
@@ -211,7 +289,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
         </div>
         <button
           onClick={handleBookmark}
-          className={`flex items-center hover:text-primary text-xl transition-all ${liked ? "text-blue-500" : ""}`}
+          className={`flex items-center hover:text-primary text-xl transition-all ${bookmark ? "text-blue-500" : ""}`}
         >
           {bookmark ? <IoBookmark /> : <IoBookmarkOutline />}
         </button>
@@ -223,6 +301,13 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
           data={data}
           reviewId={data?.id}
           onCommentSubmit={() => setCommentCount((prev) => prev + 1)}
+        />
+      )}
+      {messageInfo && (
+        <CustomMessage
+          type={messageInfo.type}
+          text={messageInfo.text}
+          onClose={() => setMessageInfo(null)}
         />
       )}
     </div>

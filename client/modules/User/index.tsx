@@ -7,6 +7,8 @@ import { MdDashboard } from "react-icons/md";
 import { BsFillFilePostFill } from "react-icons/bs";
 import MyReviews from "./MyReviews";
 import { getUserIdFromToken } from "@/utils/utils";
+import { CiBookmarkCheck } from "react-icons/ci";
+import BookmarkReviews from "./BookmarkedRevies";
 
 const id = getUserIdFromToken();
 
@@ -56,15 +58,7 @@ const MainDashboard: React.FC = () => {
       key: "1",
       children: <DashboardProfile />,
     },
-    // {
-    //   label: (
-    //     <span className=" flex justify-center items-center gap-2">
-    //       <CiBookmarkCheck className=" text-lg" /> Bookmarks
-    //     </span>
-    //   ),
-    //   key: "2",
-    //   children: <LikedReviews />,
-    // },
+
     {
       label: (
         <span className=" flex justify-center items-center gap-2">
@@ -78,6 +72,15 @@ const MainDashboard: React.FC = () => {
           setReviewData={setReviewDataById}
         />
       ),
+    },
+    {
+      label: (
+        <span className=" flex justify-center items-center gap-2">
+          <CiBookmarkCheck className=" text-lg ml-[-4px]" /> Bookmarks
+        </span>
+      ),
+      key: "2",
+      children: <BookmarkReviews />,
     },
   ];
 
