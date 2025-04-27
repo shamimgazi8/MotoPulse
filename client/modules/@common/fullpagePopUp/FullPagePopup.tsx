@@ -36,6 +36,7 @@ const FullPagePopup: React.FC<FullPagePopupProps> = ({ isOpen }) => {
           height={200}
           width={200}
           alt="success"
+          unoptimized
           src="https://cdn.dribbble.com/userupload/15097592/file/original-11af0dab65a0913fe4ea1d71d9d48f4a.gif"
         />
         <h2 className="text-4xl font-bold mb-6 text-center">
