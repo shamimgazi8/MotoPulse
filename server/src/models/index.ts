@@ -7,6 +7,7 @@ import BikeList from "./BikeList";
 import Review from "./Review";
 import ReviewLike from "./reviewLike";
 import Comment from "./comment";
+import ReviewBookmark from "./RevieBookmark";
 
 // Associations
 User.hasMany(Review, { foreignKey: "user_id" });
@@ -37,6 +38,13 @@ Comment.belongsTo(Review, { foreignKey: "review_id", as: "reviews" });
 User.hasMany(Comment, { foreignKey: "user_id" });
 Comment.belongsTo(User, { foreignKey: "user_id" });
 
+//bookmark association
+User.hasMany(ReviewBookmark, { foreignKey: "user_id" });
+ReviewBookmark.belongsTo(User, { foreignKey: "user_id" });
+
+Review.hasMany(ReviewBookmark, { foreignKey: "review_id" });
+ReviewBookmark.belongsTo(Review, { foreignKey: "review_id", as: "review" });
+
 export default {
   sequelize,
   User,
@@ -46,4 +54,5 @@ export default {
   BikeList,
   Review,
   Comment,
+  ReviewBookmark,
 };

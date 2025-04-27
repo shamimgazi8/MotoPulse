@@ -9,6 +9,7 @@ import reviewRoutes from "./review";
 import reviewLike from "./reviewLike";
 import uploadRoutes from "./upload";
 import commentRoutes from "./comment";
+import bookmark from "./Bookmark";
 const router = Router();
 
 // Existing routes
@@ -24,6 +25,7 @@ router.use("/reviews", reviewRoutes); //
 router.use("/like", reviewLike); //
 router.use("/upload-cover", uploadRoutes);
 router.use("/comments", commentRoutes);
+router.use("/bookmark", bookmark);
 // router.use("/upload-cover", (req, res) => {
 //   res.status(200).json({ message: "upload" });
 // });
