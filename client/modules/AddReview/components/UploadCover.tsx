@@ -1,11 +1,15 @@
 "use client";
-import React, { useState, useImperativeHandle, forwardRef } from "react";
+import React, {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+} from "react";
 import { Upload, Button, message, Progress } from "antd";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { CgPlayListRemove } from "react-icons/cg";
 import type { UploadProps } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
-const savedTheme = localStorage.getItem("theme");
 
 export interface CoverImageUploadRef {
   reset: () => void;
@@ -13,16 +17,20 @@ export interface CoverImageUploadRef {
 
 const CoverImageUpload = forwardRef<
   CoverImageUploadRef,
-  {
-    onUploadSuccess: (url: string) => void;
-    profile?: boolean;
-  }
+  { onUploadSuccess: (url: string) => void; profile?: boolean }
 >(({ onUploadSuccess, profile = false }, ref) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<number>(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadDone, setUploadDone] = useState(false);
+  const [savedTheme, setSavedTheme] = useState<string | null>(null);
+
+  // Only access localStorage on the client side
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    setSavedTheme(theme);
+  }, []);
 
   // Allow parent to reset
   useImperativeHandle(ref, () => ({
