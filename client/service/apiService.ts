@@ -73,7 +73,6 @@ class ApiService {
   }
 
   static GetReviewFromSearch(searchQuery: string) {
-    console.log(searchQuery, "this is api search");
     return this.request(`/reviews?search=${searchQuery}`);
   }
   static getReviewsByBike(bikeId: number) {

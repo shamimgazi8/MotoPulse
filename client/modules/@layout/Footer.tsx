@@ -14,7 +14,6 @@ const mailtoLink = `mailto:${"motopulse@gmail.com"}?subject=${encodeURIComponent
 
 const Footer = () => {
   const pathname = usePathname();
-  console.log(pathname, "path");
 
   // Remove any trailing space
   const hideRoutes = ["/users/dashboard", "/users/login"];

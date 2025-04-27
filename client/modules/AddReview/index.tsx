@@ -117,7 +117,7 @@ const BikeReviewForm = () => {
   };
   const handleAddModel = async () => {
     const trimmedName = newModelName.trim();
-    console.log(trimmedName);
+
     if (trimmedName === "" || !brand_id) return;
 
     const isDuplicate = modelOptions.some(
@@ -244,11 +244,7 @@ const BikeReviewForm = () => {
         const responseData = await res.json();
 
         setPostSuccess(true);
-        console.log(
-          "Bike added successfully:",
-          responseData?.bike?.id,
-          responseData
-        );
+
         setBike_id(responseData?.bike?.id);
       } catch (error: any) {
         console.error("Error adding bike:", error.message);
@@ -285,7 +281,6 @@ const BikeReviewForm = () => {
       }
 
       const responseData = await response.json();
-      console.log("Review submitted successfully:", responseData);
 
       // Reset form fields after successful submission
       setFormrest(true);
@@ -352,8 +347,6 @@ const BikeReviewForm = () => {
 
       const allbikeList = await allBikeRes.json();
 
-      console.log(allbikeList?.result, "allbikeList data");
-
       setAllBike(allbikeList?.result);
       setBike_id(allbikeList[0]?.id);
     } catch (error) {
@@ -369,12 +362,11 @@ const BikeReviewForm = () => {
 
   useEffect(() => {
     if (getAllbike && getAllbike.length > 0) {
-      console.log("im  reset the field ");
       setEngineCapacity(getAllbike[0].engineCC || "");
       setWeight(getAllbike[0].weight || "");
       setTorque(getAllbike[0].torque || "");
       setHorsePower(getAllbike[0].horsePower || "");
-      console.log(getAllbike[0]?.id, "getAllbike[0]?.id");
+
       setBike_id(getAllbike[0]?.id);
     } else {
       setEngineCapacity("");
@@ -651,7 +643,7 @@ const BikeReviewForm = () => {
           <CoverImageUpload
             onUploadSuccess={(url) => {
               setCoverPhoto(url);
-              console.log("Uploaded image URL:", url);
+
               // save it in form state or send with form submission
             }}
           />

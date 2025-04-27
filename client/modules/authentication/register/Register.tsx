@@ -42,7 +42,6 @@ const SignupPage: React.FC = () => {
         throw new Error("Passwords do not match.");
       }
 
-      console.log("Signup submitted:", { name, email, password });
       // Replace this with actual API call to signup endpoint
     } catch (err: any) {
       setError(err.message || "Something went wrong.");

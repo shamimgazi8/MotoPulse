@@ -4,6 +4,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { BsSearch } from "react-icons/bs";
 import ApiService from "@/service/apiService";
 import Link from "next/link";
+import { IoMdClose } from "react-icons/io";
 
 interface Review {
   id: number;
@@ -37,6 +38,10 @@ const SearchAnt: React.FC = () => {
     setFilteredResults([]);
   };
 
+  const handleClear = () => {
+    setSearchQuery("");
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!searchQuery.trim()) {
@@ -45,7 +50,6 @@ const SearchAnt: React.FC = () => {
       }
       setLoading(true);
       try {
-        console.log(searchQuery);
         const response = await ApiService.GetReviewFromSearch(searchQuery); // API call
         setFilteredResults(response.result); // assuming response.data is an array
       } catch (error) {
@@ -87,9 +91,20 @@ const SearchAnt: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search"
-            className="rounded-full placeholder:text-white w-full text-white dark:bg-white/30 dark:text-white bg-transparent outline-none  border-gray-400 border-[1px] dark:border-white px-2 py-1 transition-all placeholder:dark:text-white "
+            className="rounded-full placeholder:text-white w-full text-white dark:bg-white/30 dark:text-white bg-transparent outline-none border-gray-400 border-[1px] dark:border-white px-2 py-1 transition-all placeholder:dark:text-white"
           />
-          <BsSearch className="absolute right-3 top-[9px] text-white" />
+          <BsSearch className="absolute right-10 top-[9px] text-white translate-x-[25px]" />
+          {searchQuery && (
+            <IoMdClose
+              onClick={handleClear}
+              className={`absolute top-[9px] text-white cursor-pointer transition-all translate-x-[35px] ${
+                searchQuery ? "right-3 opacity-100" : "right-[-30px] opacity-0"
+              }`}
+              style={{
+                transition: "right 0.3s ease-in-out, opacity 0.3s ease-in-out ",
+              }}
+            />
+          )}
         </div>
 
         <div>

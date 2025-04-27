@@ -60,15 +60,15 @@ const MainDashboard: React.FC = () => {
       key: "1",
       children: <DashboardProfile />,
     },
-    {
-      label: (
-        <span className=" flex justify-center items-center gap-2">
-          <CiBookmarkCheck className=" text-lg" /> Bookmarks
-        </span>
-      ),
-      key: "2",
-      children: <LikedReviews />,
-    },
+    // {
+    //   label: (
+    //     <span className=" flex justify-center items-center gap-2">
+    //       <CiBookmarkCheck className=" text-lg" /> Bookmarks
+    //     </span>
+    //   ),
+    //   key: "2",
+    //   children: <LikedReviews />,
+    // },
     {
       label: (
         <span className=" flex justify-center items-center gap-2">

@@ -55,10 +55,9 @@ const BikeFilterSidebar = ({
   };
 
   const onRadioChange = (value: any) => {
-    console.log(value);
     setFilters((prev: any) => {
       const updatedFilters = { ...prev, sortby: value };
-      console.log(updatedFilters);
+
       return updatedFilters;
     });
   };

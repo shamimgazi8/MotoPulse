@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LuMoveRight } from "react-icons/lu";
 import populerBikeData from "../../../../data/populerbike-data.json";
 
-const PopulerBike = () => {
+const PopulerBike = (data: any) => {
   return (
     <div data-aos="fade-right" className=" lg:container lg:mt-[60px]">
       <div>
@@ -17,7 +17,7 @@ const PopulerBike = () => {
         </Link>
       </div>
       <div className=" flex flex-wrap lg:flex-nowrap gap-8 justify-center">
-        {populerBikeData.slice(0, 4).map((item: any, i: any) => {
+        {data?.data.slice(0, 4).map((item: any, i: any) => {
           return <HoverCart key={i} data={item} />;
         })}
       </div>

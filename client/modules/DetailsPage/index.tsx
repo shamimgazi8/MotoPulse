@@ -11,7 +11,7 @@ const DetailsPage = () => {
 
   const params = useParams();
   const { DetailsSlug } = params;
-  console.log(DetailsSlug);
+
   useEffect(() => {
     if (DetailsSlug) {
       const fetchBikeDetails = async () => {

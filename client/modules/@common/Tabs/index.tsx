@@ -1,15 +1,13 @@
-import React from 'react';
-import { Tabs } from 'antd';
-import type { TabsProps } from 'antd';
+import React from "react";
+import { Tabs } from "antd";
+import type { TabsProps } from "antd";
 
-const onChange = (key: string) => {
-  console.log(key);
-};
+const onChange = (key: string) => {};
 
-const items: TabsProps['items'] = [
+const items: TabsProps["items"] = [
   {
-    key: '1',
-    label: 'Overview',
+    key: "1",
+    label: "Overview",
     children: (
       <div className=" dark:text-white flex gap-2 flex-col mb-5">
         <span>
@@ -25,8 +23,8 @@ const items: TabsProps['items'] = [
     ),
   },
   {
-    key: '2',
-    label: 'Description',
+    key: "2",
+    label: "Description",
     children: (
       <div className=" dark:text-white flex gap-2 flex-col mb-5">
         <span>
@@ -38,13 +36,13 @@ const items: TabsProps['items'] = [
     ),
   },
   {
-    key: '3',
-    label: 'Reviews',
+    key: "3",
+    label: "Reviews",
     children: (
       <div className=" dark:text-white flex gap-2 flex-col mb-5">
         <span>Customer Reviews</span>
         <span>
-          {' '}
+          {" "}
           The actual color of the physical product may slightly vary due to the
           deviation of lighting sources, photography or your device display
           settings.

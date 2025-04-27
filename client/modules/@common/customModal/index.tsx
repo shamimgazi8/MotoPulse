@@ -30,15 +30,15 @@ const CustomModal: React.FC<CustomModalProps> = ({
   }, [visible]);
 
   return visible ? (
-    <div className={`custom-modal-overlay show`}>
-      <div className="custom-modal">
+    <div className="cs-md-ov show">
+      <div className="ccs-md">
         <h2>{title}</h2>
         <p>{content}</p>
-        <div className="custom-modal-buttons">
-          <button className="confirm-btn" onClick={onConfirm}>
-            Discard
+        <div className="cs-md-bt">
+          <button className="c-bt" onClick={onConfirm}>
+            {title === "Discard changes?" ? "Discard" : "Delete"}
           </button>
-          <button className="cancel-btn" onClick={onCancel}>
+          <button className="ca-bt" onClick={onCancel}>
             Cancel
           </button>
         </div>

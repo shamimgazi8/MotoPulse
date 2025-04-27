@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import { Checkbox, Form, Input, Flex } from 'antd';
-import { FaPhoneAlt, FaRegUser } from 'react-icons/fa';
-import { RiLockPasswordFill, RiLockPasswordLine } from 'react-icons/ri';
-import { MdOutlineMailOutline } from 'react-icons/md';
+import React, { useState } from "react";
+import { Checkbox, Form, Input, Flex } from "antd";
+import { FaPhoneAlt, FaRegUser } from "react-icons/fa";
+import { RiLockPasswordFill, RiLockPasswordLine } from "react-icons/ri";
+import { MdOutlineMailOutline } from "react-icons/md";
 
 const LoginForm: React.FC = () => {
   const [isSignUp, setSignUp] = useState(false);
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-  };
+  const onFinish = (values: any) => {};
 
   return (
     <>
@@ -28,7 +26,7 @@ const LoginForm: React.FC = () => {
             rules={[
               {
                 required: true,
-                message: 'Please input your Name',
+                message: "Please input your Name",
               },
             ]}
           >
@@ -39,7 +37,7 @@ const LoginForm: React.FC = () => {
             rules={[
               {
                 required: true,
-                message: 'Please input your Email Adress',
+                message: "Please input your Email Adress",
               },
             ]}
           >
@@ -53,7 +51,7 @@ const LoginForm: React.FC = () => {
             rules={[
               {
                 required: true,
-                message: 'Please input your Phone Number',
+                message: "Please input your Phone Number",
               },
             ]}
           >
@@ -61,7 +59,7 @@ const LoginForm: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Please input your Password!' }]}
+            rules={[{ required: true, message: "Please input your Password!" }]}
           >
             <Input
               prefix={<RiLockPasswordLine />}
@@ -74,7 +72,7 @@ const LoginForm: React.FC = () => {
             rules={[
               {
                 required: true,
-                message: 'Please input your Confirm Password!',
+                message: "Please input your Confirm Password!",
               },
             ]}
           >
@@ -91,7 +89,7 @@ const LoginForm: React.FC = () => {
             </button>
             <div className=" w-full flex flex-col  justify-center items-center">
               <div className="">
-                Already have Account?{' '}
+                Already have Account?{" "}
                 <button
                   className=" hover:text-blue-400 transition-all "
                   onClick={() => {
@@ -121,7 +119,7 @@ const LoginForm: React.FC = () => {
             rules={[
               {
                 required: true,
-                message: 'Please input your Email or Phone Number!',
+                message: "Please input your Email or Phone Number!",
               },
             ]}
           >
@@ -129,7 +127,7 @@ const LoginForm: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: 'Please input your Password!' }]}
+            rules={[{ required: true, message: "Please input your Password!" }]}
           >
             <Input
               prefix={<RiLockPasswordLine />}
@@ -154,7 +152,7 @@ const LoginForm: React.FC = () => {
             </button>
             <div className=" w-full flex flex-col  justify-center items-center">
               <div className=" ">
-                Dont&apos;t have any Account?{' '}
+                Dont&apos;t have any Account?{" "}
                 <button
                   className=" hover:text-blue-400 transition-all"
                   onClick={() => {

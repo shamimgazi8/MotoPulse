@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import LoadingDots from "@/modules/@common/loading";
 import BlogCard from "@/modules/@common/universelCard.tsx";
 import ScrollToTopButton from "@/modules/home/@components/ScrollTopTobutton";
@@ -20,6 +20,8 @@ const InfinityScrollCard = ({
   loading: boolean;
 }) => {
   const loaderRef = useRef<HTMLDivElement | null>(null);
+  const skeletonRef = useRef<HTMLDivElement | null>(null);
+  const [showSkeleton, setShowSkeleton] = useState(false); // State to control skeleton visibility
 
   useEffect(() => {
     if (!hasMore) return;
@@ -43,7 +45,26 @@ const InfinityScrollCard = ({
       if (currentLoader) observer.unobserve(currentLoader);
     };
   }, [hasMore, loadMore]);
-  console.log(items, "data load with api");
+
+  useEffect(() => {
+    if (loading && skeletonRef.current) {
+      // When skeleton enters the viewport, set it to show for 2 seconds
+      const timer = setTimeout(() => {
+        setShowSkeleton(true);
+      }, 0); // Start immediately after the skeleton appears
+
+      // Clear the timeout after 2 seconds to hide the skeleton
+      const timeoutHide = setTimeout(() => {
+        setShowSkeleton(false);
+      }, 2000); // Skeleton stays for 2 seconds
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(timeoutHide);
+      };
+    }
+  }, [loading]);
+
   return (
     <div
       data-aos="fade-in"
@@ -52,7 +73,7 @@ const InfinityScrollCard = ({
       <ScrollToTopButton />
 
       {/* Show skeletons when loading and no items yet */}
-      {loading && items.length === 0
+      {loading && showSkeleton && items.length === 0
         ? Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)
         : items.map((item: any) => (
             <BlogCard
@@ -106,7 +127,7 @@ const InfinityScrollCard = ({
           No more data found
         </div>
       ) : (
-        !loading && (
+        loading && (
           <div
             ref={loaderRef}
             className="col-span-full flex justify-center py-4 text-sm text-gray-500"

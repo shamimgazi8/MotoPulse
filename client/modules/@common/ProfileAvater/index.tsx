@@ -47,7 +47,7 @@ const ProfileAvater = () => {
     Cookies.remove("token");
     setUser(null);
     setOpen(false);
-    console.log("User logged out");
+
     window.location.href = "/users/login";
   };
 
