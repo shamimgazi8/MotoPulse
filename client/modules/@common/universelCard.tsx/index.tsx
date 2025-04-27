@@ -142,7 +142,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
           <div
             className={`relative overflow-hidden ${classes?.imageWrapper || ""}`}
           >
-            <Image
+            <img
               src={
                 data?.coverPhoto
                   ? data?.coverPhoto

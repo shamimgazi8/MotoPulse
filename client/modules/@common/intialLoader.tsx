@@ -26,14 +26,14 @@ export default function InitialLoader() {
           alt="MotoPulse Logo"
           width={200}
           height={200}
+          priority
         />
       </div>
       <div>
-        <Image
+        <img
           src="https://media3.giphy.com/media/zlcIBNopQj8Yx5QgpR/giphy.gif?cid=6c09b952jm6v9osdyn6csuz66ai3grxztt3dfm8qaj9yxaph&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=s"
           alt="MotoPulse Logo"
-          width={100}
-          height={100}
+          className="h-[50px] w-[100px]"
         />
       </div>
     </div>

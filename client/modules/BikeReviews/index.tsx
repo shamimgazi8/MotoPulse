@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import InfinityScrollCard from "./InfinityScrollCard";
 import TrendingBikes from "./TrandingBikes";
 import BikeFilterSidebar from "./Filter/bikeFilterSidebar";
-import { message } from "antd";
 
 const PAGE_SIZE = 5;
 
