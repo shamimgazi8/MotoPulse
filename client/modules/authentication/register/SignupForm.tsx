@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Alert } from "antd";
+import { useCreateUserMutation } from "@/service/userApi";
 
 type SignUpFormData = {
   firstName: string;
@@ -15,6 +16,8 @@ type Props = {
 };
 
 const SignUpForm: React.FC<Props> = ({ onSwitchToLogin }) => {
+  const [signupUser, { isLoading }] = useCreateUserMutation();
+
   const [formData, setFormData] = useState<SignUpFormData>({
     firstName: "",
     lastName: "",
@@ -49,30 +52,26 @@ const SignUpForm: React.FC<Props> = ({ onSwitchToLogin }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Note: Only send the required fields to the API.
-        body: JSON.stringify({
-          firstname: firstName,
-          lastname: lastName,
-          email,
-          password,
-          profile_url: "",
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Signup failed.");
-      }
+      await signupUser({
+        firstname: firstName,
+        lastname: lastName,
+        email,
+        password,
+        profile_url: "",
+      }).unwrap();
 
       setSuccess(true);
+
+      // Optional: Switch to login view after a short delay
+      setTimeout(() => {
+        onSwitchToLogin();
+      }, 1000);
     } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+      if (err?.data?.message) {
+        setError(err.data.message);
+      } else {
+        setError("Signup failed. Please try again.");
+      }
     }
   };
 
@@ -89,7 +88,7 @@ const SignUpForm: React.FC<Props> = ({ onSwitchToLogin }) => {
       {error && <Alert message={error} type="error" showIcon />}
       {success && (
         <Alert
-          message="Account Created Successfully ! Please Login"
+          message="Account Created Successfully! Redirecting to login..."
           type="success"
           showIcon
         />
@@ -147,9 +146,10 @@ const SignUpForm: React.FC<Props> = ({ onSwitchToLogin }) => {
 
       <button
         type="submit"
+        disabled={isLoading}
         className="bg-teal-500 text-white py-3 rounded-full font-semibold hover:bg-teal-600 transition"
       >
-        Sign Up
+        {isLoading ? "Signing Up..." : "Sign Up"}
       </button>
 
       <p className="text-white text-sm text-center mt-2">

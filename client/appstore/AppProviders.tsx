@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Provider } from "react-redux";
-import store from "../appstore/store";
+
 import { ConfigProvider, theme as antdTheme } from "antd";
+import { store } from "./store";
 
 export default function AppProviders({
   children,
