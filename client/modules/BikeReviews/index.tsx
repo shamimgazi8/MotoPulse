@@ -1,88 +1,31 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import InfinityScrollCard from "./InfinityScrollCard";
 import TrendingBikes from "./TrandingBikes";
 import BikeFilterSidebar from "./Filter/bikeFilterSidebar";
+import { useGetFilteredReviewsQuery } from "@/service/reviewsApi";
 
 const PAGE_SIZE = 5;
 
 const BikeReviews = () => {
   const [filters, setFilters] = useState<any>({});
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState<any[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
-
-  // Ref to track when filter has changed
   const filtersChangedRef = useRef(false);
 
-  const fetchData = async (
-    queryObj: Record<string, any>,
-    currentPage: number
-  ) => {
-    try {
-      setLoading(true);
+  const { data, isLoading, isFetching, isError } = useGetFilteredReviewsQuery({
+    page,
+    limit: PAGE_SIZE,
+    ...filters,
+  });
 
-      const params = new URLSearchParams({
-        page: String(currentPage),
-        limit: String(PAGE_SIZE),
-      });
-
-      // Dynamic filters
-      if (queryObj.ccRange && Array.isArray(queryObj.ccRange)) {
-        params.append("ccMin", String(queryObj.ccRange[0]));
-        params.append("ccMax", String(queryObj.ccRange[1]));
-      }
-      if (queryObj.brand) {
-        params.append("brandName", queryObj.brand);
-      }
-      if (queryObj.bikeType) {
-        params.append("type", queryObj.bikeType);
-      }
-      if (queryObj.sortby) {
-        params.append("sortby", queryObj.sortby);
-      }
-
-      const queryString = params.toString();
-      const url = `http://localhost:4000/reviews?${queryString}`;
-
-      const res = await fetch(url, {
-        cache: "no-store",
-      });
-
-      if (!res.ok) {
-        throw new Error(`Server error: ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
-
-      if (currentPage === 1) {
-        setItems(data?.result || []);
-      } else {
-        setItems((prev) => [...prev, ...(data?.result || [])]);
-      }
-
-      const totalCount = data?.count || 0;
-      const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-      setHasMore(currentPage < totalPages);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      setHasMore(false);
-      alert(
-        "Unable to fetch data. Please check your server or internet connection."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData(filters, page);
-  }, [filters, page]);
+  const items = data?.result ?? [];
+  const totalCount = data?.count ?? 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const hasMore = page < totalPages;
 
   const loadMore = () => {
-    if (!loading && hasMore) {
+    if (!isFetching && hasMore) {
       setPage((prev) => prev + 1);
     }
   };
@@ -93,11 +36,9 @@ const BikeReviews = () => {
     setPage(1);
   };
 
-  // Ensure we only clear items when filters are changed and page is reset
+  // Reset cache view on filter change (simulate client-side reset)
   useEffect(() => {
     if (filtersChangedRef.current && page === 1) {
-      setItems([]);
-      setHasMore(true);
       filtersChangedRef.current = false;
     }
   }, [filters, page]);
@@ -112,7 +53,7 @@ const BikeReviews = () => {
         items={items}
         hasMore={hasMore}
         loadMore={loadMore}
-        loading={loading}
+        loading={isLoading || isFetching}
       />
 
       <div className="h-[calc(100vh-100px)] overflow-y-auto custom-scrollbar sticky top-[60px] self-start">

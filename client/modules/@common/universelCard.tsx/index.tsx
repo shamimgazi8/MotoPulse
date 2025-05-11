@@ -8,6 +8,12 @@ import Cookies from "js-cookie";
 import CommentSection from "../comments/CommentSection";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import CustomMessage from "../message/CustomMessage";
+import {
+  useGetBookmarksQuery,
+  useGetUserLikesQuery,
+  useToggleBookmarkMutation,
+  useToggleLikeMutation,
+} from "@/service/reviewsApi";
 
 interface BlogCardProps {
   data?: any;
@@ -29,6 +35,8 @@ interface LikedReview {
 }
 
 const BlogCard = ({ data, link, classes }: BlogCardProps) => {
+  const token = Cookies.get("token");
+  const userId = token ? getUserIdFromToken() : null;
   const [messageInfo, setMessageInfo] = useState<{
     type: "success" | "error" | "warning";
     text: string;
@@ -45,145 +53,69 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
   const [showComments, setShowComments] = useState<boolean>(false);
   const [commentCount, setCommentCount] = useState<number>(data?.reviews || 0);
 
-  useEffect(() => {
-    const fetchLikeStatus = async () => {
-      const token = Cookies.get("token");
-      if (!token) return;
-      try {
-        const userId = getUserIdFromToken();
+  const { data: likedReviews = [] } = useGetUserLikesQuery(userId!, {
+    skip: !userId,
+  });
+  const { data: bookmarks = [] } = useGetBookmarksQuery(undefined, {
+    skip: !userId,
+  });
 
-        const response = await fetch(`http://localhost:4000/like/${userId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const result = await response.json();
-        setLikedPost(result?.reviews || []);
-        setLikes(data?.like);
-      } catch (error) {
-        console.error("Error fetching like status:", error);
-      }
-    };
-
-    fetchLikeStatus();
-  }, [data?.id]);
+  const [toggleLike] = useToggleLikeMutation();
+  const [toggleBookmark] = useToggleBookmarkMutation();
 
   useEffect(() => {
-    setLikes(data?.like);
-    if (Array.isArray(likedPost)) {
-      const isLiked = likedPost.some((likeObj) => likeObj.id === data?.id);
+    if (Array.isArray(likedReviews) && data?.id) {
+      const isLiked = likedReviews.some((likeObj) => likeObj.id === data.id);
       setLiked(isLiked);
+      setLikes(data?.like);
     }
-  }, [likedPost, data]);
+  }, [likedReviews, data]);
+  useEffect(() => {
+    if (Array.isArray(bookmarks) && data?.id) {
+      const isBookmarked = bookmarks.some((bm) => bm.review_id === data.id);
+      setbookmark(isBookmarked);
+    }
+  }, [bookmarks, data]);
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!userId) {
+      alert("Please login first to like this post.");
+      return;
+    }
 
     try {
-      const token = Cookies.get("token");
-      if (!token) {
-        alert("Please login first to like this post.");
-        return;
-      }
-
-      const method = liked ? "DELETE" : "POST";
-      const response = await fetch(`http://localhost:4000/like/${data?.id}`, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ like: !liked }),
-      });
-
-      if (response.status === 401) {
-        alert("Please login first to like this post.");
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to update like");
-      }
-
+      await toggleLike({ reviewId: data.id, liked }).unwrap();
       setLiked(!liked);
       setLikes((prev) => (liked ? prev - 1 : prev + 1));
-    } catch (error) {
-      console.error("Error liking post:", error);
+    } catch (err) {
+      console.error("Error liking post:", err);
       alert("Something went wrong while liking the post.");
     }
   };
-  useEffect(() => {
-    const fetchBookmarkStatus = async () => {
-      const token = Cookies.get("token");
-      if (!token) return;
-      try {
-        const response = await fetch(`http://localhost:4000/bookmark/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const result = await response.json();
-
-        if (Array.isArray(result?.bookmarks)) {
-          const isBookmarked = result.bookmarks.some(
-            (bookmarkObj: any) => bookmarkObj.review_id === data?.id
-          );
-          setbookmark(isBookmarked);
-        }
-      } catch (error) {
-        console.error("Error fetching bookmark status:", error);
-      }
-    };
-
-    fetchBookmarkStatus();
-  }, [data?.id]);
-
   const handleBookmark = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!userId) {
+      alert("Please login first to bookmark this post.");
+      return;
+    }
 
     try {
-      const token = Cookies.get("token");
-      if (!token) {
-        alert("Please login first to bookmark this post.");
-        return;
-      }
-
-      const method = bookmark ? "DELETE" : "POST";
-
-      const response = await fetch(`http://localhost:4000/bookmark/`, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ review_id: data?.id }),
-      });
-
-      if (response.status === 401) {
-        alert("Please login first to bookmark this post.");
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Failed to update bookmark");
-      }
-
+      await toggleBookmark({
+        review_id: data.id,
+        bookmarked: bookmark,
+      }).unwrap();
       setbookmark(!bookmark);
 
-      if (method === "POST") {
-        showMessage("success", "Bookmark added successfully!");
-      } else {
-        showMessage("success", "Bookmark removed successfully!");
-      }
-    } catch (error) {
-      console.error("Error bookmarking post:", error);
-      showMessage("warning", "Bookmark removed successfully!");
+      showMessage(
+        "success",
+        bookmark
+          ? "Bookmark removed successfully!"
+          : "Bookmark added successfully!"
+      );
+    } catch (err) {
+      console.error("Error bookmarking post:", err);
+      showMessage("warning", "Something went wrong while updating bookmark.");
     }
   };
 

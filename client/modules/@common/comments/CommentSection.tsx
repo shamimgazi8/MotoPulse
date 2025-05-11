@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { getUserIdFromToken } from "@/utils/utils";
 import Cookies from "js-cookie";
 import { CiCircleAlert } from "react-icons/ci";
+import { useAddCommentMutation } from "@/service/commentsApi";
 
 // Interfaces
 export interface User {
@@ -50,6 +51,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const avatarFallback =
     data?.profilePicture || "https://www.w3schools.com/howto/img_avatar.png";
   const token = Cookies.get("token");
+  const [addComment, { isLoading, isError }] = useAddCommentMutation();
 
   const handleSubmit = async () => {
     if (!commentText.trim()) return;
@@ -61,37 +63,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
 
     try {
-      const response = await fetch("http://localhost:4000/comments/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          content: commentText.trim(),
-          review_id: reviewId,
-        }),
-      });
-
-      const newComment: Comment = {
+      // Call the addComment mutation
+      const newComment = await addComment({
         content: commentText.trim(),
-        User: {
-          firstname: data?.name || "Anonymous",
-          lastname: "",
-          profile_url: data?.avatar || avatarFallback,
-        },
-      };
+        reviewId: reviewId.toString(), // Convert reviewId to string
+      }).unwrap();
 
-      setComments((prev) => [...prev, newComment]);
+      // Clear the input after successful submission
       setCommentText("");
-      onCommentSubmit?.(newComment);
-
-      if (!response.ok) {
-        setFailedCommentIndex(comments.length);
-        throw new Error("Failed to post comment");
-      }
-
-      setFailedCommentIndex(null);
     } catch (error) {
       console.error("Failed to submit comment:", error);
     }

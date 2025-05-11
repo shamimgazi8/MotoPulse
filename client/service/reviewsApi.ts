@@ -15,6 +15,19 @@ export const reviewsApi = createApi({
   }),
   tagTypes: ["Reviews"],
   endpoints: (builder) => ({
+    getAllReviews: builder.query<any[], void>({
+      query: () => "/reviews",
+      providesTags: ["Reviews"],
+    }),
+    addReview: builder.mutation<any, any>({
+      query: (formData) => ({
+        url: "/reviews",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Reviews"],
+    }),
+
     getUserReviews: builder.query<any, string>({
       query: (userId) => `/reviews/user/${userId}`,
       providesTags: ["Reviews"],
@@ -38,11 +51,97 @@ export const reviewsApi = createApi({
       }),
       invalidatesTags: ["Reviews"],
     }),
+    getFilteredReviews: builder.query<
+      { result: any[]; count: number },
+      {
+        page: number;
+        limit?: number;
+        ccRange?: [number, number];
+        brand?: string;
+        bikeType?: string;
+        sortby?: string;
+      }
+    >({
+      query: ({ page, limit = 5, ccRange, brand, bikeType, sortby }) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
+
+        if (ccRange) {
+          params.append("ccMin", String(ccRange[0]));
+          params.append("ccMax", String(ccRange[1]));
+        }
+        if (brand) params.append("brandName", brand);
+        if (bikeType) params.append("type", bikeType);
+        if (sortby) params.append("sortby", sortby);
+
+        return `/reviews?${params.toString()}`;
+      },
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      merge: (currentCache, newItems) => {
+        currentCache.result.push(...newItems.result);
+        currentCache.count = newItems.count;
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return (
+          currentArg?.page !== previousArg?.page ||
+          JSON.stringify(currentArg) !== JSON.stringify(previousArg)
+        );
+      },
+    }),
+    getTrendingBikes: builder.query<any[], void>({
+      query: () => `reviews?page=1&limit=5&sortby=popular`,
+      transformResponse: (response: any) => {
+        return (response.result || []).map((bike: any) => ({
+          id: bike.id,
+          name: bike.bike.name,
+          imgUrl: bike.coverPhoto,
+          brand: bike.bike.brand.brandName,
+          likeCount: bike.like_count,
+          slug: bike.slug,
+        }));
+      },
+    }),
+    getUserLikes: builder.query<any[], string>({
+      query: (userId) => `/like/${userId}`,
+    }),
+
+    toggleLike: builder.mutation<any, { reviewId: number; liked: boolean }>({
+      query: ({ reviewId, liked }) => ({
+        url: `/like/${reviewId}`,
+        method: liked ? "DELETE" : "POST",
+        body: { like: !liked },
+      }),
+    }),
+
+    getBookmarks: builder.query<any[], void>({
+      query: () => `/bookmark`,
+    }),
+
+    toggleBookmark: builder.mutation<
+      any,
+      { review_id: number; bookmarked: boolean }
+    >({
+      query: ({ review_id, bookmarked }) => ({
+        url: `/bookmark`,
+        method: bookmarked ? "DELETE" : "POST",
+        body: { review_id },
+      }),
+    }),
   }),
 });
 
 export const {
   useGetUserReviewsQuery,
+  useAddReviewMutation,
+  useGetAllReviewsQuery,
   useUpdateReviewMutation,
   useDeleteReviewMutation,
+  useGetFilteredReviewsQuery,
+  useGetTrendingBikesQuery,
+  useGetUserLikesQuery,
+  useToggleLikeMutation,
+  useGetBookmarksQuery,
+  useToggleBookmarkMutation,
 } = reviewsApi;

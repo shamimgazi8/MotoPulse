@@ -94,7 +94,7 @@ const InfinityScrollCard = ({
             className=" "
           />
           <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
-            No Bike Found!
+            No Reviews Found!
           </p>
         </div>
       )}
