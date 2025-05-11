@@ -1,18 +1,22 @@
 "use client";
-import { Review } from "@/types/review"; // <- import the type
 import { usePathname } from "next/navigation";
 import { capitalizeFirstLetter } from "../../utils/utils";
 import PaginatedList from "../@common/pagination";
 import Bredcrumb from "../@common/Bredcrumb";
-import { useState, useEffect } from "react";
 import CarouselMulti from "../@common/multiCarousle";
 import Link from "next/link";
-import ApiService from "@/service/apiService";
 import Image from "next/image";
+import { useEffect } from "react";
+
+import { Review } from "@/types/review"; // <- your type
+import {
+  useGetReviewsByBrandQuery,
+  useGetReviewsByTypeQuery,
+} from "@/service/reviewsApi";
 
 const BikeCategoryList = () => {
   const pathname = usePathname();
-  const pathSegments = pathname.split("/").filter((segment) => segment);
+  const pathSegments = pathname.split("/").filter(Boolean);
   const bikeCategories = pathSegments[0];
   const bikeTypes = pathSegments[1];
 
@@ -30,29 +34,16 @@ const BikeCategoryList = () => {
       link: `/${bikeCategories}/${bikeTypes}`,
     });
   }
-  const [dataArray, setDataArray] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response;
-        if (bikeCategories === "brands") {
-          response = await ApiService.getReviewBybyBrand(decodedSlug1);
-        } else if (bikeCategories === "type") {
-          response = await ApiService.getReviewBybyType(decodedSlug1);
-        }
-        setDataArray(response?.result || []);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const {
+    data: dataArray = [],
+    isLoading: loading,
+    isError,
+  } = bikeCategories === "brands"
+    ? useGetReviewsByBrandQuery(decodedSlug1)
+    : useGetReviewsByTypeQuery(decodedSlug1);
 
-    fetchData();
-  }, [bikeCategories, bikeTypes, decodedSlug1]);
-
+  // Parallax scroll effect
   useEffect(() => {
     const hero = document.getElementById("parallaxHero");
     let latestScrollY = 0;
@@ -129,7 +120,7 @@ const BikeCategoryList = () => {
             )}
 
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {dataArray.map((item, i) => (
+              {dataArray.map((item: Review, i: number) => (
                 <Link href={`/${item.slug}`} key={i}>
                   <div
                     data-aos="fade-up"

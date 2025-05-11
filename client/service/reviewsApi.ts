@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export const reviewsApi = createApi({
   reducerPath: "reviewsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: baseUrl,
+    baseUrl,
     prepareHeaders: (headers) => {
       const token = document.cookie
         .split("; ")
@@ -19,6 +21,15 @@ export const reviewsApi = createApi({
       query: () => "/reviews",
       providesTags: ["Reviews"],
     }),
+
+    getReviewBySlug: builder.query<any, string>({
+      query: (slug) => `/reviews/${slug}`,
+    }),
+
+    getReviewsByBikeId: builder.query<any[], number>({
+      query: (bikeId) => `/reviews/bike/${bikeId}`,
+    }),
+
     addReview: builder.mutation<any, any>({
       query: (formData) => ({
         url: "/reviews",
@@ -32,6 +43,7 @@ export const reviewsApi = createApi({
       query: (userId) => `/reviews/user/${userId}`,
       providesTags: ["Reviews"],
     }),
+
     updateReview: builder.mutation<
       any,
       { id: string; review: string; user_id: string }
@@ -43,6 +55,7 @@ export const reviewsApi = createApi({
       }),
       invalidatesTags: ["Reviews"],
     }),
+
     deleteReview: builder.mutation<any, { id: string; user_id: string }>({
       query: ({ id, user_id }) => ({
         url: `/reviews/${id}`,
@@ -51,6 +64,7 @@ export const reviewsApi = createApi({
       }),
       invalidatesTags: ["Reviews"],
     }),
+
     getFilteredReviews: builder.query<
       { result: any[]; count: number },
       {
@@ -90,6 +104,7 @@ export const reviewsApi = createApi({
         );
       },
     }),
+
     getTrendingBikes: builder.query<any[], void>({
       query: () => `reviews?page=1&limit=5&sortby=popular`,
       transformResponse: (response: any) => {
@@ -103,6 +118,7 @@ export const reviewsApi = createApi({
         }));
       },
     }),
+
     getUserLikes: builder.query<any[], string>({
       query: (userId) => `/like/${userId}`,
     }),
@@ -129,19 +145,38 @@ export const reviewsApi = createApi({
         body: { review_id },
       }),
     }),
+
+    // New endpoint for live search
+    searchReviews: builder.query<{ result: any[] }, string>({
+      query: (query) => `/reviews?search=${encodeURIComponent(query)}`,
+    }),
+    getReviewsByBrand: builder.query<any[], string>({
+      query: (brandName) => `/reviews/brand/${brandName}`,
+      providesTags: ["Reviews"],
+    }),
+
+    getReviewsByType: builder.query<any[], string>({
+      query: (typeName) => `/reviews/type/${typeName}`,
+      providesTags: ["Reviews"],
+    }),
   }),
 });
 
 export const {
-  useGetUserReviewsQuery,
-  useAddReviewMutation,
   useGetAllReviewsQuery,
+  useGetReviewBySlugQuery,
+  useAddReviewMutation,
+  useGetUserReviewsQuery,
   useUpdateReviewMutation,
   useDeleteReviewMutation,
   useGetFilteredReviewsQuery,
+  useGetReviewsByBikeIdQuery,
   useGetTrendingBikesQuery,
   useGetUserLikesQuery,
   useToggleLikeMutation,
   useGetBookmarksQuery,
   useToggleBookmarkMutation,
+  useSearchReviewsQuery,
+  useGetReviewsByBrandQuery,
+  useGetReviewsByTypeQuery,
 } = reviewsApi;

@@ -1,55 +1,43 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import BikeHero from "./components/Hero";
 import { Spin } from "antd";
+import { useGetReviewBySlugQuery } from "@/service/reviewsApi";
 
 const DetailsPage = () => {
-  const [bikeData, setBikeData] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
   const params = useParams();
   const { DetailsSlug } = params;
 
-  useEffect(() => {
-    if (DetailsSlug) {
-      const fetchBikeDetails = async () => {
-        try {
-          // Fetch bike details using the slug
-          const response = await fetch(
-            `http://localhost:4000/reviews/${DetailsSlug}`
-          );
-          if (response.status === 404) {
-            // Redirect to the 404 page
-            window.location.href = "/not-found";
-            return;
-          }
-          const data = await response.json();
-          setBikeData(data);
+  const {
+    data: bikeData,
+    isLoading,
+    isError,
+    error,
+  } = useGetReviewBySlugQuery(DetailsSlug as string, {
+    skip: !DetailsSlug,
+  });
 
-          setLoading(false);
-        } catch (err) {
-          setError("Failed to fetch bike data.");
-          setLoading(false);
-        }
-      };
-
-      fetchBikeDetails();
-    }
-  }, [DetailsSlug]); // Re-fetch when slug changes
-
-  if (loading)
+  if (isLoading) {
     return (
-      <div className=" flex justify-center items-center">
+      <div className="flex justify-center items-center">
         <Spin />
       </div>
     );
-  if (error) return <div>{error}</div>;
+  }
+
+  if (isError) {
+    if ((error as any)?.status === 404) {
+      if (typeof window !== "undefined") {
+        window.location.href = "/not-found";
+      }
+      return null;
+    }
+
+    return <div>Failed to load review details.</div>;
+  }
 
   return (
     <div className="bg-black text-gray-900 dark:text-white">
-      {/* Parallax Hero */}
       <BikeHero bike={bikeData} />
     </div>
   );

@@ -35,7 +35,7 @@ export const UserApi = createApi({
         body: credentials,
       }),
     }),
-    getUserProfile: builder.mutation<any, { id: any; token: string }>({
+    getUserProfile: builder.query<any, { id: string; token: string }>({
       query: ({ id, token }) => ({
         url: `users/profile/${id}`,
         method: "POST",
@@ -44,6 +44,7 @@ export const UserApi = createApi({
         },
       }),
     }),
+
     updateUserProfile: builder.mutation<
       any,
       {
@@ -82,7 +83,7 @@ export const {
   useGetUserByIdQuery,
   useCreateUserMutation,
   useLoginUserMutation,
-  useGetUserProfileMutation,
+  useGetUserProfileQuery,
   useUpdateUserProfileMutation,
   useDeleteUserMutation,
   useLogoutUserMutation,

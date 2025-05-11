@@ -31,11 +31,26 @@ export const bikeApi = createApi({
         body: { brandName, user_id },
       }),
     }),
-    addModel: builder.mutation<any, { modelName: string; brand_id: number }>({
-      query: ({ modelName, brand_id }) => ({
+    addType: builder.mutation<any, { name: string }>({
+      query: ({ name }) => ({
+        url: "/bikeTypes",
+        method: "POST",
+        body: { name },
+      }),
+    }),
+    addModel: builder.mutation<
+      any,
+      {
+        modelName: string;
+        brand_id: number;
+        manufacturer: string;
+        year: Number;
+      }
+    >({
+      query: ({ modelName, brand_id, manufacturer, year }) => ({
         url: "/models",
         method: "POST",
-        body: { modelName, brand_id },
+        body: { modelName, brand_id, manufacturer, year },
       }),
     }),
     addBike: builder.mutation<any, any>({
@@ -70,6 +85,7 @@ export const {
   useGetBikeTypesQuery,
   useAddBrandMutation,
   useAddModelMutation,
+  useAddTypeMutation,
   useAddBikeMutation,
   useAddReviewMutation,
   useGetAllBikesQuery,

@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import CoverImageUpload from "../AddReview/components/UploadCover";
 import { FaPen } from "react-icons/fa";
 import {
-  useGetUserProfileMutation,
+  useGetUserProfileQuery,
   useUpdateUserProfileMutation,
 } from "@/service/userApi";
 
@@ -18,6 +18,20 @@ type UserProfile = {
 };
 
 const DashboardProfile = () => {
+  const token = Cookies.get("token");
+  const id = Cookies.get("userId");
+  if (!token || !id) {
+    window.location.href = "/users/login";
+    return;
+  }
+
+  const { data, error, isLoading, isSuccess } = useGetUserProfileQuery(
+    { id, token },
+    { skip: !token || !id }
+  );
+
+  const [updateUserProfile] = useUpdateUserProfileMutation();
+
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,54 +43,40 @@ const DashboardProfile = () => {
     profile_url: "",
   });
 
-  const [getUserProfile] = useGetUserProfileMutation();
-  const [updateUserProfile] = useUpdateUserProfileMutation();
-
   useEffect(() => {
-    const token = Cookies.get("token");
-    const id = Cookies.get("userId");
+    if (isSuccess && data) {
+      const profileUrl =
+        data.profile_url ||
+        "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg";
 
-    if (!token) {
-      window.location.href = "/users/login";
-      return;
-    }
-    getUserProfile({ id: id, token })
-      .unwrap()
-      .then((data: any) => {
-        const profileUrl =
-          data.profile_url ||
-          "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg";
-
-        setUser({
-          id: data.id,
-          name: `${data.firstname} ${data.lastname}`,
-          email: data.email,
-          address: data.address || "No address provided",
-          profile_url: profileUrl,
-        });
-
-        setFormData((prev) => ({
-          ...prev,
-          email: data.email,
-          address: data.address || "",
-          profile_url: profileUrl,
-        }));
-      })
-      .catch((error: any) => {
-        console.error("Fetch failed:", error);
-        Cookies.remove("token");
-        window.location.href = "/users/login";
+      setUser({
+        id: data.id,
+        name: `${data.firstname} ${data.lastname}`,
+        email: data.email,
+        address: data.address || "No address provided",
+        profile_url: profileUrl,
       });
-  }, []);
+
+      setFormData((prev) => ({
+        ...prev,
+        email: data.email,
+        address: data.address || "",
+        profile_url: profileUrl,
+      }));
+    }
+
+    if (error) {
+      console.error("Profile fetch error:", error);
+      Cookies.remove("token");
+      window.location.href = "/users/login";
+    }
+  }, [data, error, isSuccess, token]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSave = async () => {
-    const token = Cookies.get("token");
-    const id = Cookies.get("userId");
-
     if (!token || !id) {
       alert("Not authenticated.");
       return;
@@ -142,7 +142,7 @@ const DashboardProfile = () => {
     }
   };
 
-  if (!user) {
+  if (isLoading || !user) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p>Loading profile...</p>
@@ -163,7 +163,6 @@ const DashboardProfile = () => {
               alt={`${user.name} profile`}
               className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
             />
-
             {isEditing && (
               <CoverImageUpload
                 profile
@@ -181,7 +180,6 @@ const DashboardProfile = () => {
             <h2 className="text-2xl font-semibold dark:gradient-text">
               {user.name}
             </h2>
-
             {!isEditing ? (
               <>
                 <p className="text-sm text-gray-500 dark:text-white">
@@ -195,8 +193,7 @@ const DashboardProfile = () => {
                   type="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email"
+                  disabled
                   className="border rounded px-3 py-1 text-sm dark:text-white dark:bg-gray-900 dark:border-black"
                 />
                 <input

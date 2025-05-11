@@ -2,8 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { Slider, Select, Checkbox, InputNumber, Collapse, Radio } from "antd";
-import ApiService from "@/service/apiService";
 import { CheckboxGroupProps } from "antd/es/checkbox";
+import {
+  useGetBikeTypesQuery,
+  useGetBrandsQuery,
+} from "@/service/brand_model_typeApi";
 
 const { Option } = Select;
 
@@ -18,48 +21,35 @@ const BikeFilterSidebar = ({
     bikeType: undefined,
   });
 
-  const [bikeTypes, setBikeTypes] = useState<{ id: number; name: string }[]>(
-    []
-  );
-  const [brands, setBrands] = useState<{ id: number; brandName: string }[]>([]);
   const [tempCcRange, setTempCcRange] = useState<[number?, number?]>([
-    filters.ccRange?.[0],
-    filters.ccRange?.[1],
+    undefined,
+    undefined,
   ]);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [brands, types] = await Promise.all([
-          ApiService.getBrands(),
-          ApiService.getBikeTypes(),
-        ]);
+  // Fetching data with RTK Query
+  const {
+    data: brands = [],
+    isLoading: brandsLoading,
+    error: brandsError,
+  } = useGetBrandsQuery();
 
-        setBrands(brands);
-        setBikeTypes(types?.result);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const {
+    data: bikeTypes = [],
+    isLoading: typesLoading,
+    error: typesError,
+  } = useGetBikeTypesQuery();
 
   useEffect(() => {
     onApplyFilters(filters);
-  }, [filters]); // Runs only when filters state updates
+  }, [filters]);
 
   const handleChange = (field: string, value: any) => {
     setFilters((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const onRadioChange = (value: any) => {
-    setFilters((prev: any) => {
-      const updatedFilters = { ...prev, sortby: value };
-
-      return updatedFilters;
-    });
+    setFilters((prev: any) => ({ ...prev, sortby: value }));
   };
 
   const options: CheckboxGroupProps<string>["options"] = [
@@ -77,8 +67,9 @@ const BikeFilterSidebar = ({
           placeholder="Select Brand"
           style={{ width: "100%" }}
           onChange={(value) => handleChange("brand", value)}
+          loading={brandsLoading}
         >
-          {brands.map((brand: any) => (
+          {brands.map((brand) => (
             <Option key={brand.id} value={brand.brandName}>
               {brand.brandName}
             </Option>
@@ -95,8 +86,9 @@ const BikeFilterSidebar = ({
           placeholder="Select Type"
           style={{ width: "100%" }}
           onChange={(value) => handleChange("bikeType", value)}
+          loading={typesLoading}
         >
-          {bikeTypes?.map((type: any) => (
+          {bikeTypes.map((type) => (
             <Option key={type.id} value={type.name}>
               {type.name}
             </Option>
@@ -133,8 +125,8 @@ const BikeFilterSidebar = ({
               style={{ width: "100%" }}
             />
           </div>
-          {tempCcRange[0] !== filters.ccRange?.[0] ||
-          tempCcRange[1] !== filters.ccRange?.[1] ? (
+          {(tempCcRange[0] !== filters.ccRange?.[0] ||
+            tempCcRange[1] !== filters.ccRange?.[1]) && (
             <button
               className="btn-outline hover:bg-white hover:text-black transition-all px-2 py-1"
               onClick={() => {
@@ -144,8 +136,8 @@ const BikeFilterSidebar = ({
             >
               Confirm
             </button>
-          ) : null}
-          {tempCcRange[0] != null || tempCcRange[1] != null ? (
+          )}
+          {(tempCcRange[0] != null || tempCcRange[1] != null) && (
             <button
               className="btn-outline hover:bg-white hover:text-black transition-all px-2 py-1"
               onClick={() => {
@@ -156,7 +148,7 @@ const BikeFilterSidebar = ({
             >
               Clear
             </button>
-          ) : null}
+          )}
         </div>
       ),
     },

@@ -1,10 +1,10 @@
 "use client";
 
-import ApiService from "@/service/apiService";
 import { Statistic } from "antd";
 import { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 import { fetchWikiSummary } from "@/utils/wiki";
+import { useGetReviewsByBikeIdQuery } from "@/service/reviewsApi";
 
 interface Review {
   id: number;
@@ -90,33 +90,30 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Fetch reviews from RTK
+  const { data, error, isLoading } = useGetReviewsByBikeIdQuery(
+    bike?.bike?.id!,
+    {
+      skip: !bike?.bike?.id,
+    }
+  );
+
+  // Sync fetched reviews to local state
   useEffect(() => {
-    const fetchReviews = async () => {
-      if (bike?.bike?.id) {
-        try {
-          const response = await ApiService.getReviewByBikeId(bike.bike.id);
-          setReviews(response);
-        } catch (error) {
-          console.error("Failed to fetch reviews:", error);
-        }
-      }
-    };
+    if (data) {
+      setReviews(data); // set once fetched
+    }
+  }, [data]);
 
-    fetchReviews();
-  }, [bike?.bike?.id]);
-
-  // Handle case where bike might be undefined
-  if (!bike) {
-    return <div>Loading...</div>; // Or handle in any other way
-  }
-
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading reviews.</div>;
   return (
     <div className="bg-black text-gray-900 dark:text-white">
       {/* Parallax Hero */}
       <div className="relative h-[80vh] overflow-hidden">
         <img
-          src={bike.coverPhoto}
-          alt={bike.name}
+          src={bike?.coverPhoto}
+          alt={bike?.name}
           className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-out"
           style={{ transform: `translateY(${offsetY * -0.2}px)` }}
         />
@@ -140,7 +137,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
           </div>
 
           <p className="text-2xl mt-2">
-            {bike.year || 2025} • {bike?.bike?.type?.name}
+            {bike?.year || 2025} • {bike?.bike?.type?.name}
           </p>
         </div>
       </div>
@@ -181,7 +178,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
               <div className="bg-white dark:bg-[#1f1f1f91] rounded-xl p-2 shadow text-center">
                 <Statistic
                   title="Engine CC"
-                  value={bike.bike?.engineCC}
+                  value={bike?.bike?.engineCC}
                   valueStyle={{ fontSize: "1.5rem", color: "#1890ff" }}
                 />
               </div>
@@ -190,7 +187,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
               <div className="bg-white dark:bg-[#1f1f1f] rounded-xl p-2 shadow text-center">
                 <Statistic
                   title="HorsePower"
-                  value={bike.bike?.horsePower}
+                  value={bike?.bike?.horsePower}
                   valueStyle={{ fontSize: "1.5rem", color: "#1890ff" }}
                 />
               </div>
@@ -199,7 +196,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
               <div className="bg-white dark:bg-[#1f1f1f] rounded-xl p-2 shadow text-center">
                 <Statistic
                   title="Torque"
-                  value={bike.bike?.torque}
+                  value={bike?.bike?.torque}
                   valueStyle={{ fontSize: "1.5rem", color: "#1890ff" }}
                 />
               </div>
@@ -208,7 +205,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
               <div className="bg-white dark:bg-[#1f1f1f] rounded-xl p-2 shadow text-center">
                 <Statistic
                   title="Weight"
-                  value={bike.bike?.weight}
+                  value={bike?.bike?.weight}
                   valueStyle={{ fontSize: "1.5rem", color: "#1890ff" }}
                 />
               </div>
@@ -216,7 +213,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
               <div className="bg-white dark:bg-[#1f1f1f] rounded-xl p-2 shadow text-center">
                 <Statistic
                   title="Brand"
-                  value={bike.bike?.brand?.brandName}
+                  value={bike?.bike?.brand?.brandName}
                   valueStyle={{ fontSize: "1.5rem", color: "#1890ff" }}
                 />
               </div>
@@ -224,7 +221,7 @@ export default function DetailsPage({ bike }: DetailsPageProps) {
               <div className="bg-white dark:bg-[#1f1f1f] rounded-xl p-2 shadow text-center">
                 <Statistic
                   title="Type"
-                  value={bike.bike?.type?.name}
+                  value={bike?.bike?.type?.name}
                   valueStyle={{ fontSize: "1.5rem", color: "#1890ff" }}
                 />
               </div>

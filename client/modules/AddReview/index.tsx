@@ -15,6 +15,8 @@ import FullPagePopup from "../@common/fullpagePopUp/FullPagePopup";
 import {
   useAddBikeMutation,
   useAddBrandMutation,
+  useAddModelMutation,
+  useAddTypeMutation,
   useGetAllBikesQuery,
   useGetModelsQuery,
 } from "@/service/bikeApi";
@@ -56,6 +58,8 @@ const BikeReviewForm = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const [addBrand, { isLoading, isError, error }] = useAddBrandMutation();
+  const [addModel] = useAddModelMutation();
+  const [addType] = useAddTypeMutation();
   const {
     data: brandsData,
     error: brandsError,
@@ -129,6 +133,7 @@ const BikeReviewForm = () => {
       }).unwrap();
 
       setBrandOptions([...brandOptions, response]);
+      setbrand_id(response?.id);
       setNewBrandName(""); // Reset input field
       showToast("Brand added successfully!", "success");
     } catch (err) {
@@ -158,35 +163,21 @@ const BikeReviewForm = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/models", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          modelName: trimmedName,
-          brand_id,
-          manufacturer: "bd",
-          year: 11,
-        }),
-      });
+      const response = await addModel({
+        modelName: trimmedName,
+        brand_id,
+        manufacturer: "bd",
+        year: 11,
+      }).unwrap();
 
-      if (!response.ok) {
-        throw new Error("Failed to add brand");
-      }
-
-      const createdModel = await response.json(); // get model from backend
-
-      setModelOptions([...modelOptions, createdModel]);
-      setModelId(createdModel.id);
-
+      setModelOptions([...modelOptions, response]);
+      setModelId(response?.id);
       setNewModelName("");
-      setIsAddingModel(false);
       showToast("Model added successfully!", "success");
+      setIsAddingModel(false);
     } catch (error) {
-      console.error("Error adding brand:", error);
-      showToast("Error adding brand", "error");
+      console.error("Error adding Model:", error);
+      showToast("Error adding Model", "error");
     }
   };
 
@@ -203,31 +194,45 @@ const BikeReviewForm = () => {
       return;
     }
 
-    try {
-      const response = await fetch("http://localhost:4000/bikeTypes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Send the token in Authorization header
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-        }),
-      });
+    // try {
+    //   const response = await fetch("http://localhost:4000/bikeTypes", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`, // Send the token in Authorization header
+    //     },
+    //     body: JSON.stringify({
+    //       name: trimmedName,
+    //     }),
+    //   });
 
-      if (!response.ok) {
-        throw new Error("Failed to add bikeTypes");
-      }
-      const newId = typeOptions.length + 1;
-      const newType = { id: newId, name: trimmedName };
-      setTypeOptions([...typeOptions, newType]);
-      setTypeId(newId);
+    //   if (!response.ok) {
+    //     throw new Error("Failed to add bikeTypes");
+    //   }
+    //   const newId = typeOptions.length + 1;
+    //   const newType = { id: newId, name: trimmedName };
+    //   setTypeOptions([...typeOptions, newType]);
+    //   setTypeId(newId);
+    //   setNewTypeName("");
+    //   setIsAddingType(false);
+    //   showToast("Type added successfully!", "success");
+    // } catch (error) {
+    //   console.error("Error adding brand:", error);
+    //   showToast("Error adding brand", "error");
+    // }
+    try {
+      const response = await addType({
+        name: trimmedName,
+      }).unwrap();
+
+      setTypeOptions([...typeOptions, response]);
+      setTypeId(response?.id);
       setNewTypeName("");
+      showToast("Bike Type added successfully!", "success");
       setIsAddingType(false);
-      showToast("Type added successfully!", "success");
     } catch (error) {
-      console.error("Error adding brand:", error);
-      showToast("Error adding brand", "error");
+      console.error("Error adding Bike Type:", error);
+      showToast("Error adding Bike Type", "error");
     }
   };
 
