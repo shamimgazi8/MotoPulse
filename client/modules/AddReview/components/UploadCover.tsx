@@ -1,4 +1,6 @@
+// components/CoverImageUpload.tsx
 "use client";
+
 import React, {
   useState,
   useImperativeHandle,
@@ -8,8 +10,9 @@ import React, {
 import { Upload, Button, message, Progress } from "antd";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { CgPlayListRemove } from "react-icons/cg";
-import type { UploadProps } from "antd";
+
 import type { UploadFile } from "antd/es/upload/interface";
+import { useUploadCoverImageMutation } from "@/service/uploadApi";
 
 export interface CoverImageUploadRef {
   reset: () => void;
@@ -25,6 +28,8 @@ const CoverImageUpload = forwardRef<
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadDone, setUploadDone] = useState(false);
   const [savedTheme, setSavedTheme] = useState<string | null>(null);
+
+  const [uploadCoverImage, { isLoading }] = useUploadCoverImageMutation();
 
   // Only access localStorage on the client side
   useEffect(() => {
@@ -43,7 +48,7 @@ const CoverImageUpload = forwardRef<
     },
   }));
 
-  const handleUploadChange: UploadProps["onChange"] = async (info) => {
+  const handleUploadChange = async (info: any) => {
     const fileObj: any = info.file.originFileObj || info.file;
 
     if (!fileObj) {
@@ -60,41 +65,17 @@ const CoverImageUpload = forwardRef<
     formData.append("cover", fileObj);
 
     try {
-      const xhr = new XMLHttpRequest();
-
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round((event.loaded / event.total) * 100);
-          setProgress(percent);
-        }
-      };
-
-      xhr.onload = () => {
-        setUploading(false);
-        if (xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          message.success(
-            `${profile ? "Profile" : "Cover"} photo uploaded successfully!`
-          );
-          setUploadDone(true);
-          onUploadSuccess(data.url);
-        } else {
-          const error = JSON.parse(xhr.responseText);
-          message.error(error.message || "Upload failed");
-        }
-      };
-
-      xhr.onerror = () => {
-        setUploading(false);
-        message.error("Something went wrong during upload.");
-      };
-
-      xhr.open("POST", `http://localhost:4000/upload-${"cover"}`, true);
-      xhr.send(formData);
+      // Upload using RTK Query
+      const response = await uploadCoverImage(formData).unwrap();
+      message.success(
+        `${profile ? "Profile" : "Cover"} photo uploaded successfully!`
+      );
+      setUploadDone(true);
+      onUploadSuccess(response.url);
     } catch (error) {
-      setUploading(false);
       message.error("Upload failed.");
-      console.error(error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -132,15 +113,15 @@ const CoverImageUpload = forwardRef<
           >
             <Button
               icon={<FaCloudUploadAlt />}
-              loading={uploading}
-              disabled={uploading}
+              loading={isLoading}
+              disabled={isLoading}
               style={{
                 width: profile ? 200 : 600,
                 backgroundColor: savedTheme === "dark" ? "#1f2937" : "",
                 color: savedTheme === "dark" ? "#ffff" : "",
               }}
             >
-              {uploading
+              {isLoading
                 ? "Uploading..."
                 : profile
                   ? "Click to Change Profile"
@@ -148,7 +129,7 @@ const CoverImageUpload = forwardRef<
             </Button>
           </Upload>
 
-          {uploading && <Progress percent={progress} status="active" />}
+          {isLoading && <Progress percent={progress} status="active" />}
         </>
       )}
 
@@ -158,7 +139,7 @@ const CoverImageUpload = forwardRef<
           type="dashed"
           className="border-gray-400 flex justify-center items-center"
         >
-          <CgPlayListRemove className=" text-xl text-red-500" />
+          <CgPlayListRemove className="text-xl text-red-500" />
           Remove {profile ? "Profile" : "Cover"} Photo
         </Button>
       )}

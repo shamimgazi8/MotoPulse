@@ -1,8 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+
 import CoverImageUpload from "../AddReview/components/UploadCover";
 import { FaPen } from "react-icons/fa";
+import {
+  useGetUserProfileMutation,
+  useUpdateUserProfileMutation,
+} from "@/service/userApi";
 
 type UserProfile = {
   id: number;
@@ -23,7 +28,9 @@ const DashboardProfile = () => {
     confirmPassword: "",
     profile_url: "",
   });
-  const [loading, setLoading] = useState(true);
+
+  const [getUserProfile] = useGetUserProfileMutation();
+  const [updateUserProfile] = useUpdateUserProfileMutation();
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -33,52 +40,33 @@ const DashboardProfile = () => {
       window.location.href = "/users/login";
       return;
     }
+    getUserProfile({ id: id, token })
+      .unwrap()
+      .then((data: any) => {
+        const profileUrl =
+          data.profile_url ||
+          "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg";
 
-    const fetchUser = async () => {
-      try {
-        const res = await fetch(`http://localhost:4000/users/profile/${id}`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+        setUser({
+          id: data.id,
+          name: `${data.firstname} ${data.lastname}`,
+          email: data.email,
+          address: data.address || "No address provided",
+          profile_url: profileUrl,
         });
 
-        const data = await res.json();
-        if (res.ok) {
-          const profileUrl =
-            data.profile_url ||
-            "https://images.ctfassets.net/ihx0a8chifpc/gPyHKDGI0md4NkRDjs4k8/36be1e73008a0181c1980f727f29d002/avatar-placeholder-generator-500x500.jpg";
-
-          setUser({
-            id: data.id,
-            name: `${data.firstname} ${data.lastname}`,
-            email: data.email,
-            address: data.address || "No address provided",
-            profile_url: profileUrl,
-          });
-
-          setFormData((prev) => ({
-            ...prev,
-            email: data.email,
-            address: data.address || "",
-            profile_url: profileUrl,
-          }));
-        } else {
-          console.error("Failed to load user:", data.message);
-          Cookies.remove("token");
-          window.location.href = "/users/login";
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
+        setFormData((prev) => ({
+          ...prev,
+          email: data.email,
+          address: data.address || "",
+          profile_url: profileUrl,
+        }));
+      })
+      .catch((error: any) => {
+        console.error("Fetch failed:", error);
         Cookies.remove("token");
         window.location.href = "/users/login";
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
+      });
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,97 +74,79 @@ const DashboardProfile = () => {
   };
 
   const handleSave = async () => {
-    if (
-      formData.newPassword ||
-      formData.confirmPassword ||
-      formData.oldPassword
-    ) {
-      if (
-        !formData.oldPassword ||
-        !formData.newPassword ||
-        !formData.confirmPassword
-      ) {
-        alert("Please fill all password fields.");
-        return;
-      }
+    const token = Cookies.get("token");
+    const id = Cookies.get("userId");
 
-      if (formData.newPassword !== formData.confirmPassword) {
-        alert("New password and confirmation do not match.");
-        return;
-      }
+    if (!token || !id) {
+      alert("Not authenticated.");
+      return;
+    }
+
+    if (
+      (formData.newPassword ||
+        formData.confirmPassword ||
+        formData.oldPassword) &&
+      (!formData.oldPassword ||
+        !formData.newPassword ||
+        !formData.confirmPassword)
+    ) {
+      alert("Please fill all password fields.");
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      alert("New password and confirmation do not match.");
+      return;
     }
 
     try {
-      const token = Cookies.get("token");
-      const id = Cookies.get("userId");
+      const updatePayload = {
+        address: formData.address,
+        profile_url: formData.profile_url,
+        ...(formData.oldPassword && { oldPassword: formData.oldPassword }),
+        ...(formData.newPassword && { newPassword: formData.newPassword }),
+      };
 
-      if (!token || !id) {
-        alert("User not authenticated.");
+      const response = await updateUserProfile({
+        id,
+        token,
+        data: updatePayload,
+      }).unwrap();
+
+      alert("Profile updated successfully!");
+
+      if (formData.oldPassword && formData.newPassword) {
+        alert("Password changed. Please log in again.");
+        Cookies.remove("token");
+        Cookies.remove("userId");
+        window.location.href = "/users/login";
         return;
       }
 
-      const res = await fetch(`http://localhost:4000/users/profile/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          address: formData.address,
-          profile_url: formData.profile_url,
-          oldPassword: formData.oldPassword,
-          newPassword: formData.newPassword,
-        }),
+      setUser({
+        ...user!,
+        address: response.user.address,
+        profile_url: response.user.profile_url,
+        email: response.user.email,
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        alert("Profile updated successfully!");
-
-        // If password was changed, force logout
-        if (formData.oldPassword && formData.newPassword) {
-          alert("Password changed successfully. Please log in again.");
-          Cookies.remove("token");
-          Cookies.remove("userId");
-          window.location.href = "/users/login";
-          return;
-        }
-
-        // If not a password change, just update profile info
-        setUser({
-          ...user!,
-          address: data.user.address,
-          profile_url: data.user.profile_url,
-          email: data.user.email,
-        });
-        setIsEditing(false);
-        setFormData((prev) => ({
-          ...prev,
-          oldPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        }));
-      } else {
-        alert(data.message || "Failed to update profile");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("An error occurred while updating profile.");
+      setIsEditing(false);
+      setFormData((prev) => ({
+        ...prev,
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      }));
+    } catch (error: any) {
+      alert(error?.data?.message || "Failed to update profile");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   if (!user) {
     return (
-      <div className="text-center mt-20">User not found. Redirecting...</div>
+      <div className="flex items-center justify-center h-screen">
+        <p>Loading profile...</p>
+      </div>
     );
   }
 
@@ -271,7 +241,7 @@ const DashboardProfile = () => {
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
-              className="btn-primary  flex justify-center items-center gap-2"
+              className="btn-primary flex justify-center items-center gap-2"
             >
               <FaPen /> Edit
             </button>
@@ -285,7 +255,7 @@ const DashboardProfile = () => {
               </button>
               <button
                 onClick={handleSave}
-                className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition "
+                className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition"
               >
                 Save
               </button>

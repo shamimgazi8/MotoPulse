@@ -1,85 +1,40 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Tabs } from "antd";
-import Cookies from "js-cookie";
 import DashboardProfile from "./Dashboard";
 import { MdDashboard } from "react-icons/md";
 import { BsFillFilePostFill } from "react-icons/bs";
-import MyReviews from "./MyReviews";
-import { getUserIdFromToken } from "@/utils/utils";
 import { CiBookmarkCheck } from "react-icons/ci";
+import MyReviews from "./MyReviews";
 import BookmarkReviews from "./BookmarkedRevies";
 
-const id = getUserIdFromToken();
-
 const MainDashboard: React.FC = () => {
-  const [reviewDataById, setReviewDataById] = useState();
-
-  useEffect(() => {
-    const token = Cookies.get("token");
-
-    if (!token) {
-      window.location.href = "/users/login";
-      return;
-    }
-
-    const FetchReview = async () => {
-      try {
-        const res = await fetch(`http://localhost:4000/reviews/user/${id}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        const data = await res.json();
-        setReviewDataById(data);
-        if (!res.ok) {
-          alert("something is wrong");
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        Cookies.remove("token");
-        window.location.href = "/users/login";
-      }
-    };
-
-    FetchReview();
-  }, []);
-
   const tabItems = [
     {
       label: (
-        <span className=" flex justify-center items-center gap-2">
+        <span className="flex justify-center items-center gap-2">
           <MdDashboard /> Dashboard
         </span>
       ),
       key: "1",
       children: <DashboardProfile />,
     },
-
     {
       label: (
-        <span className=" flex justify-center items-center gap-2">
+        <span className="flex justify-center items-center gap-2">
           <BsFillFilePostFill /> My Reviews
         </span>
       ),
-      key: "3",
-      children: (
-        <MyReviews
-          reviewData={reviewDataById}
-          setReviewData={setReviewDataById}
-        />
-      ),
+      key: "2",
+      children: <MyReviews />,
     },
     {
       label: (
-        <span className=" flex justify-center items-center gap-2">
-          <CiBookmarkCheck className=" text-lg ml-[-4px]" /> Bookmarks
+        <span className="flex justify-center items-center gap-2">
+          <CiBookmarkCheck className="text-lg ml-[-4px]" /> Bookmarks
         </span>
       ),
-      key: "2",
+      key: "3",
       children: <BookmarkReviews />,
     },
   ];

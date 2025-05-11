@@ -1,185 +1,120 @@
-import { Card, Input, Button } from "antd";
+import { Card, Input } from "antd";
+import Cookies from "js-cookie";
+import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { MdCancel, MdOutlineDeleteOutline } from "react-icons/md";
 import { AiOutlineFundView } from "react-icons/ai";
 import Link from "next/link";
-import { useState } from "react";
 import { getUserIdFromToken } from "@/utils/utils";
 import CustomModal from "../@common/customModal";
+import {
+  useDeleteReviewMutation,
+  useGetUserReviewsQuery,
+  useUpdateReviewMutation,
+} from "@/service/reviewsApi";
 
-const MyReviews = ({ reviewData, setReviewData }: any) => {
-  const { Meta } = Card;
+const MyReviews = () => {
+  const id = getUserIdFromToken() as string;
+  const token = Cookies.get("token");
+
+  const {
+    data: reviewData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetUserReviewsQuery(id);
+  const [updateReview] = useUpdateReviewMutation();
+  const [deleteReview] = useDeleteReviewMutation();
+
   const [customToast, setCustomToast] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
   const [showToastAnimation, setShowToastAnimation] = useState(false);
 
-  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [showModal, setShowModal] = useState(false);
   const [actionType, setActionType] = useState<"cancel" | "delete" | null>(
     null
-  ); // Action type for the modal
-  const [itemIdToEdit, setItemIdToEdit] = useState<string | null>(null); // Store the item ID to edit
+  );
+  const [itemIdToEdit, setItemIdToEdit] = useState<string | null>(null);
+
+  const [editing, setEditing] = useState<Record<string, string>>({});
 
   const showToast = (message: string, type: "success" | "error") => {
     setCustomToast({ message, type });
-
-    setTimeout(() => {
-      setShowToastAnimation(true);
-    }, 20);
-
+    setTimeout(() => setShowToastAnimation(true), 20);
     setTimeout(() => {
       setShowToastAnimation(false);
-      setTimeout(() => {
-        setCustomToast(null);
-      }, 1000);
+      setTimeout(() => setCustomToast(null), 1000);
     }, 6000);
   };
 
-  const id = getUserIdFromToken();
-
-  const handleEdit = (itemId: string, currentReview: string) => {
-    setReviewData((prevData: any) => ({
-      ...prevData,
-      result: prevData.result.map((item: any) =>
-        item.id === itemId
-          ? {
-              ...item,
-              isEditing: true,
-              newReview:
-                item.newReview !== undefined ? item.newReview : currentReview,
-            }
-          : item
-      ),
-    }));
+  const handleEdit = (id: string, currentReview: string) => {
+    setEditing((prev) => ({ ...prev, [id]: currentReview }));
   };
 
-  const handleCancelEdit = (itemId: string) => {
-    const item = reviewData.result.find((review: any) => review.id === itemId);
-
-    if (item && item.newReview?.trim() !== item.review?.trim()) {
-      // Show custom modal if changes exist
-      setItemIdToEdit(itemId); // Ensure the itemIdToEdit is correctly set for the modal
-      setActionType("cancel"); // Set action type to 'cancel'
-      setShowModal(true); // This triggers the modal to show
+  const handleCancelEdit = (id: string, originalReview: string) => {
+    if (editing[id]?.trim() !== originalReview.trim()) {
+      setItemIdToEdit(id);
+      setActionType("cancel");
+      setShowModal(true);
     } else {
-      // If no changes, just cancel immediately
-      setReviewData((prevData: any) => ({
-        ...prevData,
-        result: prevData.result.map((item: any) =>
-          item.id === itemId
-            ? {
-                ...item,
-                isEditing: false,
-                newReview: undefined,
-              }
-            : item
-        ),
-      }));
-    }
-  };
-
-  const handleSave = async (itemId: string, newReview: string) => {
-    try {
-      const response = await fetch(`http://localhost:4000/reviews/${itemId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: id,
-          review: newReview,
-        }),
+      setEditing((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
       });
-
-      if (response.ok) {
-        showToast("Review updated successfully!", "success");
-
-        setReviewData((prevData: any) => ({
-          ...prevData,
-          result: prevData.result.map((item: any) =>
-            item.id === itemId
-              ? {
-                  ...item,
-                  review: newReview,
-                  isEditing: false,
-                  newReview: undefined,
-                }
-              : item
-          ),
-        }));
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to update review:", errorData.message);
-        showToast(errorData.message, "error");
-      }
-    } catch (error) {
-      console.error("Error updating review:", error);
-      showToast("An error occurred while updating.", "error");
     }
   };
 
-  const handleDelete = async (itemId: string) => {
-    setItemIdToEdit(itemId);
-    setActionType("delete"); // Set action type to 'delete'
-    setShowModal(true); // This triggers the modal to show
-  };
-
-  // Handle modal confirmation based on action type
   const handleConfirmModal = async () => {
-    if (actionType === "cancel") {
-      setReviewData((prevData: any) => ({
-        ...prevData,
-        result: prevData.result.map((item: any) =>
-          item.id === itemIdToEdit
-            ? {
-                ...item,
-                isEditing: false,
-                newReview: undefined,
-              }
-            : item
-        ),
-      }));
-    } else if (actionType === "delete") {
+    if (actionType === "cancel" && itemIdToEdit) {
+      setEditing((prev) => {
+        const updated = { ...prev };
+        delete updated[itemIdToEdit];
+        return updated;
+      });
+    } else if (actionType === "delete" && itemIdToEdit) {
       try {
-        const response = await fetch(
-          `http://localhost:4000/reviews/${itemIdToEdit}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              user_id: id,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          showToast("Review deleted successfully", "success");
-          setReviewData((prevData: any) => ({
-            ...prevData,
-            result: prevData.result.filter(
-              (review: any) => review.id !== itemIdToEdit
-            ),
-          }));
-        } else {
-          const errorData = await response.json();
-          console.error("Failed to delete review:", errorData.message);
-          showToast(errorData.message, "error");
-        }
-      } catch (error) {
-        console.error("Error deleting review:", error);
-        showToast("An error occurred while deleting.", "error");
+        await deleteReview({ id: itemIdToEdit, user_id: id }).unwrap();
+        showToast("Review deleted successfully", "success");
+      } catch (err) {
+        showToast("Error deleting review", "error");
       }
     }
-
-    setShowModal(false); // Close the modal
+    setShowModal(false);
+    setItemIdToEdit(null);
+    setActionType(null);
   };
 
-  const handleCancelModal = () => {
-    setShowModal(false); // Close the modal without making any changes
+  const handleSave = async (itemId: string) => {
+    try {
+      const newReview = editing[itemId];
+      await updateReview({
+        id: itemId,
+        user_id: id,
+        review: newReview,
+      }).unwrap();
+      showToast("Review updated successfully", "success");
+      setEditing((prev) => {
+        const updated = { ...prev };
+        delete updated[itemId];
+        return updated;
+      });
+    } catch {
+      showToast("Error updating review", "error");
+    }
   };
+
+  const handleDelete = (id: string) => {
+    setItemIdToEdit(id);
+    setActionType("delete");
+    setShowModal(true);
+  };
+
+  if (isLoading) return <p className="text-center">Loading...</p>;
+  if (error)
+    return <p className="text-center text-red-500">Error fetching reviews</p>;
 
   return (
     <div className="h-[80vh] overflow-y-auto custom-scrollbar">
@@ -189,107 +124,91 @@ const MyReviews = ({ reviewData, setReviewData }: any) => {
             You have not posted any reviews yet.
           </div>
         ) : (
-          reviewData?.result?.map((item: any, key: any) => (
-            <div key={key}>
-              <Card
-                hoverable
-                style={{
-                  width: 300,
-                  minHeight: 500,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-                actions={
-                  item.isEditing
-                    ? [
-                        <button
-                          className={`px-4 py-1 rounded flex justify-center items-center gap-2 transition-all focus:outline-none
-                        ${
-                          item.newReview.trim() === item.review.trim() ||
-                          item.newReview.trim() === ""
+          reviewData?.result?.map((item: any, key: number) => (
+            <Card
+              key={item.id}
+              hoverable
+              style={{
+                width: 300,
+                minHeight: 500,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+              actions={
+                editing[item.id]
+                  ? [
+                      <button
+                        className={`px-4 py-1 rounded transition-all ${
+                          editing[item.id].trim() === item.review.trim()
                             ? "bg-gray-400 text-white cursor-not-allowed"
                             : "bg-black text-white hover:text-black hover:border-black hover:bg-white"
+                        }`}
+                        onClick={() => handleSave(item.id)}
+                        disabled={
+                          editing[item.id].trim() === item.review.trim()
                         }
-                      `}
-                          onClick={() => handleSave(item.id, item.newReview)}
-                          disabled={
-                            item.newReview.trim() === item.review.trim() ||
-                            item.newReview.trim() === ""
-                          }
-                        >
-                          Update Review
-                        </button>,
-                        <button
-                          className=" px-4 py-1  text-white rounded  focus:outline-none focus:ring-2 focus:ring-red-500 flex justify-center items-center gap-2 transition-all"
-                          onClick={() => handleCancelEdit(item.id)}
-                        >
-                          <MdCancel className=" text-lg mt-[2px]" /> Cancel
-                        </button>,
-                      ]
-                    : [
-                        <FaEdit
-                          className="text-xl"
-                          key="edit"
-                          onClick={() => handleEdit(item.id, item.review)}
-                        />,
-                        <Link href={`/${item?.slug}`}>
-                          <AiOutlineFundView className="text-xl" key="view" />
-                        </Link>,
-                        <MdOutlineDeleteOutline
-                          className="text-xl"
-                          key="delete"
-                          onClick={() => handleDelete(item.id)}
-                        />,
-                      ]
-                }
-                cover={
-                  <img
-                    alt="review cover"
-                    src={item.coverPhoto || "https://via.placeholder.com/300"}
-                    className="h-48 object-cover"
-                  />
-                }
-              >
-                <Meta
-                  title={`${item.bike?.brand?.brandName} ${item.bike?.model?.modelName}`}
-                  description={
-                    item.isEditing ? (
-                      <Input.TextArea
-                        value={item.newReview}
-                        onChange={(e) =>
-                          setReviewData((prevData: any) => ({
-                            ...prevData,
-                            result: prevData.result.map((review: any) =>
-                              review.id === item.id
-                                ? { ...review, newReview: e.target.value }
-                                : review
-                            ),
-                          }))
-                        }
-                        autoSize
-                      />
-                    ) : (
-                      <span>
-                        {typeof item.review === "string"
-                          ? item.review.slice(0, 100) + "..."
-                          : ""}
-                      </span>
-                    )
-                  }
+                      >
+                        Update Review
+                      </button>,
+                      <button
+                        className="px-4 py-1 text-white bg-red-500 rounded"
+                        onClick={() => handleCancelEdit(item.id, item.review)}
+                      >
+                        <MdCancel className="inline-block mr-1" /> Cancel
+                      </button>,
+                    ]
+                  : [
+                      <FaEdit
+                        key="edit"
+                        onClick={() => handleEdit(item.id, item.review)}
+                      />,
+                      <Link href={`/${item?.slug}`} key="view">
+                        <AiOutlineFundView />
+                      </Link>,
+                      <MdOutlineDeleteOutline
+                        key="delete"
+                        onClick={() => handleDelete(item.id)}
+                      />,
+                    ]
+              }
+              cover={
+                <img
+                  alt="review cover"
+                  src={item.coverPhoto || "https://via.placeholder.com/300"}
+                  className="h-48 object-cover"
                 />
-                <div className="text-[13px] text-gray-600 mt-5">
-                  Type: {item.bike?.type?.name} <br />
-                  Engine: {item.bike?.engineCC}cc | HP: {item.bike?.horsePower}{" "}
-                  | Torque: {item.bike?.torque}Nm
-                </div>
-              </Card>
-            </div>
+              }
+            >
+              <Card.Meta
+                title={`${item.bike?.brand?.brandName} ${item.bike?.model?.modelName}`}
+                description={
+                  editing[item.id] !== undefined ? (
+                    <Input.TextArea
+                      value={editing[item.id]}
+                      onChange={(e) =>
+                        setEditing((prev) => ({
+                          ...prev,
+                          [item.id]: e.target.value,
+                        }))
+                      }
+                      autoSize
+                    />
+                  ) : (
+                    <span>{item.review.slice(0, 100)}...</span>
+                  )
+                }
+              />
+              <div className="text-[13px] text-gray-600 mt-5">
+                Type: {item.bike?.type?.name} <br />
+                Engine: {item.bike?.engineCC}cc | HP: {item.bike?.horsePower} |
+                Torque: {item.bike?.torque}Nm
+              </div>
+            </Card>
           ))
         )}
       </div>
 
-      {/* Custom Modal for Discard Changes or Delete */}
       <CustomModal
         visible={showModal}
         title={
@@ -301,7 +220,7 @@ const MyReviews = ({ reviewData, setReviewData }: any) => {
             : "Are you sure you want to delete this review?"
         }
         onConfirm={handleConfirmModal}
-        onCancel={handleCancelModal}
+        onCancel={() => setShowModal(false)}
       />
 
       {customToast && (
