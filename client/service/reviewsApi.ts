@@ -92,16 +92,16 @@ export const reviewsApi = createApi({
 
         return `/reviews?${params.toString()}`;
       },
-      serializeQueryArgs: ({ endpointName }) => endpointName,
-      merge: (currentCache, newItems) => {
-        currentCache.result.push(...newItems.result);
-        currentCache.count = newItems.count;
-      },
+
+      // ✅ This ensures different cache keys for every filter/page combo
+      serializeQueryArgs: ({ queryArgs }) => JSON.stringify(queryArgs),
+
+      // ❌ REMOVE merge — no combining of old/new data
+      // merge: (currentCache, newItems) => { ... }
+
+      // ✅ Refetch when any arg changes
       forceRefetch({ currentArg, previousArg }) {
-        return (
-          currentArg?.page !== previousArg?.page ||
-          JSON.stringify(currentArg) !== JSON.stringify(previousArg)
-        );
+        return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
       },
     }),
 
