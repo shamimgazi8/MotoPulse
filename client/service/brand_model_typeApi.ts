@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // Define types
 interface Brand {
