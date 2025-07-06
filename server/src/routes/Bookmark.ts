@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/", authMiddleware, bookmarkReview as any);
 
 // DELETE /api/bookmarks/:review_id  - unbookmark a review
-router.delete("/", authMiddleware, unbookmarkReview as any);
+router.delete("/:review_id", authMiddleware, unbookmarkReview as any);
 
 // GET /api/bookmarks  - get all user's bookmarked reviews
 router.get("/", authMiddleware, getUserBookmarks as any);

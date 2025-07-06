@@ -155,14 +155,18 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       }
 
       const method = bookmark ? "DELETE" : "POST";
+      const url = bookmark
+        ? `http://localhost:4000/bookmark/${data?.id}` // DELETE needs id in URL
+        : `http://localhost:4000/bookmark/`;
 
-      const response = await fetch(`http://localhost:4000/bookmark/`, {
+      const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ review_id: data?.id }),
+        body:
+          method === "POST" ? JSON.stringify({ review_id: data?.id }) : null,
       });
 
       if (response.status === 401) {
@@ -183,7 +187,7 @@ const BlogCard = ({ data, link, classes }: BlogCardProps) => {
       }
     } catch (error) {
       console.error("Error bookmarking post:", error);
-      showMessage("warning", "Bookmark removed successfully!");
+      showMessage("error", "Failed to update bookmark. Please try again.");
     }
   };
 
