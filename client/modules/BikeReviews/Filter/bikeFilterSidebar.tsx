@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Slider, Select, Checkbox, InputNumber, Collapse, Radio } from "antd";
-import ApiService from "@/service/apiService";
-import { CheckboxGroupProps } from "antd/es/checkbox";
+import { Slider, Select, InputNumber, Collapse, Radio } from "antd";
+import { useGetBikeTypesQuery, useGetBrandsQuery } from "@/service/api";
 
 const { Option } = Select;
 
@@ -18,10 +17,20 @@ const BikeFilterSidebar = ({
     bikeType: undefined,
   });
 
-  const [bikeTypes, setBikeTypes] = useState<{ id: number; name: string }[]>(
-    []
-  );
-  const [brands, setBrands] = useState<{ id: number; brandName: string }[]>([]);
+  // Fetch brands and bike types with RTK Query hooks
+  const {
+    data: brands = [],
+    isLoading: loadingBrands,
+    error: errorBrands,
+  } = useGetBrandsQuery();
+  const {
+    data: bikeTypesData,
+    isLoading: loadingTypes,
+    error: errorTypes,
+  } = useGetBikeTypesQuery();
+  // bikeTypesData has a "result" property, so:
+  const bikeTypes = bikeTypesData?.result || [];
+
   const [tempCcRange, setTempCcRange] = useState<[number?, number?]>([
     filters.ccRange?.[0],
     filters.ccRange?.[1],
@@ -29,40 +38,21 @@ const BikeFilterSidebar = ({
   const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [brands, types] = await Promise.all([
-          ApiService.getBrands(),
-          ApiService.getBikeTypes(),
-        ]);
-
-        setBrands(brands);
-        setBikeTypes(types?.result);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     onApplyFilters(filters);
-  }, [filters]); // Runs only when filters state updates
+  }, [filters]);
 
   const handleChange = (field: string, value: any) => {
     setFilters((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const onRadioChange = (value: any) => {
-    setFilters((prev: any) => {
-      const updatedFilters = { ...prev, sortby: value };
-
-      return updatedFilters;
-    });
+    setFilters((prev: any) => ({
+      ...prev,
+      sortby: value,
+    }));
   };
 
-  const options: CheckboxGroupProps<string>["options"] = [
+  const options = [
     { label: "Recent Reviews", value: "recent" },
     { label: "Most Popular", value: "popular" },
   ];
@@ -77,6 +67,9 @@ const BikeFilterSidebar = ({
           placeholder="Select Brand"
           style={{ width: "100%" }}
           onChange={(value) => handleChange("brand", value)}
+          loading={loadingBrands}
+          disabled={loadingBrands || !!errorBrands}
+          value={filters.brand}
         >
           {brands.map((brand: any) => (
             <Option key={brand.id} value={brand.brandName}>
@@ -95,8 +88,11 @@ const BikeFilterSidebar = ({
           placeholder="Select Type"
           style={{ width: "100%" }}
           onChange={(value) => handleChange("bikeType", value)}
+          loading={loadingTypes}
+          disabled={loadingTypes || !!errorTypes}
+          value={filters.bikeType}
         >
-          {bikeTypes?.map((type: any) => (
+          {bikeTypes.map((type: any) => (
             <Option key={type.id} value={type.name}>
               {type.name}
             </Option>
@@ -133,8 +129,8 @@ const BikeFilterSidebar = ({
               style={{ width: "100%" }}
             />
           </div>
-          {tempCcRange[0] !== filters.ccRange?.[0] ||
-          tempCcRange[1] !== filters.ccRange?.[1] ? (
+          {(tempCcRange[0] !== filters.ccRange?.[0] ||
+            tempCcRange[1] !== filters.ccRange?.[1]) && (
             <button
               className="btn-outline hover:bg-white hover:text-black transition-all px-2 py-1"
               onClick={() => {
@@ -144,8 +140,8 @@ const BikeFilterSidebar = ({
             >
               Confirm
             </button>
-          ) : null}
-          {tempCcRange[0] != null || tempCcRange[1] != null ? (
+          )}
+          {(tempCcRange[0] != null || tempCcRange[1] != null) && (
             <button
               className="btn-outline hover:bg-white hover:text-black transition-all px-2 py-1"
               onClick={() => {
@@ -156,7 +152,7 @@ const BikeFilterSidebar = ({
             >
               Clear
             </button>
-          ) : null}
+          )}
         </div>
       ),
     },
@@ -170,6 +166,7 @@ const BikeFilterSidebar = ({
         options={options}
         defaultValue="recent"
         buttonStyle="solid"
+        value={filters.sortby}
       />
       <Collapse defaultActiveKey={["1", "2", "3"]} items={collapseItems} />
     </div>
