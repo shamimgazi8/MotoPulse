@@ -6,6 +6,7 @@ import TrendingBikes from "./TrandingBikes";
 import BikeFilterSidebar from "./Filter/bikeFilterSidebar";
 
 const PAGE_SIZE = 5;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 const BikeReviews = () => {
   const [filters, setFilters] = useState<any>({});
@@ -45,7 +46,7 @@ const BikeReviews = () => {
       }
 
       const queryString = params.toString();
-      const url = `http://localhost:4000/reviews?${queryString}`;
+      const url = `${API_URL}/reviews?${queryString}`;
 
       const res = await fetch(url, {
         cache: "no-store",

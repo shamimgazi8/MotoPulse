@@ -1,15 +1,16 @@
 // store.js
 
-import { configureStore } from '@reduxjs/toolkit';
-import cartReducer from './reducers/cartReducer';
-
-// assuming you have a cart reducer
+import { configureStore } from "@reduxjs/toolkit";
+import cartReducer from "./reducers/cartReducer";
+import { api } from "@/service/api";
 
 const store = configureStore({
   reducer: {
     cart: cartReducer,
-    // other reducers can be added here
+    [api.reducerPath]: api.reducer, // <-- add RTK Query reducer
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware), // <-- add RTK Query middleware
 });
 
 export default store;

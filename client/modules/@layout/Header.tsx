@@ -1,12 +1,10 @@
 "use client";
-import { usePathname } from "next/navigation"; // ✅ import pathname hook
-import navData from "@/data/nav-data.json";
-import { Drawer, DrawerProps } from "antd";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BiMenuAltLeft } from "react-icons/bi";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+
 import ThemeToggleButton from "../@common/darkmode";
 import SearchAnt from "../@common/search/antdSearch";
 import ProfileAvater from "../@common/ProfileAvater";
@@ -14,11 +12,9 @@ import NavBar from "./Navbar";
 import { FaPen } from "react-icons/fa";
 
 const Header = () => {
-  const pathname = usePathname(); // ✅ get current route
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [placement, setPlacement] = useState<DrawerProps["placement"]>("left");
   const [scroll, setScroll] = useState(false);
-  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,14 +24,6 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  const toggle = (i: any) => {
-    setSelected(selected === i ? null : i);
-  };
 
   // Define the routes where the header should be hidden
   const hideHeaderRoutes = ["/users/login"];

@@ -1,46 +1,37 @@
 "use client";
-import ApiService from "@/service/apiService";
+
+import { useGetBikeTypesQuery, useGetBrandsQuery } from "@/service/api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
 
 const NavBar = () => {
   const pathname = usePathname();
 
-  const [bikeTypes, setBikeTypes] = useState([]);
-  const [brands, setBrands] = useState([]);
+  const {
+    data: brandRes,
+    isLoading: brandsLoading,
+    error: brandsError,
+  } = useGetBrandsQuery();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [brandRes, typeRes] = await Promise.all([
-          ApiService.getBrands(),
-          ApiService.getBikeTypes(),
-        ]);
+  const {
+    data: typeRes,
+    isLoading: typesLoading,
+    error: typesError,
+  } = useGetBikeTypesQuery();
 
-        // Process brands
-        const brands = brandRes.map((brand: any) => ({
-          title: brand.brandName,
-          link: `/brands/${brand.brandName.toLowerCase().replace(/\s+/g, "-")}`,
-        }));
+  const brands =
+    brandRes?.map((brand: any) => ({
+      title: brand.brandName,
+      link: `/brands/${brand.brandName.toLowerCase().replace(/\s+/g, "-")}`,
+    })) || [];
 
-        // Process bike types
-        const types = typeRes.result.map((type: any) => ({
-          title: type.name,
-          link: `/type/${type.name.toLowerCase().replace(/\s+/g, "-")}`,
-        }));
-
-        setBrands(brands);
-        setBikeTypes(types);
-      } catch (err) {
-        console.error("Error fetching nav data:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const bikeTypes =
+    typeRes?.result?.map((type: any) => ({
+      title: type.name,
+      link: `/type/${type.name.toLowerCase().replace(/\s+/g, "-")}`,
+    })) || [];
 
   const isActive = (link: string) =>
     pathname === link || pathname.startsWith(link + "/");
@@ -91,7 +82,6 @@ const NavBar = () => {
                 {NavItem.children && <FiChevronDown className="mt-[2px]" />}
               </Link>
 
-              {/* Dropdown */}
               {NavItem?.children && (
                 <ul className="min-w-[260px] absolute bg-[#111111] backdrop-blur-md text-white py-2 pl-4 pr-0 rounded-md shadow-lg opacity-0 invisible top-[100%] left-0 group-hover/item-1:visible group-hover/item-1:opacity-100">
                   {NavItem.children.map((child: any, j: number) => {
@@ -104,7 +94,11 @@ const NavBar = () => {
                         <Link
                           href={child?.link}
                           className={`group/test grid grid-cols-[auto_1fr_auto] p-2 items-center gap-2 transition translate-x-[-30px] hover:bg-white w-[230px] hover:text-black hover:translate-x-0
-                            ${childActive ? "gradient-text font-semibold" : "text-white font-semibold hover:text-gradient"}
+                            ${
+                              childActive
+                                ? "gradient-text font-semibold"
+                                : "text-white font-semibold hover:text-gradient"
+                            }
                           `}
                         >
                           <span className="block shrink-0 w-[15px] h-[10px] bg-gradient-to-r from-primary to-secondary"></span>
