@@ -1,14 +1,18 @@
 "use client";
-import { Review } from "@/types/review"; // <- import the type
+
+import { Review } from "@/types/review";
 import { usePathname } from "next/navigation";
 import { capitalizeFirstLetter } from "../../utils/utils";
 import PaginatedList from "../@common/pagination";
 import Bredcrumb from "../@common/Bredcrumb";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import CarouselMulti from "../@common/multiCarousle";
 import Link from "next/link";
-import ApiService from "@/service/apiService";
 import Image from "next/image";
+import {
+  useGetReviewByBrandQuery,
+  useGetReviewByTypeQuery,
+} from "@/service/api"; // RTK hooks
 
 const BikeCategoryList = () => {
   const pathname = usePathname();
@@ -30,28 +34,26 @@ const BikeCategoryList = () => {
       link: `/${bikeCategories}/${bikeTypes}`,
     });
   }
-  const [dataArray, setDataArray] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response;
-        if (bikeCategories === "brands") {
-          response = await ApiService.getReviewBybyBrand(decodedSlug1);
-        } else if (bikeCategories === "type") {
-          response = await ApiService.getReviewBybyType(decodedSlug1);
-        }
-        setDataArray(response?.result || []);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const {
+    data: brandData,
+    isLoading: isBrandLoading,
+    isError: isBrandError,
+  } = useGetReviewByBrandQuery(decodedSlug1, {
+    skip: bikeCategories !== "brands",
+  });
 
-    fetchData();
-  }, [bikeCategories, bikeTypes, decodedSlug1]);
+  const {
+    data: typeData,
+    isLoading: isTypeLoading,
+    isError: isTypeError,
+  } = useGetReviewByTypeQuery(decodedSlug1, {
+    skip: bikeCategories !== "type",
+  });
+
+  const isLoading = isBrandLoading || isTypeLoading;
+  const isError = isBrandError || isTypeError;
+  const dataArray: Review[] = brandData?.result || typeData?.result || [];
 
   useEffect(() => {
     const hero = document.getElementById("parallaxHero");
@@ -105,7 +107,7 @@ const BikeCategoryList = () => {
           </div>
 
           <div className="mt-6">
-            {loading && (
+            {isLoading && (
               <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {Array(8)
                   .fill(0)
@@ -122,7 +124,7 @@ const BikeCategoryList = () => {
               </div>
             )}
 
-            {!loading && dataArray?.length === 0 && (
+            {!isLoading && dataArray?.length === 0 && (
               <div className=" text-red-300 text-lg font-semibold text-center">
                 {`${decodedSlug1} is Not Found! Please try again later...`}
               </div>
